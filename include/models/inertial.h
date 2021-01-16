@@ -2,18 +2,22 @@
 #define INERTIAL_PROCESS
 
 #include <Eigen/Dense>
-#include "iekf/state.h"
-#include "models/base_process.h"
+#include <unsupported/Eigen/MatrixFunctions>
 
-class InertialProcess : public ProcessModelBase {
+#include "models/base_process.h"
+#include "iekf/state.h"
+#include "lie/SE2_3.h"
+
+class InertialProcess : public ProcessModel {
 
     public:
-        InertialProcess() {};
-        State f(Eigen::VectorXd u, State state);
-        Eigen::MatrixXd MakeA(Eigen::VectorXd u, State state);
+        InertialProcess();
+        void f(Eigen::VectorXd u, double dt, State& state);
+        Eigen::MatrixXd MakePhi(Eigen::VectorXd u, double dt, State state);
         
     private:
-        
+        SE2_3 lie_;
+        const Eigen::Vector3d g_;
 
 };
 

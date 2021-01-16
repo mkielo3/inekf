@@ -35,3 +35,7 @@ Eigen::MatrixXd SE2_3::Cross(const Eigen::VectorXd& xi){
 Eigen::MatrixXd SE2_3::ExpMountain(const Eigen::VectorXd& xi){
     return Mountain(xi).exp();
 }
+
+Eigen::MatrixXd SE2_3::ExpCross(const Eigen::VectorXd& xi){
+    return Cross(xi).exp();
+}

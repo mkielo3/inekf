@@ -26,7 +26,6 @@ class InEKF {
         
     private:
         State state_;
-        std::map<std::string, bool>  m_models_;
 
 };
 

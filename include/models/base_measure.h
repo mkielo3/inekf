@@ -4,10 +4,10 @@
 #include <Eigen/Dense>
 #include "iekf/state.h"
 
-class MeasureModelBase {
+class MeasureModel {
     
     public:
-        MeasureModelBase(Eigen::MatrixXd& M) : M_(M) {};
+        MeasureModel(Eigen::MatrixXd& M) : M_(M) {};
         virtual void Observe(Eigen::VectorXd& z, State& state);
         Eigen::MatrixXd N;
         Eigen::MatrixXd H;

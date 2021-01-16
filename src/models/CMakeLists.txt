@@ -13,4 +13,4 @@ target_include_directories(${LIB_NAME} PUBLIC
   $<INSTALL_INTERFACE:include>
   )  
 target_compile_features(${LIB_NAME} PUBLIC cxx_std_14)
-target_link_libraries(${LIB_NAME} PUBLIC Eigen3::Eigen)
+target_link_libraries(${LIB_NAME} PUBLIC Eigen3::Eigen iekf)

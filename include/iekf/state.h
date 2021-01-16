@@ -11,6 +11,9 @@ class State {
         const Eigen::Matrix3d getRotation();
         const Eigen::Vector3d getVelocity();
         const Eigen::Vector3d getPosition();
+        void setRotation(Eigen::Matrix3d R);
+        void setVelocity(Eigen::Vector3d v);
+        void setPosition(Eigen::Vector3d p);
 
     private:
         Eigen::MatrixXd Mu_;

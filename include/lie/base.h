@@ -5,14 +5,17 @@
 #include <string>
 #include <map>
 
-class LieBase {
+class LieGroup {
     
     public:
-        LieBase() {};
-        virtual Eigen::MatrixXd Adjoint(const Eigen::MatrixXd& x) = 0;
+        LieGroup() {};
         virtual Eigen::MatrixXd Mountain(const Eigen::VectorXd& xi) = 0;
-        virtual Eigen::MatrixXd Cross(const Eigen::VectorXd& xi) = 0;
         virtual Eigen::MatrixXd ExpMountain(const Eigen::VectorXd& xi) = 0;
+
+        virtual Eigen::MatrixXd Cross(const Eigen::VectorXd& xi) = 0;
+        virtual Eigen::MatrixXd ExpCross(const Eigen::VectorXd& xi) = 0;
+        
+        virtual Eigen::MatrixXd Adjoint(const Eigen::MatrixXd& x) = 0;
 };
 
 #endif // BASE_LIE
