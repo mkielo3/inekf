@@ -2,14 +2,14 @@
 #define BASE_PROCESS
 
 #include <Eigen/Dense>
-#include "lie/state.h"
+#include "iekf/state.h"
 
 class ProcessModelBase {
 
     public:
-        ProcessModelBase();
+        ProcessModelBase() {};
         virtual State f(Eigen::VectorXd u, State state);
-        virutal Eigen::MatrixXd MakeA(Eigen::VectorXd u, State state);
+        virtual Eigen::MatrixXd MakeA(Eigen::VectorXd u, State state);
         
     private:
         

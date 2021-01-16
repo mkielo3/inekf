@@ -2,6 +2,7 @@
 #define BASE_MEASURE
 
 #include <Eigen/Dense>
+#include "iekf/state.h"
 
 class MeasureModelBase {
     
