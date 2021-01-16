@@ -12,6 +12,11 @@ class ProcessModel {
         virtual void f(Eigen::VectorXd u, double dt, State& state) = 0;
         virtual Eigen::MatrixXd MakePhi(Eigen::VectorXd u, double dt, State state) = 0;
 
+        const Eigen::MatrixXd getQ() { return Q_; };
+
+    protected:
+        Eigen::MatrixXd Q_;
+
 };
 
 #endif // BASE_PROCESS

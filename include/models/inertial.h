@@ -15,6 +15,11 @@ class InertialProcess : public ProcessModel {
         void f(Eigen::VectorXd u, double dt, State& state);
         Eigen::MatrixXd MakePhi(Eigen::VectorXd u, double dt, State state);
         
+        void setGyroNoise(double std);
+        void setAccelNoise(double std);
+        void setGyroBiasNoise(double std);
+        void setAccelBiasNoise(double std);
+
     private:
         SE2_3 lie_;
         const Eigen::Vector3d g_;

@@ -12,6 +12,14 @@ const Eigen::Vector3d State::getPosition(){
     return Mu_.block<3,1>(0,4);
 }
 
+const Eigen::MatrixXd State::getMu(){
+    return Mu_;
+}
+
+const Eigen::MatrixXd State::getSigma(){
+    return Sigma_;
+}
+
 void State::setRotation(Eigen::Matrix3d R){
     Mu_.block<3,3>(0,0) = R;
 }

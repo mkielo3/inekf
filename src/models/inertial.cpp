@@ -1,7 +1,9 @@
 #include "models/inertial.h"
 
 InertialProcess::InertialProcess()
-    :  g_((Eigen::VectorXd(3) << 0,0,-9.81).finished()) {}
+    :  g_((Eigen::VectorXd(3) << 0,0,-9.81).finished()) {
+    Q_ = Eigen::MatrixXd::Zero(15,15);
+}
 
 void InertialProcess::f(Eigen::VectorXd u, double dt, State& state){
     // Get everything we need
@@ -39,4 +41,20 @@ Eigen::MatrixXd InertialProcess::MakePhi(Eigen::VectorXd u, double dt, State sta
     A.block<3,3>(3,12) = -R;
 
     return A;
+}
+
+void InertialProcess::setGyroNoise(double std){
+    Q_.block<3,3>(0,0) = Eigen::MatrixXd::Identity(3,3) * std*std;
+}
+
+void InertialProcess::setAccelNoise(double std){
+    Q_.block<3,3>(3,3) = Eigen::MatrixXd::Identity(3,3) * std*std;
+}
+
+void InertialProcess::setGyroBiasNoise(double std){
+    Q_.block<3,3>(9,9) = Eigen::MatrixXd::Identity(3,3) * std*std;
+}
+
+void InertialProcess::setAccelBiasNoise(double std){
+    Q_.block<3,3>(12,12) = Eigen::MatrixXd::Identity(3,3) * std*std;
 }

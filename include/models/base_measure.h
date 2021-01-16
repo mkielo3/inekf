@@ -7,14 +7,17 @@
 class MeasureModel {
     
     public:
-        MeasureModel(Eigen::MatrixXd& M) : M_(M) {};
-        virtual void Observe(Eigen::VectorXd& z, State& state);
-        Eigen::MatrixXd N;
-        Eigen::MatrixXd H;
-        Eigen::MatrixXd Sinv;
+        MeasureModel() {};
+        virtual void Observe(Eigen::VectorXd& z, State& state) = 0;
+        Eigen::MatrixXd getSinv() { return Sinv_; };
+        Eigen::MatrixXd getH() { return H_; };
+        Eigen::VectorXd getV() { return V_; };
 
-    private:
+    protected:
         Eigen::MatrixXd M_;
+        Eigen::MatrixXd H_;
+        Eigen::MatrixXd Sinv_;
+        Eigen::VectorXd V_;
         
 
 };
