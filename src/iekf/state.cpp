@@ -20,6 +20,10 @@ const Eigen::MatrixXd State::getSigma(){
     return Sigma_;
 }
 
+const Eigen::VectorXd State::getBias(){
+    return Bias_;
+}
+
 const Eigen::VectorXd State::getLastu(){
     return Last_u_;
 }
@@ -41,6 +45,14 @@ void State::setLastu(Eigen::VectorXd u){
     Last_u_ = u;
 }
 
+void State::setMu(Eigen::MatrixXd Mu){
+    Mu_ = Mu;
+}
+
 void State::setSigma(Eigen::MatrixXd Sigma){
     Sigma_ = Sigma;
+}
+
+void State::setBias(Eigen::VectorXd Bias){
+    Bias_ = Bias;
 }

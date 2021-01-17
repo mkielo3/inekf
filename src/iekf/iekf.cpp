@@ -15,6 +15,23 @@ State InEKF::Update(Eigen::VectorXd u, double dt){
 }
 
 State InEKF::Correct(Eigen::VectorXd z, std::string type){
+    MeasureModel * m_model = m_models_[type]; 
+    m_model->Observe(z, state_);
+
+    Eigen::VectorXd V = m_model->getV();
+    Eigen::MatrixXd H = m_model->getH();
+    Eigen::MatrixXd Sinv = m_model->getSinv();
+
+    Eigen::MatrixXd K = state_.getSigma() * H.transpose() * Sinv;
+    Eigen::VectorXd dState = K * V;
+
+    state_.setMu( p_model_->lie_->ExpMountain( dState.head(9) ) * state_.getMu() );  
+    state_.setBias( state_.getBias() + dState.tail(6) );  
+
+    int dimSigma = state_.getSigma().rows();
+    Eigen::MatrixXd I = Eigen::MatrixXd::Identity(dimSigma, dimSigma);
+    state_.setSigma( (I - K*H)*state_.getSigma() );
+
     return state_;
 }
 

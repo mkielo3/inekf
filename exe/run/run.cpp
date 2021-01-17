@@ -21,6 +21,7 @@ int main(){
     InEKF iekf(state);
     
     DVLSensor dvl;
+    dvl.setNoise(0.5);
     InertialProcess imu;
     imu.setGyroNoise(0.1);
     imu.setAccelNoise(0.1);
@@ -33,6 +34,9 @@ int main(){
     std::cout << state.getSigma() << std::endl;
     State updated = iekf.Update(u, .1);
     std::cout << updated.getSigma() << std::endl;
+
+    State corrected = iekf.Correct(z, "DVL");
+    std::cout << corrected.getSigma() << std::endl;
 
     return 0;
 }
