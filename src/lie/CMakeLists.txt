@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.11)
 
 # find all source and header files
-set(SRCS SE2_3.cpp)
+set(SRCS SE2_3_Bias.cpp)
 
 # Create Library
 set(LIB_NAME lie)

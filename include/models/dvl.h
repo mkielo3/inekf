@@ -3,7 +3,7 @@
 
 #include <Eigen/Dense>
 #include "models/base_measure.h"
-#include "lie/SE2_3.h"
+#include "lie/SE2_3_Bias.h"
 
 class DVLSensor : public MeasureModel {
     
@@ -13,7 +13,7 @@ class DVLSensor : public MeasureModel {
         void setNoise(double std);
 
     private:
-        SE2_3 lie;
+        SE2_3_Bias lie;
 };
 
 #endif // DVLSENSOR

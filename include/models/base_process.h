@@ -14,6 +14,8 @@ class ProcessModel {
 
         const Eigen::MatrixXd getQ() { return Q_; };
 
+        LieGroup * lie_;
+
     protected:
         Eigen::MatrixXd Q_;
 

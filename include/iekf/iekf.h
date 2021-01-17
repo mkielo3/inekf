@@ -5,27 +5,24 @@
 #include <string>
 #include <map>
 
-class State {
-
-    public:
-        State();
-
-
-    private:
-        Eigen::MatrixXd Mu_;
-        Eigen::MatrixXd Sigma_;
-        Eigen::MatrixXd Bias_;
-};
+#include "models/base_measure.h"
+#include "models/base_process.h"
 
 class InEKF {
     
     public:
-        InEKF();
-        void Update(Eigen::VectorXd u);
-        void Correct(Eigen::VectorXd z, std::string type);
+        InEKF() {};
+        InEKF(State state) : state_(state) {};
+        State Update(Eigen::VectorXd u, double dt);
+        State Correct(Eigen::VectorXd z, std::string type);
+
+        void setProcessModel(ProcessModel& p);
+        void addMeasureModel(MeasureModel& m, std::string name);
         
     private:
         State state_;
+        std::map<std::string, MeasureModel*>  m_models_;
+        ProcessModel * p_model_;
 
 };
 

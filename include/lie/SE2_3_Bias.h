@@ -1,5 +1,5 @@
-#ifndef CLASS_SE2_3
-#define CLASS_SE2_3
+#ifndef CLASS_SE2_3_Bias
+#define CLASS_SE2_3_Bias
 
 #include <Eigen/Dense>
 #include <unsupported/Eigen/MatrixFunctions>
@@ -7,10 +7,10 @@
 
 #include <iostream>
 
-class SE2_3: public LieGroup {
+class SE2_3_Bias: public LieGroup {
     
     public:
-        SE2_3() {};
+        SE2_3_Bias() {};
         Eigen::MatrixXd Mountain(const Eigen::VectorXd& xi);
         Eigen::MatrixXd ExpMountain(const Eigen::VectorXd& xi);
         
@@ -20,4 +20,4 @@ class SE2_3: public LieGroup {
         Eigen::MatrixXd Adjoint(const Eigen::MatrixXd& X);
 };
 
-#endif // CLASS_SE2_3
+#endif // CLASS_SE2_3_Bias

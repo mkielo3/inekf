@@ -6,12 +6,13 @@
 
 #include "models/base_process.h"
 #include "iekf/state.h"
-#include "lie/SE2_3.h"
+#include "lie/SE2_3_Bias.h"
 
 class InertialProcess : public ProcessModel {
 
     public:
         InertialProcess();
+        ~InertialProcess(){ delete lie_; }
         void f(Eigen::VectorXd u, double dt, State& state);
         Eigen::MatrixXd MakePhi(Eigen::VectorXd u, double dt, State state);
         
@@ -19,9 +20,8 @@ class InertialProcess : public ProcessModel {
         void setAccelNoise(double std);
         void setGyroBiasNoise(double std);
         void setAccelBiasNoise(double std);
-
+        
     private:
-        SE2_3 lie_;
         const Eigen::Vector3d g_;
 
 };
