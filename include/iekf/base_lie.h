@@ -17,9 +17,12 @@ class LieGroup {
 
         int getDim() { return dim; }
         int getCols() { return cols; }
-        int getAugment() { return augment; }
-        int getMuSize() { return dim+cols; }
-        int getSigmaSize() { return dim+cols*dim+augment; }
+        int getAugmentSize() { return augment; }
+        int getSigmaSize() { return dim + cols*dim + augment; }
+        int getMuSize() { return dim + cols; }
+
+        int getMuStates() { return dim + cols*dim; }
+        int getTotalStates() { return dim + cols*dim + augment; }
 
     protected:
         int dim;

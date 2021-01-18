@@ -3,7 +3,7 @@
 // Defaults to SE(3)
 State::State() : State(3, 1) {}
 
-State::State(LieGroup& lie) : State(lie.getDim(), lie.getCols(), lie.getAugment()) {}
+State::State(LieGroup& lie) : State(lie.getDim(), lie.getCols(), lie.getAugmentSize()) {}
 
 State::State(int dim, int cols, int augment) : dim(dim), cols(cols), augment(augment) {
     Mu_ = Eigen::MatrixXd::Identity(dim+cols, dim+cols);

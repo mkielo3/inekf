@@ -33,8 +33,10 @@ State InEKF::Correct(Eigen::VectorXd z, std::string type){
     Eigen::MatrixXd K = state_.getSigma() * H.transpose() * Sinv;
     Eigen::VectorXd dState = K * V;
 
-    state_.setMu( p_model_->lie_->ExpMountain( dState.head(9) ) * state_.getMu() );  
-    state_.setAugment( state_.getAugment() + dState.tail(6) );  
+    state_.setMu( m_model->lie_->ExpMountain( dState.head(m_model->lie_->getMuStates()) ) * state_.getMu() );  
+    if(m_model->lie_->getAugmentSize() != 0){
+        state_.setAugment( state_.getAugment() + dState.tail(m_model->lie_->getAugmentSize()) );  
+    }
 
     int dimSigma = state_.getSigma().rows();
     Eigen::MatrixXd I = Eigen::MatrixXd::Identity(dimSigma, dimSigma);
