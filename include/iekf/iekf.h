@@ -25,7 +25,7 @@ class InEKF {
         State state_;
         std::map<std::string, MeasureModel*>  m_models_;
         ProcessModel * p_model_;
-        InEKF::ERROR error_ = InEKF::ERROR::LEFT;
+        InEKF::ERROR error_ = InEKF::ERROR::RIGHT;
 
 };
 

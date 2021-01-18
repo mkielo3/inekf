@@ -18,7 +18,9 @@ int main(){
     init << 0, 0, 0, 1, 1, 1, 2, 2, 2;
 
     SE2_3_Bias lie;
-    State state(lie.ExpMountain(init), Eigen::MatrixXd::Identity(15,15));
+    State state(&lie);
+    state.setMu( lie.ExpMountain(init) );
+    state.setSigma( Eigen::MatrixXd::Identity(15,15) );
     InEKF iekf(state);
     
     DVLSensor dvl(Eigen::Matrix3d::Identity(), z);
@@ -36,13 +38,14 @@ int main(){
     iekf.addMeasureModel(dvl, "DVL");
     iekf.addMeasureModel(depth, "Depth");
     
-    std::cout << state.getSigma() << std::endl;
+    std::cout << state.getSigma() << std::endl << std::endl;
     State updated = iekf.Update(u, .1);
-    std::cout << updated.getSigma() << std::endl;
+    std::cout << updated.getSigma() << std::endl << std::endl;
 
     State corrected = iekf.Correct(z, "DVL");
-    std::cout << corrected.getSigma() << std::endl;
+    std::cout << corrected.getSigma() << std::endl << std::endl;
     corrected = iekf.Correct(z2, "Depth");
-    std::cout << corrected.getSigma() << std::endl;
+    std::cout << corrected.getSigma() << std::endl << std::endl;
+
     return 0;
 }

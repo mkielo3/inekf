@@ -10,9 +10,9 @@ void InertialProcess::f(Eigen::VectorXd u, double dt, State& state){
     // Get everything we need
     Eigen::Vector3d omega = u.head(3);
     Eigen::Vector3d a = u.tail(3);
-    Eigen::MatrixXd R = state.getRotation();
-    Eigen::Vector3d v = state.getVelocity();
-    Eigen::Vector3d p = state.getPosition();
+    Eigen::MatrixXd R = state[0];
+    Eigen::Vector3d v = state[1];
+    Eigen::Vector3d p = state[2];
 
     // Calculate
     R = R * lie_->ExpCross(omega*dt);
@@ -20,9 +20,9 @@ void InertialProcess::f(Eigen::VectorXd u, double dt, State& state){
     p = p + v*dt + (R*a + g_)*dt*dt/2;
 
     // Save it in our object
-    state.setRotation(R);
-    state.setVelocity(v);
-    state.setPosition(p);
+    state[0] = R;
+    state[1] = v;
+    state[2] = p;
 
     state.setLastu(u);
 }
@@ -30,8 +30,8 @@ void InertialProcess::f(Eigen::VectorXd u, double dt, State& state){
 Eigen::MatrixXd InertialProcess::MakePhi(Eigen::VectorXd u, double dt, State state){
     // Get everything we need
     Eigen::Matrix3d R = state.getRotation();
-    Eigen::Matrix3d v_cross = lie_->Cross( state.getVelocity() );
-    Eigen::Matrix3d p_cross = lie_->Cross( state.getPosition() );
+    Eigen::Matrix3d v_cross = lie_->Cross( state[1] );
+    Eigen::Matrix3d p_cross = lie_->Cross( state[2] );
 
     Eigen::MatrixXd A = Eigen::MatrixXd::Zero(15, 15);
 

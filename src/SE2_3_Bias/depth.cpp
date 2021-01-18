@@ -17,7 +17,7 @@ void DepthSensor::setNoise(double std){
 void DepthSensor::Observe(Eigen::VectorXd& z, State& state){
     // Find V
     Eigen::VectorXd z_full(5);
-    Eigen::Vector3d p = state.getPosition();
+    Eigen::Vector3d p = state[2];
     z_full << p[0], p[1], z[0], 0, 1;
     V_ = (state.getMu().inverse() * z_full).head(3);
 

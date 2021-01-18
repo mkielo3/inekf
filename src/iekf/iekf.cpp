@@ -34,7 +34,7 @@ State InEKF::Correct(Eigen::VectorXd z, std::string type){
     Eigen::VectorXd dState = K * V;
 
     state_.setMu( p_model_->lie_->ExpMountain( dState.head(9) ) * state_.getMu() );  
-    state_.setBias( state_.getBias() + dState.tail(6) );  
+    state_.setAugment( state_.getAugment() + dState.tail(6) );  
 
     int dimSigma = state_.getSigma().rows();
     Eigen::MatrixXd I = Eigen::MatrixXd::Identity(dimSigma, dimSigma);

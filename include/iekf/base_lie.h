@@ -2,13 +2,11 @@
 #define BASE_LIE
 
 #include <Eigen/Dense>
-#include <string>
-#include <map>
 
 class LieGroup {
     
     public:
-        LieGroup() {};
+        LieGroup() : dim(0), cols(0), augment(0) {};
         virtual Eigen::MatrixXd Mountain(const Eigen::VectorXd& xi) = 0;
         virtual Eigen::MatrixXd ExpMountain(const Eigen::VectorXd& xi) = 0;
 
@@ -16,6 +14,17 @@ class LieGroup {
         virtual Eigen::MatrixXd ExpCross(const Eigen::VectorXd& xi) = 0;
         
         virtual Eigen::MatrixXd Adjoint(const Eigen::MatrixXd& x) = 0;
+
+        int getDim() { return dim; }
+        int getCols() { return cols; }
+        int getAugment() { return augment; }
+        int getMuSize() { return dim+cols; }
+        int getSigmaSize() { return dim+cols*dim+augment; }
+
+    protected:
+        int dim;
+        int cols;
+        int augment;
 };
 
 #endif // BASE_LIE

@@ -2,33 +2,38 @@
 #define STATE
 
 #include <Eigen/Dense>
+#include "base_lie.h"
 
 class State {
 
     public:
         State();
-        State(Eigen::MatrixXd Mu, Eigen::MatrixXd Sigma) : Mu_(Mu), Sigma_(Sigma), Bias_(Eigen::VectorXd::Zero(6)) {};
+        State(LieGroup* lie);
+        State(int dim, int states, int augment=0);
         const Eigen::Matrix3d getRotation();
-        const Eigen::Vector3d getVelocity();
-        const Eigen::Vector3d getPosition();
         const Eigen::MatrixXd getMu();
         const Eigen::MatrixXd getSigma();
-        const Eigen::VectorXd getBias();
+        const Eigen::VectorXd getAugment();
         const Eigen::VectorXd getLastu();
 
         void setRotation(Eigen::Matrix3d R);
-        void setVelocity(Eigen::Vector3d v);
-        void setPosition(Eigen::Vector3d p);
         void setMu(Eigen::MatrixXd Mu);
         void setSigma(Eigen::MatrixXd Sigma);
-        void setBias(Eigen::VectorXd Bias);
+        void setAugment(Eigen::VectorXd Augment);
         void setLastu(Eigen::VectorXd u);
+
+        Eigen::Ref<Eigen::MatrixXd> operator[](int idx);
+        Eigen::MatrixXd operator[](int idx) const;
 
     private:
         Eigen::MatrixXd Mu_;
         Eigen::MatrixXd Sigma_;
-        Eigen::MatrixXd Bias_;
+        Eigen::MatrixXd Augment_;
         Eigen::VectorXd Last_u_;
+
+        int dim;
+        int cols;
+        int augment;
 };
 
 #endif // STATE
