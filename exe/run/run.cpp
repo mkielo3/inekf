@@ -4,6 +4,8 @@
 #include "SE2_3_Bias/core.h"
 
 int main(){
+    InEKF::ERROR test;
+
     Eigen::VectorXd z(3);
     z << 1, 2, 3;
 

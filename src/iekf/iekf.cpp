@@ -19,8 +19,16 @@ State InEKF::Correct(Eigen::VectorXd z, std::string type){
     m_model->Observe(z, state_);
 
     Eigen::VectorXd V = m_model->getV();
-    Eigen::MatrixXd H = m_model->getH();
     Eigen::MatrixXd Sinv = m_model->getSinv();
+    Eigen::MatrixXd H = m_model->getH();
+    if( error_ != static_cast<ERROR>(m_model->getError()) ){
+        if(error_ = InEKF::RIGHT){
+            H *= m_model->lie_->Adjoint( state_.getMu().inverse() );
+        }
+        else{
+            H *= m_model->lie_->Adjoint( state_.getMu() );
+        }
+    }
 
     Eigen::MatrixXd K = state_.getSigma() * H.transpose() * Sinv;
     Eigen::VectorXd dState = K * V;

@@ -11,6 +11,8 @@
 class InEKF {
     
     public:
+        enum ERROR { LEFT, RIGHT };
+
         InEKF() {};
         InEKF(State state) : state_(state) {};
         State Update(Eigen::VectorXd u, double dt);
@@ -23,6 +25,7 @@ class InEKF {
         State state_;
         std::map<std::string, MeasureModel*>  m_models_;
         ProcessModel * p_model_;
+        InEKF::ERROR error_ = InEKF::ERROR::LEFT;
 
 };
 
