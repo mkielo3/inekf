@@ -1,10 +1,7 @@
 #include <Eigen/Dense>
 #include <iostream>
-#include "SE2_3_Bias/SE2_3_Bias.h"
-#include "iekf/state.h"
-#include "iekf/iekf.h"
-#include "SE2_3_Bias/inertial.h"
-#include "SE2_3_Bias/dvl.h"
+#include "iekf/core.h"
+#include "SE2_3_Bias/core.h"
 
 int main(){
     Eigen::VectorXd z(3);
