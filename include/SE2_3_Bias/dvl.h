@@ -2,8 +2,8 @@
 #define DVLSENSOR
 
 #include <Eigen/Dense>
-#include "models/base_measure.h"
-#include "lie/SE2_3_Bias.h"
+#include "iekf/base_measure.h"
+#include "SE2_3_Bias/SE2_3_Bias.h"
 
 class DVLSensor : public MeasureModel {
     

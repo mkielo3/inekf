@@ -1,3 +1,2 @@
 add_subdirectory(iekf)
-add_subdirectory(lie)
-add_subdirectory(models)
+add_subdirectory(SE2_3_Bias)

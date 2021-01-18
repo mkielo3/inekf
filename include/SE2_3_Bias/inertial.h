@@ -4,9 +4,9 @@
 #include <Eigen/Dense>
 #include <unsupported/Eigen/MatrixFunctions>
 
-#include "models/base_process.h"
+#include "iekf/base_process.h"
 #include "iekf/state.h"
-#include "lie/SE2_3_Bias.h"
+#include "SE2_3_Bias/SE2_3_Bias.h"
 
 class InertialProcess : public ProcessModel {
 

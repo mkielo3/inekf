@@ -1,4 +1,4 @@
-#include "lie/SE2_3_Bias.h"
+#include "SE2_3_Bias/SE2_3_Bias.h"
 
 Eigen::MatrixXd SE2_3_Bias::Adjoint(const Eigen::MatrixXd& X){
     Eigen::Matrix3d R = X.block<3,3>(0,0);

@@ -5,8 +5,8 @@
 #include <string>
 #include <map>
 
-#include "models/base_measure.h"
-#include "models/base_process.h"
+#include "iekf/base_measure.h"
+#include "iekf/base_process.h"
 
 class InEKF {
     

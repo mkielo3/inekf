@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.11)
 
 # find all source and header files
-set(SRCS SE2_3_Bias.cpp)
+set(SRCS SE2_3_Bias.cpp
+          inertial.cpp
+          dvl.cpp)
 
 # Create Library
-set(LIB_NAME lie)
+set(LIB_NAME SE2_3_Bias)
 add_library(${LIB_NAME} "${SRCS}") 
 
 # Set Library Properties
@@ -13,4 +15,4 @@ target_include_directories(${LIB_NAME} PUBLIC
   $<INSTALL_INTERFACE:include>
   )  
 target_compile_features(${LIB_NAME} PUBLIC cxx_std_14)
-target_link_libraries(${LIB_NAME} PUBLIC Eigen3::Eigen)
+target_link_libraries(${LIB_NAME} PUBLIC Eigen3::Eigen iekf)

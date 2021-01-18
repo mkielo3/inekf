@@ -1,4 +1,4 @@
-#include "models/inertial.h"
+#include "SE2_3_Bias/inertial.h"
 
 InertialProcess::InertialProcess()
     :  g_((Eigen::VectorXd(3) << 0,0,-9.81).finished()) {
