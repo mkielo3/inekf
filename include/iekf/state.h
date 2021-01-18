@@ -8,7 +8,7 @@ class State {
 
     public:
         State();
-        State(LieGroup* lie);
+        State(LieGroup& lie);
         State(int dim, int states, int augment=0);
         const Eigen::Matrix3d getRotation();
         const Eigen::MatrixXd getMu();

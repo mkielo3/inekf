@@ -18,7 +18,7 @@ int main(){
     init << 0, 0, 0, 1, 1, 1, 2, 2, 2;
 
     SE2_3_Bias lie;
-    State state(&lie);
+    State state(lie);
     state.setMu( lie.ExpMountain(init) );
     state.setSigma( Eigen::MatrixXd::Identity(15,15) );
     InEKF iekf(state);

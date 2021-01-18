@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 
+#include "iekf/state.h"
 #include "iekf/base_measure.h"
 #include "iekf/base_process.h"
 
