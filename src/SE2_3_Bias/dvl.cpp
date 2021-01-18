@@ -1,19 +1,35 @@
 #include "SE2_3_Bias/dvl.h"
 
-DVLSensor::DVLSensor(){
+DVLSensor::DVLSensor(Eigen::Matrix3d dvl_r, Eigen::Vector3d dvl_p)
+    : dvl_r(dvl_r) {
     M_ = Eigen::MatrixXd::Zero(3,3);
     H_ = Eigen::MatrixXd::Zero(3,15);
     H_.block<3,3>(0,3) = Eigen::MatrixXd::Identity(3,3);
+    lie_ = new SE2_3_Bias;
+    this->dvl_p = lie_->Cross(dvl_p);
 }
 
-void DVLSensor::setNoise(double std){
-    M_ = Eigen::MatrixXd::Identity(3, 3) * std*std;
+DVLSensor::DVLSensor() 
+    : DVLSensor(Eigen::Matrix3d::Identity(), Eigen::Vector3d::Zero()) {
+}
+
+void DVLSensor::setNoise(double std_dvl, double std_imu){
+    M_ = Eigen::MatrixXd::Identity(3, 3) * std_dvl*std_dvl;
+    
+    // Rotate into IMU frame
+    Eigen::Matrix3d IMU = Eigen::MatrixXd::Identity(3, 3) * std_imu*std_imu;
+    M_ = dvl_r*M_*dvl_r.transpose() + dvl_p*IMU*dvl_p.transpose();
 }
 
 void DVLSensor::Observe(Eigen::VectorXd& z, State& state){
-    // Find V
+    // Convert to IMU frame
     Eigen::VectorXd z_full(5);
     z_full << z[0], z[1], z[2], -1, 0;
+
+    Eigen::Vector3d omega = state.getLastu().head(3);
+    z_full.head(3) = dvl_r*z_full.head(3) + dvl_p*omega;
+
+    // Find V
     V_ = (state.getMu() * z_full).head(3);
 
     // Calculate Sinv

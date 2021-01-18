@@ -3,6 +3,7 @@
 
 #include <Eigen/Dense>
 #include "iekf/state.h"
+#include "iekf/base_lie.h"
 
 class MeasureModel {
     
@@ -12,6 +13,8 @@ class MeasureModel {
         Eigen::MatrixXd getSinv() { return Sinv_; };
         Eigen::MatrixXd getH() { return H_; };
         Eigen::VectorXd getV() { return V_; };
+
+        LieGroup * lie_;
 
     protected:
         Eigen::MatrixXd M_;

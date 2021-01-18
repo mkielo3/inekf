@@ -5,10 +5,10 @@
 
 int main(){
     Eigen::VectorXd z(3);
-    z << 1, 1, 1;
+    z << 1, 2, 3;
 
     Eigen::VectorXd u(6);
-    u << 0, 0, 0, 1, 1, 1;
+    u << 2, 2, 2, 1, 1, 1;
 
     Eigen::VectorXd init(9);
     init << 0, 0, 0, 1, 1, 1, 2, 2, 2;
@@ -17,8 +17,8 @@ int main(){
     State state(lie.ExpMountain(init), Eigen::MatrixXd::Identity(15,15));
     InEKF iekf(state);
     
-    DVLSensor dvl;
-    dvl.setNoise(0.5);
+    DVLSensor dvl(Eigen::Matrix3d::Identity(), z);
+    dvl.setNoise(0.5, 0.1);
     InertialProcess imu;
     imu.setGyroNoise(0.1);
     imu.setAccelNoise(0.1);
