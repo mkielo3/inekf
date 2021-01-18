@@ -4,8 +4,6 @@
 #include "SE2_3_Bias/core.h"
 
 int main(){
-    InEKF::ERROR test;
-
     Eigen::VectorXd z(3);
     z << 1, 2, 3;
     Eigen::VectorXd z2(1);
@@ -44,7 +42,7 @@ int main(){
 
     State corrected = iekf.Correct(z, "DVL");
     std::cout << corrected.getSigma() << std::endl << std::endl;
-    corrected = iekf.Correct(z2, "Depth");
+    State new_corrected = iekf.Correct(z2, "Depth");
     std::cout << corrected.getSigma() << std::endl << std::endl;
 
     return 0;

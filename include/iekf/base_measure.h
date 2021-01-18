@@ -7,21 +7,19 @@
 
 class MeasureModel {
     
-    public:
-        enum ERROR { LEFT, RIGHT };
-        
+    public:        
         MeasureModel() {};
         virtual void Observe(Eigen::VectorXd& z, State& state) = 0;
         Eigen::MatrixXd getSinv() { return Sinv_; }
         Eigen::MatrixXd getH() { return H_; }
         Eigen::VectorXd getV() { return V_; }
-        ERROR getError() { return error_; }
+        State::ERROR getError() { return error_; }
 
         LieGroup * lie_;
 
     protected:
         // These are all constant and should be set once in the constructor
-        ERROR error_;
+        State::ERROR error_;
         Eigen::MatrixXd M_;
         Eigen::MatrixXd H_;
 

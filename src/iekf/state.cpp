@@ -3,9 +3,9 @@
 // Defaults to SE(3)
 State::State() : State(3, 1) {}
 
-State::State(LieGroup& lie) : State(lie.getDim(), lie.getCols(), lie.getAugmentSize()) {}
+State::State(LieGroup& lie, ERROR error) : State(lie.getDim(), lie.getCols(), lie.getAugmentSize(), error) {}
 
-State::State(int dim, int cols, int augment) : dim(dim), cols(cols), augment(augment) {
+State::State(int dim, int cols, int augment, ERROR error) : dim(dim), cols(cols), augment(augment), error(error) {
     Mu_ = Eigen::MatrixXd::Identity(dim+cols, dim+cols);
     Sigma_ = Eigen::MatrixXd::Zero(dim+cols*dim+augment, dim+cols*dim+augment);
     Augment_ = Eigen::VectorXd::Zero(augment);

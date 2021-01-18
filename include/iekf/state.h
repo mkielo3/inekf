@@ -7,9 +7,10 @@
 class State {
 
     public:
+        enum ERROR { LEFT, RIGHT };
         State();
-        State(LieGroup& lie);
-        State(int dim, int states, int augment=0);
+        State(LieGroup& lie, ERROR error=State::RIGHT);
+        State(int dim, int states, int augment=0, ERROR error=State::RIGHT);
         const Eigen::Matrix3d getRotation();
         const Eigen::MatrixXd getMu();
         const Eigen::MatrixXd getSigma();
@@ -24,6 +25,8 @@ class State {
 
         Eigen::Ref<Eigen::MatrixXd> operator[](int idx);
         Eigen::MatrixXd operator[](int idx) const;
+
+        const ERROR error;
 
     private:
         Eigen::MatrixXd Mu_;

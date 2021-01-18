@@ -27,10 +27,10 @@ void InertialProcess::f(Eigen::VectorXd u, double dt, State& state){
     state.setLastu(u);
 }
 
-Eigen::MatrixXd InertialProcess::MakePhi(Eigen::VectorXd u, double dt, State state, ERROR error){
+Eigen::MatrixXd InertialProcess::MakePhi(Eigen::VectorXd u, double dt, State state){
     Eigen::MatrixXd A = Eigen::MatrixXd::Zero(15, 15);
 
-    if(error == InertialProcess::RIGHT){
+    if(state.error == State::RIGHT){
         // Get everything we need
         Eigen::Matrix3d R = state.getRotation();
         Eigen::Matrix3d v_cross = lie_->Cross( state[1] );

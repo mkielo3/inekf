@@ -6,10 +6,10 @@ State InEKF::Update(Eigen::VectorXd u, double dt){
 
     // Update Sigma
     Eigen::MatrixXd Adj_X = p_model_->lie_->Adjoint( state_.getMu() );
-    Eigen::MatrixXd Phi   = p_model_->MakePhi(u, dt, state_, static_cast<ProcessModel::ERROR>(error_));
+    Eigen::MatrixXd Phi   = p_model_->MakePhi(u, dt, state_);
 
     Eigen::MatrixXd Q = p_model_->getQ();
-    if(error_ == InEKF::RIGHT){
+    if(state_.error == State::RIGHT){
         Q = Adj_X*Q*Adj_X.transpose();
     }
     Eigen::MatrixXd Sigma = Phi* (state_.getSigma() + p_model_->getQ()*dt) *Phi.transpose();
@@ -25,8 +25,8 @@ State InEKF::Correct(Eigen::VectorXd z, std::string type){
     Eigen::VectorXd V = m_model->getV();
     Eigen::MatrixXd Sinv = m_model->getSinv();
     Eigen::MatrixXd H = m_model->getH();
-    if( error_ != static_cast<ERROR>(m_model->getError()) ){
-        if(error_ == InEKF::RIGHT){
+    if( state_.error != m_model->getError() ){
+        if(state_.error == State::RIGHT){
             H *= m_model->lie_->Adjoint( state_.getMu().inverse() );
         }
         else{
@@ -37,7 +37,13 @@ State InEKF::Correct(Eigen::VectorXd z, std::string type){
     Eigen::MatrixXd K = state_.getSigma() * H.transpose() * Sinv;
     Eigen::VectorXd dState = K * V;
 
-    state_.setMu( m_model->lie_->ExpMountain( dState.head(m_model->lie_->getMuStates()) ) * state_.getMu() );  
+    if(state_.error == State::RIGHT){
+        state_.setMu( m_model->lie_->ExpMountain( dState.head(m_model->lie_->getMuStates()) ) * state_.getMu() );  
+    }
+    else{
+        state_.setMu( state_.getMu() * m_model->lie_->ExpMountain( dState.head(m_model->lie_->getMuStates()) ) );  
+    }
+
     if(m_model->lie_->getAugmentSize() != 0){
         state_.setAugment( state_.getAugment() + dState.tail(m_model->lie_->getAugmentSize()) );  
     }

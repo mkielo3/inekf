@@ -3,7 +3,7 @@
 DepthSensor::DepthSensor() {
     M_ = Eigen::MatrixXd::Zero(3,3);
     H_ = Eigen::MatrixXd::Zero(3,15);
-    error_ = DepthSensor::LEFT;
+    error_ = State::LEFT;
     H_.block<3,3>(0,6) = Eigen::MatrixXd::Identity(3,3);
     lie_ = new SE2_3_Bias;
 }
