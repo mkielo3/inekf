@@ -22,7 +22,7 @@ State InEKF::Correct(Eigen::VectorXd z, std::string type){
     Eigen::MatrixXd Sinv = m_model->getSinv();
     Eigen::MatrixXd H = m_model->getH();
     if( error_ != static_cast<ERROR>(m_model->getError()) ){
-        if(error_ = InEKF::RIGHT){
+        if(error_ == InEKF::RIGHT){
             H *= m_model->lie_->Adjoint( state_.getMu().inverse() );
         }
         else{

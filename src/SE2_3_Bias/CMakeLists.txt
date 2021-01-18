@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 3.11)
 # find all source and header files
 set(SRCS SE2_3_Bias.cpp
           inertial.cpp
-          dvl.cpp)
+          dvl.cpp
+          depth.cpp)
 
 # Create Library
 set(LIB_NAME SE2_3_Bias)
