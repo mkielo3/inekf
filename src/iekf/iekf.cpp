@@ -6,9 +6,13 @@ State InEKF::Update(Eigen::VectorXd u, double dt){
 
     // Update Sigma
     Eigen::MatrixXd Adj_X = p_model_->lie_->Adjoint( state_.getMu() );
-    Eigen::MatrixXd Phi   = p_model_->MakePhi(u, dt, state_);
+    Eigen::MatrixXd Phi   = p_model_->MakePhi(u, dt, state_, static_cast<ProcessModel::ERROR>(error_));
 
-    Eigen::MatrixXd Sigma = Phi* (state_.getSigma() + Adj_X*p_model_->getQ()*Adj_X.transpose()*dt) *Phi.transpose();
+    Eigen::MatrixXd Q = p_model_->getQ();
+    if(error_ == InEKF::RIGHT){
+        Q = Adj_X*Q*Adj_X.transpose();
+    }
+    Eigen::MatrixXd Sigma = Phi* (state_.getSigma() + p_model_->getQ()*dt) *Phi.transpose();
     state_.setSigma( Sigma );
 
     return state_;

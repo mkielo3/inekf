@@ -8,9 +8,10 @@
 class ProcessModel {
 
     public:
+        enum ERROR { LEFT, RIGHT };
         ProcessModel() {};
         virtual void f(Eigen::VectorXd u, double dt, State& state) = 0;
-        virtual Eigen::MatrixXd MakePhi(Eigen::VectorXd u, double dt, State state) = 0;
+        virtual Eigen::MatrixXd MakePhi(Eigen::VectorXd u, double dt, State state, ERROR error) = 0;
 
         const Eigen::MatrixXd getQ() { return Q_; };
 

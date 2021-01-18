@@ -27,21 +27,36 @@ void InertialProcess::f(Eigen::VectorXd u, double dt, State& state){
     state.setLastu(u);
 }
 
-Eigen::MatrixXd InertialProcess::MakePhi(Eigen::VectorXd u, double dt, State state){
-    // Get everything we need
-    Eigen::Matrix3d R = state.getRotation();
-    Eigen::Matrix3d v_cross = lie_->Cross( state[1] );
-    Eigen::Matrix3d p_cross = lie_->Cross( state[2] );
-
+Eigen::MatrixXd InertialProcess::MakePhi(Eigen::VectorXd u, double dt, State state, ERROR error){
     Eigen::MatrixXd A = Eigen::MatrixXd::Zero(15, 15);
 
-    A.block<3,3>(3,0) = lie_->Cross(g_);
-    A.block<3,3>(6,3) = Eigen::Matrix3d::Identity();
-    
-    A.block<3,3>(0,9) = -R;
-    A.block<3,3>(3,9) = -v_cross * R;
-    A.block<3,3>(6,9) = -p_cross * R;
-    A.block<3,3>(3,12) = -R;
+    if(error == InertialProcess::RIGHT){
+        // Get everything we need
+        Eigen::Matrix3d R = state.getRotation();
+        Eigen::Matrix3d v_cross = lie_->Cross( state[1] );
+        Eigen::Matrix3d p_cross = lie_->Cross( state[2] );
+
+        A.block<3,3>(3,0) = lie_->Cross(g_);
+        A.block<3,3>(6,3) = Eigen::Matrix3d::Identity();
+        
+        A.block<3,3>(0,9) = -R;
+        A.block<3,3>(3,9) = -v_cross * R;
+        A.block<3,3>(6,9) = -p_cross * R;
+        A.block<3,3>(3,12) = -R;
+    }
+    else{
+        Eigen::Matrix3d w_cross = lie_->Cross( u.head(3) );
+        Eigen::Matrix3d a_cross = lie_->Cross( u.tail(3) );
+
+        A.block<3,3>(0,0) = -w_cross;
+        A.block<3,3>(3,3) = -w_cross;
+        A.block<3,3>(6,6) = -w_cross;
+        A.block<3,3>(3,0) = -a_cross;
+        A.block<3,3>(6,3) = Eigen::Matrix3d::Identity();
+
+        A.block<3,3>(0,9) = -Eigen::Matrix3d::Identity();
+        A.block<3,3>(3,12) = -Eigen::Matrix3d::Identity();
+    }
 
     return A.exp();
 }
