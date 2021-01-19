@@ -5,14 +5,14 @@ State InEKF::Predict(Eigen::VectorXd u, double dt){
     p_model_->f(u, dt, state_);
 
     // Predict Sigma
-    Eigen::MatrixXd Adj_X = p_model_->lie_->Adjoint( state_.getMu() );
     Eigen::MatrixXd Phi   = p_model_->MakePhi(u, dt, state_);
 
     Eigen::MatrixXd Q = p_model_->getQ();
     if(state_.error == State::RIGHT){
+        Eigen::MatrixXd Adj_X = p_model_->lie_->Adjoint( state_.getMu() );
         Q = Adj_X*Q*Adj_X.transpose();
     }
-    Eigen::MatrixXd Sigma = Phi* (state_.getSigma() + p_model_->getQ()*dt) *Phi.transpose();
+    Eigen::MatrixXd Sigma = Phi* (state_.getSigma() + Q*dt) *Phi.transpose();
     state_.setSigma( Sigma );
 
     return state_;
@@ -33,18 +33,16 @@ State InEKF::Update(Eigen::VectorXd z, std::string type){
             H *= m_model->lie_->Adjoint( state_.getMu() );
         }
     }
-    std::cout << V << std::endl;
-    std::cout << Sinv << std::endl;
-    std::cout << H << std::endl;
 
     Eigen::MatrixXd K = state_.getSigma() * H.transpose() * Sinv;
     Eigen::VectorXd dState = K * V;
 
+    Eigen::MatrixXd dX = m_model->lie_->ExpMountain( dState.head(m_model->lie_->getMuStates()) );
     if(state_.error == State::RIGHT){
-        state_.setMu( m_model->lie_->ExpMountain( dState.head(m_model->lie_->getMuStates()) ) * state_.getMu() );  
+        state_.setMu(dX  * state_.getMu());  
     }
     else{
-        state_.setMu( state_.getMu() * m_model->lie_->ExpMountain( dState.head(m_model->lie_->getMuStates()) ) );  
+        state_.setMu(state_.getMu() * dX);  
     }
 
     if(m_model->lie_->getAugmentSize() != 0){

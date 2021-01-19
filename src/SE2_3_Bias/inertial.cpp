@@ -53,7 +53,7 @@ Eigen::MatrixXd InertialProcess::MakePhi(Eigen::VectorXd u, double dt, State sta
         A.block<3,3>(3,12) = -Eigen::Matrix3d::Identity();
     }
 
-    return A.exp();
+    return (A*dt).exp();
 }
 
 void InertialProcess::setGyroNoise(double std){
