@@ -33,43 +33,39 @@ Eigen::MatrixXd State::operator[](int idx) const{
     }
 }
 
-const Eigen::Matrix3d State::getRotation(){
-    return Mu_.block<3,3>(0,0);
-}
-
-const Eigen::MatrixXd State::getMu(){
+const Eigen::MatrixXd& State::getMu() const{
     return Mu_;
 }
 
-const Eigen::MatrixXd State::getSigma(){
+const Eigen::MatrixXd& State::getSigma() const{
     return Sigma_;
 }
 
-const Eigen::VectorXd State::getAugment(){
+const Eigen::VectorXd& State::getAugment() const{
     return Augment_;
 }
 
-const Eigen::VectorXd State::getLastu(){
+const Eigen::VectorXd& State::getLastu() const{
     return Last_u_;
 }
 
 
-void State::setRotation(Eigen::Matrix3d R){
+void State::setRotation(const Eigen::Matrix3d& R){
     Mu_.block<3,3>(0,0) = R;
 }
 
-void State::setLastu(Eigen::VectorXd u){
+void State::setLastu(const Eigen::VectorXd& u){
     Last_u_ = u;
 }
 
-void State::setMu(Eigen::MatrixXd Mu){
+void State::setMu(const Eigen::MatrixXd& Mu){
     Mu_ = Mu;
 }
 
-void State::setSigma(Eigen::MatrixXd Sigma){
+void State::setSigma(const Eigen::MatrixXd& Sigma){
     Sigma_ = Sigma;
 }
 
-void State::setAugment(Eigen::VectorXd Augment){
+void State::setAugment(const Eigen::VectorXd& Augment){
     Augment_ = Augment;
 }

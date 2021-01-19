@@ -22,7 +22,7 @@ void DVLSensor::setNoise(double std_dvl, double std_imu){
     M_ = dvl_r*M_*dvl_r.transpose() + dvl_p*IMU*dvl_p.transpose();
 }
 
-void DVLSensor::Observe(Eigen::VectorXd& z, State& state){
+void DVLSensor::Observe(const Eigen::VectorXd& z, const State& state){
     // Convert to IMU frame
     Eigen::VectorXd z_full(5);
     z_full << z[0], z[1], z[2], -1, 0;
@@ -34,6 +34,6 @@ void DVLSensor::Observe(Eigen::VectorXd& z, State& state){
     V_ = (state.getMu() * z_full).head(3);
 
     // Calculate Sinv
-    Eigen::Matrix3d R = state.getRotation();
+    Eigen::Matrix3d R = state[0];
     Sinv_ = ( H_*state.getSigma()*H_.transpose() + R*M_*R.transpose() ).inverse();
 }

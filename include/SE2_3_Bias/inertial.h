@@ -13,8 +13,8 @@ class InertialProcess : public ProcessModel {
     public:
         InertialProcess();
         ~InertialProcess(){ delete lie_; }
-        void f(Eigen::VectorXd u, double dt, State& state);
-        Eigen::MatrixXd MakePhi(Eigen::VectorXd u, double dt, State state);
+        void f(const Eigen::VectorXd& u, double dt, State& state);
+        Eigen::MatrixXd MakePhi(const Eigen::VectorXd& u, double dt, const State& state);
         
         void setGyroNoise(double std);
         void setAccelNoise(double std);

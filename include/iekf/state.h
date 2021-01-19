@@ -11,17 +11,16 @@ class State {
         State();
         State(LieGroup& lie, ERROR error=State::RIGHT);
         State(int dim, int states, int augment=0, ERROR error=State::RIGHT);
-        const Eigen::Matrix3d getRotation();
-        const Eigen::MatrixXd getMu();
-        const Eigen::MatrixXd getSigma();
-        const Eigen::VectorXd getAugment();
-        const Eigen::VectorXd getLastu();
+        const Eigen::MatrixXd& getMu() const;
+        const Eigen::MatrixXd& getSigma() const;
+        const Eigen::VectorXd& getAugment() const;
+        const Eigen::VectorXd& getLastu() const;
 
-        void setRotation(Eigen::Matrix3d R);
-        void setMu(Eigen::MatrixXd Mu);
-        void setSigma(Eigen::MatrixXd Sigma);
-        void setAugment(Eigen::VectorXd Augment);
-        void setLastu(Eigen::VectorXd u);
+        void setRotation(const Eigen::Matrix3d& R);
+        void setMu(const Eigen::MatrixXd& Mu);
+        void setSigma(const Eigen::MatrixXd& Sigma);
+        void setAugment(const Eigen::VectorXd& Augment);
+        void setLastu(const Eigen::VectorXd& u);
 
         Eigen::Ref<Eigen::MatrixXd> operator[](int idx);
         Eigen::MatrixXd operator[](int idx) const;
@@ -31,7 +30,7 @@ class State {
     private:
         Eigen::MatrixXd Mu_;
         Eigen::MatrixXd Sigma_;
-        Eigen::MatrixXd Augment_;
+        Eigen::VectorXd Augment_;
         Eigen::VectorXd Last_u_;
 
         int dim;

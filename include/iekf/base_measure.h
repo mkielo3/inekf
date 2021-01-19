@@ -9,7 +9,7 @@ class MeasureModel {
     
     public:        
         MeasureModel() {};
-        virtual void Observe(Eigen::VectorXd& z, State& state) = 0;
+        virtual void Observe(const Eigen::VectorXd& z, const State& state) = 0;
         Eigen::MatrixXd getSinv() { return Sinv_; }
         Eigen::MatrixXd getH() { return H_; }
         Eigen::VectorXd getV() { return V_; }

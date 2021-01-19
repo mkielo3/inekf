@@ -6,7 +6,7 @@ InertialProcess::InertialProcess()
     lie_ = new SE2_3_Bias;
 }
 
-void InertialProcess::f(Eigen::VectorXd u, double dt, State& state){
+void InertialProcess::f(const Eigen::VectorXd& u, double dt, State& state){
     // Get everything we need
     Eigen::Vector3d omega = u.head(3);
     Eigen::Vector3d a = u.tail(3);
@@ -22,12 +22,12 @@ void InertialProcess::f(Eigen::VectorXd u, double dt, State& state){
     state.setLastu(u);
 }
 
-Eigen::MatrixXd InertialProcess::MakePhi(Eigen::VectorXd u, double dt, State state){
+Eigen::MatrixXd InertialProcess::MakePhi(const Eigen::VectorXd& u, double dt, const State& state){
     Eigen::MatrixXd A = Eigen::MatrixXd::Zero(15, 15);
 
     if(state.error == State::RIGHT){
         // Get everything we need
-        Eigen::Matrix3d R = state.getRotation();
+        Eigen::Matrix3d R = state[0];
         Eigen::Matrix3d v_cross = lie_->Cross( state[1] );
         Eigen::Matrix3d p_cross = lie_->Cross( state[2] );
 

@@ -14,7 +14,7 @@ void DepthSensor::setNoise(double std){
     M_(2,2) = 1 / (std*std);
 }
 
-void DepthSensor::Observe(Eigen::VectorXd& z, State& state){
+void DepthSensor::Observe(const Eigen::VectorXd& z, const State& state){
     // Find V
     Eigen::VectorXd z_full(5);
     Eigen::Vector3d p = state[2];
@@ -22,7 +22,7 @@ void DepthSensor::Observe(Eigen::VectorXd& z, State& state){
     V_ = (state.getMu().inverse() * z_full).head(3);
 
     // Calculate Sinv
-    Eigen::Matrix3d R = state.getRotation();
+    Eigen::Matrix3d R = state[0];
     Eigen::Matrix3d Sig = (H_*state.getSigma()*H_.transpose()).inverse();
     Sinv_ = Sig - Sig*( R.transpose()*M_*R + Sig ).inverse()*Sig;
 }

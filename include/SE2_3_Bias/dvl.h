@@ -13,7 +13,7 @@ class DVLSensor : public MeasureModel {
         DVLSensor();
         DVLSensor(Eigen::Matrix3d dvl_r, Eigen::Vector3d dvl_p);
         ~DVLSensor(){ delete lie_; }
-        void Observe(Eigen::VectorXd& z, State& state);
+        void Observe(const Eigen::VectorXd& z, const State& state);
         void setNoise(double std_dvl, double std_imu);
 
     private:

@@ -1,6 +1,6 @@
 #include "iekf/iekf.h"
 
-State InEKF::Predict(Eigen::VectorXd u, double dt){
+State InEKF::Predict(const Eigen::VectorXd& u, double dt){
     // Predict mu
     p_model_->f(u, dt, state_);
 
@@ -18,7 +18,7 @@ State InEKF::Predict(Eigen::VectorXd u, double dt){
     return state_;
 }
 
-State InEKF::Update(Eigen::VectorXd z, std::string type){
+State InEKF::Update(const Eigen::VectorXd& z, std::string type){
     MeasureModel * m_model = m_models_[type]; 
     m_model->Observe(z, state_);
 

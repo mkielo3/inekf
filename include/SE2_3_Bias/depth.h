@@ -12,7 +12,7 @@ class DepthSensor : public MeasureModel {
     public:
         DepthSensor();
         ~DepthSensor(){ delete lie_; }
-        void Observe(Eigen::VectorXd& z, State& state);
+        void Observe(const Eigen::VectorXd& z, const State& state);
         void setNoise(double std);
 };
 

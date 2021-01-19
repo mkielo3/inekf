@@ -14,8 +14,8 @@ class InEKF {
     
     public:
         InEKF(State& state) : state_(state) {};
-        State Predict(Eigen::VectorXd u, double dt);
-        State Update(Eigen::VectorXd z, std::string type);
+        State Predict(const Eigen::VectorXd& u, double dt);
+        State Update(const Eigen::VectorXd& z, std::string type);
 
         void setProcessModel(ProcessModel& p);
         void addMeasureModel(MeasureModel& m, std::string name);
