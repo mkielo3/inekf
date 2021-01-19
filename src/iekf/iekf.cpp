@@ -1,10 +1,10 @@
 #include "iekf/iekf.h"
 
-State InEKF::Update(Eigen::VectorXd u, double dt){
-    // Update mu
+State InEKF::Predict(Eigen::VectorXd u, double dt){
+    // Predict mu
     p_model_->f(u, dt, state_);
 
-    // Update Sigma
+    // Predict Sigma
     Eigen::MatrixXd Adj_X = p_model_->lie_->Adjoint( state_.getMu() );
     Eigen::MatrixXd Phi   = p_model_->MakePhi(u, dt, state_);
 
@@ -18,7 +18,7 @@ State InEKF::Update(Eigen::VectorXd u, double dt){
     return state_;
 }
 
-State InEKF::Correct(Eigen::VectorXd z, std::string type){
+State InEKF::Update(Eigen::VectorXd z, std::string type){
     MeasureModel * m_model = m_models_[type]; 
     m_model->Observe(z, state_);
 
@@ -33,6 +33,9 @@ State InEKF::Correct(Eigen::VectorXd z, std::string type){
             H *= m_model->lie_->Adjoint( state_.getMu() );
         }
     }
+    std::cout << V << std::endl;
+    std::cout << Sinv << std::endl;
+    std::cout << H << std::endl;
 
     Eigen::MatrixXd K = state_.getSigma() * H.transpose() * Sinv;
     Eigen::VectorXd dState = K * V;

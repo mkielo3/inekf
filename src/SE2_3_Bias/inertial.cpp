@@ -15,14 +15,9 @@ void InertialProcess::f(Eigen::VectorXd u, double dt, State& state){
     Eigen::Vector3d p = state[2];
 
     // Calculate
-    R = R * lie_->ExpCross(omega*dt);
-    v = v + (R*a + g_)*dt;
-    p = p + v*dt + (R*a + g_)*dt*dt/2;
-
-    // Save it in our object
-    state[0] = R;
-    state[1] = v;
-    state[2] = p;
+    state[0] = R * lie_->ExpCross(omega*dt);
+    state[1] = v + (R*a + g_)*dt;
+    state[2] = p + v*dt + (R*a + g_)*dt*dt/2;
 
     state.setLastu(u);
 }
