@@ -21,9 +21,23 @@ endif()
 # Import necessary external dependencies
 
 # Eigen 
-find_package(Eigen3 REQUIRED)
+find_package(Eigen3 CONFIG REQUIRED)
 
 
 ###############################################################################
 add_subdirectory(src)
 add_subdirectory(exe)
+
+set(INSTALL_LIBS iekf SE2_3_Bias)
+install(TARGETS ${INSTALL_LIBS} EXPORT InEKFConfig
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin)
+
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/include" # source directory
+        DESTINATION "${CMAKE_INSTALL_PREFIX}" # target directory
+        FILES_MATCHING PATTERN "*.h" # select header files
+        )
+
+install(EXPORT InEKFConfig DESTINATION share/InEKF/cmake)
+export(TARGETS ${PROJECT_NAME} FILE InEKFConfig.cmake)
