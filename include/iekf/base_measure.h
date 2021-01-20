@@ -11,9 +11,11 @@ class MeasureModel {
         MeasureModel() {};
         virtual void Observe(const Eigen::VectorXd& z, const State& state) = 0;
         Eigen::MatrixXd getSinv() { return Sinv_; }
-        Eigen::MatrixXd getH() { return H_; }
+        Eigen::MatrixXd getHBase() { return H_base_; }
         Eigen::VectorXd getV() { return V_; }
         State::ERROR getError() { return error_; }
+
+        void setH(Eigen::MatrixXd H) { H_ = H; }
 
         LieGroup * lie_;
 
@@ -21,9 +23,11 @@ class MeasureModel {
         // These are all constant and should be set once in the constructor
         State::ERROR error_;
         Eigen::MatrixXd M_;
-        Eigen::MatrixXd H_;
+        Eigen::MatrixXd H_base_;
 
-        // These shoudl be changed each time Observe is called.
+        // This is changed by InEKF based on if it's a RIGHT/LEFT filter
+        Eigen::MatrixXd H_;
+        // These should be changed each time Observe is called.
         Eigen::MatrixXd Sinv_;
         Eigen::VectorXd V_;
         
