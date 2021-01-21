@@ -6,7 +6,7 @@
 
 namespace InEKF {
 
-enum ERROR { LEFT, RIGHT };
+enum class ERROR { LEFT, RIGHT };
 
 class State {
 
