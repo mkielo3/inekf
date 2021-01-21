@@ -2,10 +2,10 @@
 #define DEPTHSENSOR
 
 #include <Eigen/Dense>
-#include "iekf/base_measure.h"
+#include "Core/MeasureModel.h"
 #include "SE2_3_Bias/SE2_3_Bias.h"
 
-#include <iostream>
+namespace InEKF {
 
 class DepthSensor : public MeasureModel {
     
@@ -15,5 +15,7 @@ class DepthSensor : public MeasureModel {
         void Observe(const Eigen::VectorXd& z, const State& state);
         void setNoise(double std);
 };
+
+}
 
 #endif // DEPTHSENSOR

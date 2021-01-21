@@ -3,9 +3,9 @@
 
 #include <Eigen/Dense>
 #include <unsupported/Eigen/MatrixFunctions>
-#include "iekf/base_lie.h"
+#include "Core/LieGroup.h"
 
-#include <iostream>
+namespace InEKF {
 
 class SE2_3_Bias: public LieGroup {
     
@@ -19,5 +19,7 @@ class SE2_3_Bias: public LieGroup {
 
         Eigen::MatrixXd Adjoint(const Eigen::MatrixXd& X);     
 };
+
+}
 
 #endif // CLASS_SE2_3_Bias

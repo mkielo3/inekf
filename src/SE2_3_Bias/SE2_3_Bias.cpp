@@ -1,5 +1,7 @@
 #include "SE2_3_Bias/SE2_3_Bias.h"
 
+namespace InEKF {
+
 Eigen::MatrixXd SE2_3_Bias::Adjoint(const Eigen::MatrixXd& X){
     Eigen::Matrix3d R = X.block<3,3>(0,0);
     Eigen::Matrix3d v_cross = Cross( X.block<3,1>(0,3) );
@@ -41,4 +43,6 @@ Eigen::MatrixXd SE2_3_Bias::ExpMountain(const Eigen::VectorXd& xi){
 
 Eigen::MatrixXd SE2_3_Bias::ExpCross(const Eigen::VectorXd& xi){
     return Cross(xi).exp();
+}
+
 }

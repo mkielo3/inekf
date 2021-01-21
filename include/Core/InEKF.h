@@ -4,11 +4,12 @@
 #include <Eigen/Dense>
 #include <string>
 #include <map>
-#include <iostream>
 
-#include "iekf/state.h"
-#include "iekf/base_measure.h"
-#include "iekf/base_process.h"
+#include "Core/State.h"
+#include "Core/MeasureModel.h"
+#include "Core/ProcessModel.h"
+
+namespace InEKF {
 
 class InEKF {
     
@@ -26,5 +27,7 @@ class InEKF {
         ProcessModel * p_model_;
 
 };
+
+}
 
 #endif // INEKF

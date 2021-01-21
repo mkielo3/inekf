@@ -2,10 +2,10 @@
 #define DVLSENSOR
 
 #include <Eigen/Dense>
-#include "iekf/base_measure.h"
+#include "Core/MeasureModel.h"
 #include "SE2_3_Bias/SE2_3_Bias.h"
 
-#include <iostream>
+namespace InEKF {
 
 class DVLSensor : public MeasureModel {
     
@@ -20,5 +20,7 @@ class DVLSensor : public MeasureModel {
         Eigen::Matrix3d dvl_p;
         Eigen::Matrix3d dvl_r;
 };
+
+}
 
 #endif // DVLSENSOR

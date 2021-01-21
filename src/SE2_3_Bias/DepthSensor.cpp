@@ -1,8 +1,10 @@
-#include "SE2_3_Bias/depth.h"
+#include "SE2_3_Bias/DepthSensor.h"
+
+namespace InEKF {
 
 DepthSensor::DepthSensor() {
     M_ = Eigen::MatrixXd::Zero(3,3);
-    error_ = State::LEFT;
+    error_ = ERROR::LEFT;
     H_base_ = Eigen::MatrixXd::Zero(3,15);
     H_base_.block<3,3>(0,6) = Eigen::MatrixXd::Identity(3,3);
     lie_ = new SE2_3_Bias;
@@ -25,4 +27,6 @@ void DepthSensor::Observe(const Eigen::VectorXd& z, const State& state){
     Eigen::Matrix3d R = state[0];
     Eigen::Matrix3d Sig = (H_*state.getSigma()*H_.transpose()).inverse();
     Sinv_ = Sig - Sig*( R.transpose()*M_*R + Sig ).inverse()*Sig;
+}
+
 }

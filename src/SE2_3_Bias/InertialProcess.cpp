@@ -1,4 +1,6 @@
-#include "SE2_3_Bias/inertial.h"
+#include "SE2_3_Bias/InertialProcess.h"
+
+namespace InEKF {
 
 InertialProcess::InertialProcess()
     :  g_((Eigen::VectorXd(3) << 0,0,-9.81).finished()) {
@@ -25,7 +27,7 @@ void InertialProcess::f(const Eigen::VectorXd& u, double dt, State& state){
 Eigen::MatrixXd InertialProcess::MakePhi(const Eigen::VectorXd& u, double dt, const State& state){
     Eigen::MatrixXd A = Eigen::MatrixXd::Zero(15, 15);
 
-    if(state.error == State::RIGHT){
+    if(state.error == ERROR::RIGHT){
         // Get everything we need
         Eigen::Matrix3d R = state[0];
         Eigen::Matrix3d v_cross = lie_->Cross( state[1] );
@@ -70,4 +72,6 @@ void InertialProcess::setGyroBiasNoise(double std){
 
 void InertialProcess::setAccelBiasNoise(double std){
     Q_.block<3,3>(12,12) = Eigen::MatrixXd::Identity(3,3) * std*std;
+}
+
 }

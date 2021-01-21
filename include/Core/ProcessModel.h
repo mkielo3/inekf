@@ -2,8 +2,10 @@
 #define BASE_PROCESS
 
 #include <Eigen/Dense>
-#include "iekf/state.h"
-#include "iekf/base_lie.h"
+#include "Core/State.h"
+#include "Core/LieGroup.h"
+
+namespace InEKF {
 
 class ProcessModel {
 
@@ -20,5 +22,7 @@ class ProcessModel {
         Eigen::MatrixXd Q_;
 
 };
+
+}
 
 #endif // BASE_PROCESS

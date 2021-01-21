@@ -1,4 +1,6 @@
-#include "iekf/state.h"
+#include "Core/State.h"
+
+namespace InEKF {
 
 // Defaults to SE(3)
 State::State() : State(3, 1) {}
@@ -68,4 +70,6 @@ void State::setSigma(const Eigen::MatrixXd& Sigma){
 
 void State::setAugment(const Eigen::VectorXd& Augment){
     Augment_ = Augment;
+}
+
 }

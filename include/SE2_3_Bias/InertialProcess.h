@@ -4,9 +4,11 @@
 #include <Eigen/Dense>
 #include <unsupported/Eigen/MatrixFunctions>
 
-#include "iekf/base_process.h"
-#include "iekf/state.h"
+#include "Core/ProcessModel.h"
+#include "Core/State.h"
 #include "SE2_3_Bias/SE2_3_Bias.h"
+
+namespace InEKF {
 
 class InertialProcess : public ProcessModel {
 
@@ -25,5 +27,7 @@ class InertialProcess : public ProcessModel {
         const Eigen::Vector3d g_;
 
 };
+
+}
 
 #endif // INERTIAL_PROCESS

@@ -1,6 +1,6 @@
 #################### BASIC SETUP ####################
 cmake_minimum_required(VERSION 3.11)
-project(iekf VERSION 0.1 LANGUAGES CXX)
+project(InEKF VERSION 0.1 LANGUAGES CXX)
 
 ###############################################################################
 #Setup FetchContent
@@ -28,8 +28,8 @@ find_package(Eigen3 CONFIG REQUIRED)
 add_subdirectory(src)
 add_subdirectory(exe)
 
-set(INSTALL_LIBS iekf SE2_3_Bias)
-install(TARGETS ${INSTALL_LIBS} EXPORT InEKFConfig
+set(INSTALL_LIBS Core SE2_3_Bias)
+install(TARGETS ${INSTALL_LIBS} EXPORT ${PROJECT_NAME}Config
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
         RUNTIME DESTINATION bin)
@@ -39,5 +39,5 @@ install(DIRECTORY "${CMAKE_SOURCE_DIR}/include" # source directory
         FILES_MATCHING PATTERN "*.h" # select header files
         )
 
-install(EXPORT InEKFConfig DESTINATION share/InEKF/cmake)
-export(TARGETS ${PROJECT_NAME} FILE InEKFConfig.cmake)
+install(EXPORT ${PROJECT_NAME}Config NAMESPACE ${PROJECT_NAME}:: DESTINATION share/${PROJECT_NAME}/cmake)
+export(TARGETS ${INSTALL_LIBS} FILE ${PROJECT_NAME}Config.cmake)
