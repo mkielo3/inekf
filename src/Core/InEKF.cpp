@@ -59,9 +59,7 @@ State InEKF::Update(const Eigen::VectorXd& z, std::string type){
 
     int dimSigma = state_.getSigma().rows();
     Eigen::MatrixXd I = Eigen::MatrixXd::Identity(dimSigma, dimSigma);
-    // std::cout << state_.getSigma().block<3,3>(0,0) << std::endl;
     state_.setSigma( (I - K*H)*state_.getSigma() );
-    // std::cout << state_.getSigma().block<3,3>(0,0) << std::endl;
 
     return state_;
 }

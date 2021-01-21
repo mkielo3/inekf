@@ -5,8 +5,6 @@
 #include "Core/MeasureModel.h"
 #include "SE2_3_Bias/SE2_3_Bias.h"
 
-#include <iostream>
-
 namespace InEKF {
 
 class DepthSensor : public MeasureModel {

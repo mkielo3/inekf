@@ -5,8 +5,6 @@
 #include <unsupported/Eigen/MatrixFunctions>
 #include "Core/LieGroup.h"
 
-#include <iostream>
-
 namespace InEKF {
 
 class SE2_3_Bias: public LieGroup {

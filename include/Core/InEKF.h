@@ -4,7 +4,6 @@
 #include <Eigen/Dense>
 #include <string>
 #include <map>
-#include <iostream>
 
 #include "Core/State.h"
 #include "Core/MeasureModel.h"
