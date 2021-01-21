@@ -1,4 +1,4 @@
-#include "Core/iekf.h"
+#include "Core/InEKF.h"
 
 namespace InEKF {
 

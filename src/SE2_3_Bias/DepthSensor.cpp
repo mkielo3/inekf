@@ -1,4 +1,4 @@
-#include "SE2_3_Bias/depth.h"
+#include "SE2_3_Bias/DepthSensor.h"
 
 namespace InEKF {
 

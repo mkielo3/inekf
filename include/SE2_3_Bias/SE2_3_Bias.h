@@ -3,7 +3,7 @@
 
 #include <Eigen/Dense>
 #include <unsupported/Eigen/MatrixFunctions>
-#include "Core/base_lie.h"
+#include "Core/LieGroup.h"
 
 #include <iostream>
 

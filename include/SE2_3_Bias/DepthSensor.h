@@ -2,7 +2,7 @@
 #define DEPTHSENSOR
 
 #include <Eigen/Dense>
-#include "Core/base_measure.h"
+#include "Core/MeasureModel.h"
 #include "SE2_3_Bias/SE2_3_Bias.h"
 
 #include <iostream>

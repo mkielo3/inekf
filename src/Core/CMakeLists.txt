@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.11)
 
 # find all source and header files
-set(SRCS state.cpp
-          iekf.cpp)
+set(SRCS State.cpp
+          InEKF.cpp)
 
 # Create Library
 set(LIB_NAME iekf)

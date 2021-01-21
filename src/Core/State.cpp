@@ -1,4 +1,4 @@
-#include "Core/state.h"
+#include "Core/State.h"
 
 namespace InEKF {
 

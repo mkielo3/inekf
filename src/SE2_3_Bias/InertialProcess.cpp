@@ -1,4 +1,4 @@
-#include "SE2_3_Bias/inertial.h"
+#include "SE2_3_Bias/InertialProcess.h"
 
 namespace InEKF {
 

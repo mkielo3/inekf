@@ -1,4 +1,4 @@
-#include "SE2_3_Bias/dvl.h"
+#include "SE2_3_Bias/DVLSensor.h"
 
 namespace InEKF {
 

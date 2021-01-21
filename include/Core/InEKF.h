@@ -6,9 +6,9 @@
 #include <map>
 #include <iostream>
 
-#include "Core/state.h"
-#include "Core/base_measure.h"
-#include "Core/base_process.h"
+#include "Core/State.h"
+#include "Core/MeasureModel.h"
+#include "Core/ProcessModel.h"
 
 namespace InEKF {
 

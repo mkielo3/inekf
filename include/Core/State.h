@@ -2,7 +2,7 @@
 #define STATE
 
 #include <Eigen/Dense>
-#include "base_lie.h"
+#include "LieGroup.h"
 
 namespace InEKF {
 
