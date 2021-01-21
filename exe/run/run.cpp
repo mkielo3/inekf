@@ -6,8 +6,8 @@
 #include <vector>
 #include <cmath>
 
-#include "iekf/core.h"
-#include "SE2_3_Bias/core.h"
+#include "InEKF/Core.h"
+#include "InEKF/Se2_3_Bias.h"
 
 #include "matplotlibcpp.h"
 namespace plt = matplotlibcpp;

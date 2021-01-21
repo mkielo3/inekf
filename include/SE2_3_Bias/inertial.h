@@ -4,8 +4,8 @@
 #include <Eigen/Dense>
 #include <unsupported/Eigen/MatrixFunctions>
 
-#include "iekf/base_process.h"
-#include "iekf/state.h"
+#include "Core/base_process.h"
+#include "Core/state.h"
 #include "SE2_3_Bias/SE2_3_Bias.h"
 
 namespace InEKF {

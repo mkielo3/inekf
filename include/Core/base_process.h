@@ -2,8 +2,8 @@
 #define BASE_PROCESS
 
 #include <Eigen/Dense>
-#include "iekf/state.h"
-#include "iekf/base_lie.h"
+#include "Core/state.h"
+#include "Core/base_lie.h"
 
 namespace InEKF {
 
