@@ -5,8 +5,9 @@ set(SRCS State.cpp
           InEKF.cpp)
 
 # Create Library
-set(LIB_NAME iekf)
+set(LIB_NAME Core)
 add_library(${LIB_NAME} "${SRCS}") 
+add_library(${PROJECT_NAME}::${LIB_NAME} ALIAS ${LIB_NAME})
 
 # Set Library Properties
 target_include_directories(${LIB_NAME} PUBLIC
