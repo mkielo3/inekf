@@ -5,7 +5,7 @@ namespace InEKF {
 DVLSensor::DVLSensor(Eigen::Matrix3d dvl_r, Eigen::Vector3d dvl_p)
     : dvl_r(dvl_r) {
     M_ = Eigen::MatrixXd::Zero(3,3);
-    error_ = State::RIGHT;
+    error_ = ERROR::RIGHT;
     H_base_ = Eigen::MatrixXd::Zero(3,15);
     H_base_.block<3,3>(0,3) = Eigen::MatrixXd::Identity(3,3);
     lie_ = new SE2_3_Bias;

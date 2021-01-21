@@ -6,13 +6,14 @@
 
 namespace InEKF {
 
+enum ERROR { LEFT, RIGHT };
+
 class State {
 
     public:
-        enum ERROR { LEFT, RIGHT };
         State();
-        State(LieGroup& lie, ERROR error=State::RIGHT);
-        State(int dim, int states, int augment=0, ERROR error=State::RIGHT);
+        State(LieGroup& lie, ERROR error=ERROR::RIGHT);
+        State(int dim, int states, int augment=0, ERROR error=ERROR::RIGHT);
         const Eigen::MatrixXd& getMu() const;
         const Eigen::MatrixXd& getSigma() const;
         const Eigen::VectorXd& getAugment() const;

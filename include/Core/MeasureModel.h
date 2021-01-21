@@ -15,7 +15,7 @@ class MeasureModel {
         Eigen::MatrixXd getSinv() { return Sinv_; }
         Eigen::MatrixXd getHBase() { return H_base_; }
         Eigen::VectorXd getV() { return V_; }
-        State::ERROR getError() { return error_; }
+        ERROR getError() { return error_; }
 
         void setH(Eigen::MatrixXd H) { H_ = H; }
 
@@ -23,7 +23,7 @@ class MeasureModel {
 
     protected:
         // These are all constant and should be set once in the constructor
-        State::ERROR error_;
+        ERROR error_;
         Eigen::MatrixXd M_;
         Eigen::MatrixXd H_base_;
 

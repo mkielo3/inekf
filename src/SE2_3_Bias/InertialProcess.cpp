@@ -27,7 +27,7 @@ void InertialProcess::f(const Eigen::VectorXd& u, double dt, State& state){
 Eigen::MatrixXd InertialProcess::MakePhi(const Eigen::VectorXd& u, double dt, const State& state){
     Eigen::MatrixXd A = Eigen::MatrixXd::Zero(15, 15);
 
-    if(state.error == State::RIGHT){
+    if(state.error == ERROR::RIGHT){
         // Get everything we need
         Eigen::Matrix3d R = state[0];
         Eigen::Matrix3d v_cross = lie_->Cross( state[1] );

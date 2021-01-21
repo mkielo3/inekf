@@ -15,7 +15,7 @@ namespace plt = matplotlibcpp;
 int main(){
     // Set up initial state
     InEKF::SE2_3_Bias lie;
-    InEKF::State state(lie, InEKF::State::RIGHT);
+    InEKF::State state(lie, InEKF::RIGHT);
     Eigen::Matrix3d R0;
     Eigen::Vector3d p0, v0;
     Eigen::VectorXd s(15);

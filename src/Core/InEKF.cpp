@@ -10,7 +10,7 @@ State InEKF::Predict(const Eigen::VectorXd& u, double dt){
     Eigen::MatrixXd Phi   = p_model_->MakePhi(u, dt, state_);
 
     Eigen::MatrixXd Q = p_model_->getQ();
-    if(state_.error == State::RIGHT){
+    if(state_.error == ERROR::RIGHT){
         Eigen::MatrixXd Adj_X = p_model_->lie_->Adjoint( state_.getMu() );
         Q = Adj_X*Q*Adj_X.transpose();
     }
@@ -26,7 +26,7 @@ State InEKF::Update(const Eigen::VectorXd& z, std::string type){
     // Change H via adjoint if necessary
     Eigen::MatrixXd H = m_model->getHBase();
     if( state_.error != m_model->getError() ){
-        if(state_.error == State::RIGHT){
+        if(state_.error == ERROR::RIGHT){
             H *= m_model->lie_->Adjoint( state_.getMu().inverse() );
         }
         else{
@@ -46,7 +46,7 @@ State InEKF::Update(const Eigen::VectorXd& z, std::string type){
 
     // Apply to all states
     Eigen::MatrixXd dX = m_model->lie_->ExpMountain( dState.head(m_model->lie_->getMuStates()) );
-    if(state_.error == State::RIGHT){
+    if(state_.error == ERROR::RIGHT){
         state_.setMu(dX  * state_.getMu());  
     }
     else{
