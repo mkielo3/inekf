@@ -10,6 +10,8 @@
 #include "iekf/base_measure.h"
 #include "iekf/base_process.h"
 
+namespace InEKF {
+
 class InEKF {
     
     public:
@@ -26,5 +28,7 @@ class InEKF {
         ProcessModel * p_model_;
 
 };
+
+}
 
 #endif // INEKF

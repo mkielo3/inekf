@@ -1,5 +1,7 @@
 #include "SE2_3_Bias/dvl.h"
 
+namespace InEKF {
+
 DVLSensor::DVLSensor(Eigen::Matrix3d dvl_r, Eigen::Vector3d dvl_p)
     : dvl_r(dvl_r) {
     M_ = Eigen::MatrixXd::Zero(3,3);
@@ -36,4 +38,6 @@ void DVLSensor::Observe(const Eigen::VectorXd& z, const State& state){
     // Calculate Sinv
     Eigen::Matrix3d R = state[0];
     Sinv_ = ( H_*state.getSigma()*H_.transpose() + R*M_*R.transpose() ).inverse();
+}
+
 }

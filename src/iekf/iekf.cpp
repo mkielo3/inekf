@@ -1,5 +1,7 @@
 #include "iekf/iekf.h"
 
+namespace InEKF {
+
 State InEKF::Predict(const Eigen::VectorXd& u, double dt){
     // Predict mu
     p_model_->f(u, dt, state_);
@@ -70,4 +72,6 @@ void InEKF::setProcessModel(ProcessModel& p){
 
 void InEKF::addMeasureModel(MeasureModel& m, std::string name){
     m_models_[name] = &m;
+}
+
 }

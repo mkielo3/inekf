@@ -5,6 +5,8 @@
 #include "iekf/state.h"
 #include "iekf/base_lie.h"
 
+namespace InEKF {
+
 class MeasureModel {
     
     public:        
@@ -33,5 +35,7 @@ class MeasureModel {
         
 
 };
+
+}
 
 #endif // BASE_MEASURE

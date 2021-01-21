@@ -7,6 +7,8 @@
 
 #include <iostream>
 
+namespace InEKF {
+
 class SE2_3_Bias: public LieGroup {
     
     public:
@@ -19,5 +21,7 @@ class SE2_3_Bias: public LieGroup {
 
         Eigen::MatrixXd Adjoint(const Eigen::MatrixXd& X);     
 };
+
+}
 
 #endif // CLASS_SE2_3_Bias

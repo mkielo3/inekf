@@ -1,5 +1,7 @@
 #include "SE2_3_Bias/inertial.h"
 
+namespace InEKF {
+
 InertialProcess::InertialProcess()
     :  g_((Eigen::VectorXd(3) << 0,0,-9.81).finished()) {
     Q_ = Eigen::MatrixXd::Zero(15,15);
@@ -70,4 +72,6 @@ void InertialProcess::setGyroBiasNoise(double std){
 
 void InertialProcess::setAccelBiasNoise(double std){
     Q_.block<3,3>(12,12) = Eigen::MatrixXd::Identity(3,3) * std*std;
+}
+
 }

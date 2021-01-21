@@ -14,8 +14,8 @@ namespace plt = matplotlibcpp;
 
 int main(){
     // Set up initial state
-    SE2_3_Bias lie;
-    State state(lie, State::RIGHT);
+    InEKF::SE2_3_Bias lie;
+    InEKF::State state(lie, InEKF::State::RIGHT);
     Eigen::Matrix3d R0;
     Eigen::Vector3d p0, v0;
     Eigen::VectorXd s(15);
@@ -37,22 +37,22 @@ int main(){
     dvl_r << 0.000, -0.995, 0.105,
             0.999, 0.005, 0.052,
             -0.052, 0.104, 0.993;
-    DVLSensor dvl(dvl_r, dvl_p);
+    InEKF::DVLSensor dvl(dvl_r, dvl_p);
     dvl.setNoise(.0101*2.6, .005*(3.14/180)*sqrt(200.0));
 
     // Set up Depth sensor
-    DepthSensor depth;
+    InEKF::DepthSensor depth;
     depth.setNoise(51.0 * (1.0/100) * (1.0/2));
 
     // Set up Inertial dynamics
-    InertialProcess imu;
+    InEKF::InertialProcess imu;
     imu.setGyroNoise( .005 *  (3.14/180)  * sqrt(200.0) );
     imu.setAccelNoise( 20.0 * (pow(10, -6)/9.81) * sqrt(200.0) );
     imu.setGyroBiasNoise(0.001);
     imu.setAccelBiasNoise(0.001);
 
     // Set up IEKF
-    InEKF iekf(state);
+    InEKF::InEKF iekf(state);
     iekf.setProcessModel(imu);
     iekf.addMeasureModel(dvl, "DVL");
     iekf.addMeasureModel(depth, "Depth");

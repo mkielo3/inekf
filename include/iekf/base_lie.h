@@ -3,6 +3,8 @@
 
 #include <Eigen/Dense>
 
+namespace InEKF {
+
 class LieGroup {
     
     public:
@@ -29,5 +31,7 @@ class LieGroup {
         int cols;
         int augment;
 };
+
+}
 
 #endif // BASE_LIE

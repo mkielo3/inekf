@@ -7,6 +7,8 @@
 
 #include <iostream>
 
+namespace InEKF {
+
 class DVLSensor : public MeasureModel {
     
     public:
@@ -20,5 +22,7 @@ class DVLSensor : public MeasureModel {
         Eigen::Matrix3d dvl_p;
         Eigen::Matrix3d dvl_r;
 };
+
+}
 
 #endif // DVLSENSOR

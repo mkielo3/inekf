@@ -5,6 +5,8 @@
 #include "iekf/state.h"
 #include "iekf/base_lie.h"
 
+namespace InEKF {
+
 class ProcessModel {
 
     public:
@@ -20,5 +22,7 @@ class ProcessModel {
         Eigen::MatrixXd Q_;
 
 };
+
+}
 
 #endif // BASE_PROCESS

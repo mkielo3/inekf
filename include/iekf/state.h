@@ -4,6 +4,8 @@
 #include <Eigen/Dense>
 #include "base_lie.h"
 
+namespace InEKF {
+
 class State {
 
     public:
@@ -38,4 +40,5 @@ class State {
         int augment;
 };
 
+}
 #endif // STATE

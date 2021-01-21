@@ -7,6 +7,8 @@
 
 #include <iostream>
 
+namespace InEKF {
+
 class DepthSensor : public MeasureModel {
     
     public:
@@ -15,5 +17,7 @@ class DepthSensor : public MeasureModel {
         void Observe(const Eigen::VectorXd& z, const State& state);
         void setNoise(double std);
 };
+
+}
 
 #endif // DEPTHSENSOR

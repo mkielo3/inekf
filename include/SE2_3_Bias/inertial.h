@@ -8,6 +8,8 @@
 #include "iekf/state.h"
 #include "SE2_3_Bias/SE2_3_Bias.h"
 
+namespace InEKF {
+
 class InertialProcess : public ProcessModel {
 
     public:
@@ -25,5 +27,7 @@ class InertialProcess : public ProcessModel {
         const Eigen::Vector3d g_;
 
 };
+
+}
 
 #endif // INERTIAL_PROCESS
