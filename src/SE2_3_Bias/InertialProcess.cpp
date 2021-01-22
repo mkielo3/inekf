@@ -4,15 +4,16 @@ namespace InEKF {
 
 InertialProcess::InertialProcess()
     :  g_((Eigen::VectorXd(3) << 0,0,-9.81).finished()) {
-    Q_ = Eigen::MatrixXd::Zero(15,15);
+    Q_ = Eigen::Matrix<double, 15, 15>::Zero();
     lie_ = new SE2_3_Bias;
 }
 
 void InertialProcess::f(const Eigen::VectorXd& u, double dt, State& state){
     // Get everything we need
-    Eigen::Vector3d omega = u.head(3);
-    Eigen::Vector3d a = u.tail(3);
-    Eigen::MatrixXd R = state[0];
+    Eigen::Vector<double, 6> u_shifted = u - state.getAugment();
+    Eigen::Vector3d omega = u_shifted.head(3);
+    Eigen::Vector3d a = u_shifted.tail(3);
+    Eigen::Matrix3d R = state[0];
     Eigen::Vector3d v = state[1];
     Eigen::Vector3d p = state[2];
 
@@ -21,11 +22,11 @@ void InertialProcess::f(const Eigen::VectorXd& u, double dt, State& state){
     state[1] = v + (R*a + g_)*dt;
     state[2] = p + v*dt + (R*a + g_)*dt*dt/2;
 
-    state.setLastu(u);
+    state.setLastu(u_shifted);
 }
 
 Eigen::MatrixXd InertialProcess::MakePhi(const Eigen::VectorXd& u, double dt, const State& state){
-    Eigen::MatrixXd A = Eigen::MatrixXd::Zero(15, 15);
+    Eigen::Matrix<double, 15, 15> A = Eigen::Matrix<double, 15, 15>::Zero();
 
     if(state.error == ERROR::RIGHT){
         // Get everything we need
@@ -59,19 +60,19 @@ Eigen::MatrixXd InertialProcess::MakePhi(const Eigen::VectorXd& u, double dt, co
 }
 
 void InertialProcess::setGyroNoise(double std){
-    Q_.block<3,3>(0,0) = Eigen::MatrixXd::Identity(3,3) * std*std;
+    Q_.block<3,3>(0,0) = Eigen::Matrix3d::Identity() * std*std;
 }
 
 void InertialProcess::setAccelNoise(double std){
-    Q_.block<3,3>(3,3) = Eigen::MatrixXd::Identity(3,3) * std*std;
+    Q_.block<3,3>(3,3) = Eigen::Matrix3d::Identity() * std*std;
 }
 
 void InertialProcess::setGyroBiasNoise(double std){
-    Q_.block<3,3>(9,9) = Eigen::MatrixXd::Identity(3,3) * std*std;
+    Q_.block<3,3>(9,9) = Eigen::Matrix3d::Identity() * std*std;
 }
 
 void InertialProcess::setAccelBiasNoise(double std){
-    Q_.block<3,3>(12,12) = Eigen::MatrixXd::Identity(3,3) * std*std;
+    Q_.block<3,3>(12,12) = Eigen::Matrix3d::Identity() * std*std;
 }
 
 }

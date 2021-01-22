@@ -18,7 +18,7 @@ int main(){
     InEKF::State state(lie, InEKF::ERROR::RIGHT);
     Eigen::Matrix3d R0;
     Eigen::Vector3d p0, v0;
-    Eigen::VectorXd s(15);
+    Eigen::Vector<double, 15> s;
     R0 << 0.00000, 0.99863, -0.05234,
          -0.99452, 0.00547, 0.10439,
           0.10453, 0.05205, 0.99316;
