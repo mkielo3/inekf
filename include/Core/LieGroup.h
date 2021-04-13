@@ -23,13 +23,16 @@ constexpr int calcStateMtxSize(int rotMtxSize, int cols){
 }
 
 
-template  <class Class, int N>
+template  <class Class, int N, int M>
 class LieGroup{
+
+    protected:
+        typedef Eigen::Matrix<double, N, 1> TangentVector;
+        typedef Eigen::Matrix<double, N, N> MatrixCov;
+        typedef Eigen::Matrix<double, M, M> MatrixState;
 
     public:
         LieGroup() {};
-
-        typedef Eigen::Matrix<double, N, 1> TangentVector;
 
         virtual ~LieGroup() {};
 
@@ -38,25 +41,33 @@ class LieGroup{
             return static_cast<const Class&>(*this);
         }
 
-        // self operators
+        // self operations
         Class inverse() const {
             return derived().inverse();
         }
+        TangentVector log() const {
+            return Class::Log(derived());
+        }
+        MatrixCov Ad() const{
+            return Class::Ad(derived());
+        }
+
+        // Group action
         Class compose(const Class& g) const {
             return derived() * g;
         }
-        Eigen::Matrix<double, N, N> Ad(){
-            return derived().Ad();
-        }
 
         // static operators
-        static Class Exp(const TangentVector& v){
-            return Class::Exp(v);
+        static MatrixState Wedge(const TangentVector& xi){
+            return Class::Wedge(xi);
+        }
+        static Class Exp(const TangentVector& xi){
+            return Class::Exp(xi);
         }
         static TangentVector Log(const Class& g){
             return Class::Log(g);
         }
-        static Eigen::Matrix<double, N, N> Ad(const Class& g){
+        static MatrixCov Ad(const Class& g){
             return Class::Ad(g);
         }
 

@@ -7,63 +7,87 @@
 namespace InEKF {
 
 template<int aug=0>
-class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug)>{
+class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>{
     private:
-        typedef typename LieGroup<SO2<aug>,calcStateDim(2,0,aug)>::TangentVector TangentVector;
-        typedef Eigen::Matrix<double, calcStateMtxSize(2,0), calcStateMtxSize(2,0)> MatrixState;
-        typedef Eigen::Matrix<double, calcStateDim(2,0,aug), calcStateDim(2,0,aug)> MatrixCov;
-        
-        MatrixState State;
-        MatrixCov Cov;
-        Eigen::Matrix<double, aug, 1> Aug;
+        typedef typename LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>::TangentVector TangentVector;
+        typedef typename LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>::MatrixCov MatrixCov;
+        typedef typename LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>::MatrixState MatrixState;
+        typedef Eigen::Matrix<double, aug, 1> VectorAug;
 
+        MatrixState State_;
+        MatrixCov Cov_;
+        VectorAug Aug_;
+        bool isUncertain;
 
     public:
+
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
+        // Constructors
         SO2() {}
-        SO2(const SO2& State_) : State(State_()), Cov(State_.getCov()), Aug(State_.getAug()) {}
-        SO2(const MatrixState& State_, 
-            const MatrixCov Cov_=MatrixCov::Identity(),
-            const Eigen::Matrix<double,aug,1> Aug_ = Eigen::Matrix<double,aug,1>::Zeros()) 
-                : State(State_), Cov(Cov_), Aug(Aug_) {}
+        SO2(const MatrixState& State, 
+            const MatrixCov Cov=MatrixCov::Zero(),
+            const VectorAug Aug=VectorAug::Zero()) 
+                : State_(State), Cov_(Cov), Aug_(Aug), isUncertain(Cov != MatrixCov::Zero()) {}
+        SO2(const SO2& State) : SO2(State(), State.Cov(), State.Aug()) {}
+
         SO2(double theta, 
-            const MatrixCov Cov_=MatrixCov::Identity(),
-            const Eigen::Matrix<double,aug,1> Aug_ = Eigen::Matrix<double,aug,1>::Zeros()) 
-                : Cov(Cov_), Aug(Aug_)  {
+            const MatrixCov Cov=MatrixCov::Zero(),
+            const VectorAug Aug=VectorAug::Zero()) {
+            MatrixState State;
             State << cos(theta), -sin(theta),
                     sin(theta), cos(theta);
+            SO2(State, Cov, Aug);
         }
         ~SO2() {}
 
-        MatrixCov getCov(){ return Cov; }
-        MatrixCov getAug(){ return Aug; }
+        // Getters
+        bool Uncertain() const { return isUncertain; }
+        MatrixCov Cov() const { return Cov_; }
+        VectorAug Aug() const { return Aug_; }
+        MatrixState operator()() const { return State_; }
 
-        MatrixState operator()() const
-        {
-            return State;
+        // Self operations
+        SO2<aug> inverse() const{
+            return SO2(State_.transpose());
+        }
+        using LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>::Ad;
+        using LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>::log;
+
+        // Group action
+        SO2<aug> operator*(const SO2<aug>& rhs) const{
+            // Skirt around composing covariances
+            MatrixCov Cov = MatrixCov::Zero();
+            if(this->Uncertain() && rhs.Uncertain()){
+                throw "Can't compose uncertain LieGroups";
+            }
+            if(isUncertain) Cov = this->Cov();
+            if(rhs.Uncertain()) Cov = rhs.Cov();
+
+            // Compose state + augment
+            MatrixState State = (*this)() * rhs();
+            VectorAug Aug = this->Aug() + rhs.Aug();
+
+            return SO2<aug>(State, Cov, Aug);
         }
 
-        SO2 inverse() const{
-            return SO2(State.transpose());
-        }
-        SO2 operator*(const SO2& rhs) const{
-            return SO2( (*this)()*rhs() );
-        }
-        MatrixCov Ad(){
-            return Ad(*this);
-        }
+        // Static Operators
+        static MatrixState Wedge(const TangentVector& xi){
 
-        static SO2 Exp(const TangentVector& v){
-            double theta = v(0);
-            return SO2(theta);
         }
-        static TangentVector Log(const SO2& g){
+        static SO2<aug> Exp(const TangentVector& xi){
+            double theta = xi(0);
+            return SO2<aug>(theta,
+                            MatrixCov::Zero(),
+                            xi.segment(1,aug));
+        }
+        static TangentVector Log(const SO2<aug>& g){
             TangentVector xi;
-            xi << atan2(g()(1,0), g()(0,0));
+            xi(0) = atan2(g()(1,0), g()(0,0));
+            xi.segment(1, aug) = g.Aug();
             return xi;
         }
-        static MatrixCov Ad(const SO2& g){
+        static MatrixCov Ad(const SO2<aug>& g){
             return MatrixCov::Identity();
         }
 
