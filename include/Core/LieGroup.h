@@ -5,31 +5,61 @@
 
 namespace InEKF {
 
-class LieGroup {
-    
+constexpr int calcStateDim(int rotMtxSize, int cols, int aug){
+    if(rotMtxSize == Eigen::Dynamic || cols == Eigen::Dynamic){
+        return Eigen::Dynamic;
+    }
+    else{
+        return rotMtxSize*(rotMtxSize-1)/2 + rotMtxSize*cols + aug;
+    }
+}
+constexpr int calcStateMtxSize(int rotMtxSize, int cols){
+    if(rotMtxSize == Eigen::Dynamic || cols == Eigen::Dynamic){
+        return Eigen::Dynamic;
+    }
+    else{
+        return rotMtxSize + cols;
+    }
+}
+
+
+template  <class Class, int N>
+class LieGroup{
+
     public:
-        LieGroup() : dim(0), cols(0), augment(0) {};
-        virtual Eigen::MatrixXd Mountain(const Eigen::VectorXd& xi) = 0;
-        virtual Eigen::MatrixXd ExpMountain(const Eigen::VectorXd& xi) = 0;
+        LieGroup() {};
 
-        virtual Eigen::MatrixXd Cross(const Eigen::VectorXd& xi) = 0;
-        virtual Eigen::MatrixXd ExpCross(const Eigen::VectorXd& xi) = 0;
-        
-        virtual Eigen::MatrixXd Adjoint(const Eigen::MatrixXd& x) = 0;
+        typedef Eigen::Matrix<double, N, 1> TangentVector;
 
-        int getDim() { return dim; }
-        int getCols() { return cols; }
-        int getAugmentSize() { return augment; }
-        int getSigmaSize() { return dim + cols*dim + augment; }
-        int getMuSize() { return dim + cols; }
+        virtual ~LieGroup() {};
 
-        int getMuStates() { return dim + cols*dim; }
-        int getTotalStates() { return dim + cols*dim + augment; }
+        // helper to automatically cast things
+        const Class & derived() const{
+            return static_cast<const Class&>(*this);
+        }
 
-    protected:
-        int dim;
-        int cols;
-        int augment;
+        // self operators
+        Class inverse() const {
+            return derived().inverse();
+        }
+        Class compose(const Class& g) const {
+            return derived() * g;
+        }
+        Eigen::Matrix<double, N, N> Ad(){
+            return derived().Ad();
+        }
+
+        // static operators
+        static Class Exp(const TangentVector& v){
+            return Class::Exp(v);
+        }
+        static TangentVector Log(const Class& g){
+            return Class::Log(g);
+        }
+        static Eigen::Matrix<double, N, N> Ad(const Class& g){
+            return Class::Ad(g);
+        }
+
 };
 
 }
