@@ -3,6 +3,7 @@
 
 #include <Eigen/Dense>
 #include "LieGroup.h"
+#include "iostream"
 
 namespace InEKF {
 
@@ -20,25 +21,27 @@ class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>{
         bool isUncertain;
 
     public:
-
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
         // Constructors
-        SO2() {}
-        SO2(const MatrixState& State, 
-            const MatrixCov Cov=MatrixCov::Zero(),
-            const VectorAug Aug=VectorAug::Zero()) 
+        SO2(const MatrixState& State=MatrixState::Identity(), 
+            const MatrixCov& Cov=MatrixCov::Zero(),
+            const VectorAug& Aug=VectorAug::Zero()) 
                 : State_(State), Cov_(Cov), Aug_(Aug), isUncertain(Cov != MatrixCov::Zero()) {}
+
         SO2(const SO2& State) : SO2(State(), State.Cov(), State.Aug()) {}
 
         SO2(double theta, 
-            const MatrixCov Cov=MatrixCov::Zero(),
-            const VectorAug Aug=VectorAug::Zero()) {
-            MatrixState State;
-            State << cos(theta), -sin(theta),
+            const MatrixCov& Cov=MatrixCov::Zero(),
+            const VectorAug& Aug=VectorAug::Zero()) 
+                : Cov_(Cov), Aug_(Aug), isUncertain(Cov != MatrixCov::Zero()){
+            State_ << cos(theta), -sin(theta),
                     sin(theta), cos(theta);
-            SO2(State, Cov, Aug);
         }
+
+        SO2(const TangentVector& xi, const MatrixCov& Cov=MatrixCov::Zero())
+            : SO2(xi(0), Cov, xi.segment(1,aug)) {}
+
         ~SO2() {}
 
         // Getters
@@ -49,7 +52,8 @@ class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>{
 
         // Self operations
         SO2<aug> inverse() const{
-            return SO2(State_.transpose());
+            MatrixState temp = State_.transpose();
+            return SO2(temp);
         }
         using LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>::Ad;
         using LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>::log;
@@ -61,7 +65,7 @@ class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>{
             if(this->Uncertain() && rhs.Uncertain()){
                 throw "Can't compose uncertain LieGroups";
             }
-            if(isUncertain) Cov = this->Cov();
+            if(this->Uncertain()) Cov = this->Cov();
             if(rhs.Uncertain()) Cov = rhs.Cov();
 
             // Compose state + augment
@@ -73,21 +77,25 @@ class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>{
 
         // Static Operators
         static MatrixState Wedge(const TangentVector& xi){
-
-        }
-        static SO2<aug> Exp(const TangentVector& xi){
+            MatrixState State;
             double theta = xi(0);
-            return SO2<aug>(theta,
-                            MatrixCov::Zero(),
-                            xi.segment(1,aug));
+            State << 0, -theta,
+                    theta, 0;
+            return State;
         }
-        static TangentVector Log(const SO2<aug>& g){
+        static SO2 Exp(const TangentVector& xi){
+            double theta = xi(0);
+            return SO2(theta,
+                        MatrixCov::Zero(),
+                        xi.segment(1,aug));
+        }
+        static TangentVector Log(const SO2& g){
             TangentVector xi;
             xi(0) = atan2(g()(1,0), g()(0,0));
             xi.segment(1, aug) = g.Aug();
             return xi;
         }
-        static MatrixCov Ad(const SO2<aug>& g){
+        static MatrixCov Ad(const SO2& g){
             return MatrixCov::Identity();
         }
 

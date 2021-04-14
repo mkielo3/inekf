@@ -26,12 +26,11 @@ constexpr int calcStateMtxSize(int rotMtxSize, int cols){
 template  <class Class, int N, int M>
 class LieGroup{
 
-    protected:
+    public:
         typedef Eigen::Matrix<double, N, 1> TangentVector;
         typedef Eigen::Matrix<double, N, N> MatrixCov;
         typedef Eigen::Matrix<double, M, M> MatrixState;
 
-    public:
         LieGroup() {};
 
         virtual ~LieGroup() {};
