@@ -1,5 +1,8 @@
-#include "Core/InEKF.h"
-#include "Core/State.h"
 #include "Core/LieGroup.h"
+#include "Core/SE2.h"
+#include "Core/SO2.h"
+
+#include "Core/InEKF.h"
 #include "Core/MeasureModel.h"
 #include "Core/ProcessModel.h"
+#include "Core/GenericMeasureModel.h"

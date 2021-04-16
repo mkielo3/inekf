@@ -2,35 +2,45 @@
 
 namespace InEKF {
 
-State InEKF::Predict(const Eigen::VectorXd& u, double dt){
+template <class pM>
+typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){    
     // Predict mu
-    p_model_->f(u, dt, state_);
+    MatrixCov Sigma = state_.Cov();
+    state_ = pModel.f(u, dt, state_);
 
     // Predict Sigma
-    Eigen::MatrixXd Phi   = p_model_->MakePhi(u, dt, state_);
+    MatrixCov Phi = pModel.MakePhi(u, dt, state_, error_);
 
-    Eigen::MatrixXd Q = p_model_->getQ();
-    if(state_.error == ERROR::RIGHT){
-        Eigen::MatrixXd Adj_X = p_model_->lie_->Adjoint( state_.getMu() );
+    MatrixCov Q = pModel.getQ();
+    if(error_ == ERROR::RIGHT){
+        MatrixCov Adj_X = Group::Ad( state_() );
         Q = Adj_X*Q*Adj_X.transpose();
     }
-    Eigen::MatrixXd Sigma = Phi* (state_.getSigma() + Q*dt) *Phi.transpose();
+    Sigma = Phi* (Sigma + Q*dt) *Phi.transpose();
     state_.setSigma( Sigma );
 
     return state_;
 }
 
-State InEKF::Update(const Eigen::VectorXd& z, std::string type){
-    MeasureModel * m_model = m_models_[type]; 
+
+template <class pM>
+typename InEKF<pM>::Group InEKF<pM>::Update(const Eigen::VectorXd& z, std::string type, MatrixH H){
+    mModels[type].setH(H);
+    Update(z, type);
+}
+
+template <class pM>
+typename InEKF<pM>::Group InEKF<pM>::Update(const Eigen::VectorXd& z, std::string type){
+    MeasureModel<Group> * m_model = mModels[type]; 
 
     // Change H via adjoint if necessary
     Eigen::MatrixXd H = m_model->getHBase();
-    if( state_.error != m_model->getError() ){
-        if(state_.error == ERROR::RIGHT){
-            H *= m_model->lie_->Adjoint( state_.getMu().inverse() );
+    if( error_ != m_model->getError() ){
+        if(error_ == ERROR::RIGHT){
+            H *= Group::Ad( state_.getMu().inverse() );
         }
         else{
-            H *= m_model->lie_->Adjoint( state_.getMu() );
+            H *= Group::Ad( state_.getMu() );
         }
     }
     m_model->setH( H );
@@ -64,12 +74,14 @@ State InEKF::Update(const Eigen::VectorXd& z, std::string type){
     return state_;
 }
 
-void InEKF::setProcessModel(ProcessModel& p){
-    p_model_ = &p;
+template <class pM>
+void InEKF<pM>::addMeasureModel(std::string name, MeasureModel<Group>* m){
+    mModels[name] = m;
 }
 
-void InEKF::addMeasureModel(MeasureModel& m, std::string name){
-    m_models_[name] = &m;
+template <class pM>
+void InEKF<pM>::addMeasureModels(std::map<std::string, MeasureModel<Group>*> m){
+    mModels.insert(m.begin(), m.end());
 }
 
 }

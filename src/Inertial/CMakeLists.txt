@@ -1,13 +1,12 @@
 cmake_minimum_required(VERSION 3.11)
 
 # find all source and header files
-set(SRCS SE2_3_Bias.cpp
-          InertialProcess.cpp
+set(SRCS InertialProcess.cpp
           DVLSensor.cpp
           DepthSensor.cpp)
 
 # Create Library
-set(LIB_NAME SE2_3_Bias)
+set(LIB_NAME Inertial)
 add_library(${LIB_NAME} "${SRCS}") 
 add_library(${PROJECT_NAME}::${LIB_NAME} ALIAS ${LIB_NAME})
 

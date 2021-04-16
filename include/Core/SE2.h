@@ -10,9 +10,13 @@ namespace InEKF {
 template <int cols=1, int aug=0>
 class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxSize(2,cols)>{
     private:
-        typedef typename LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxSize(2,cols)>::TangentVector TangentVector;
-        typedef typename LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxSize(2,cols)>::MatrixCov MatrixCov;
-        typedef typename LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxSize(2,cols)>::MatrixState MatrixState;
+        static constexpr int rotSize = 2;
+        static constexpr int dimension = calcStateDim(rotSize,cols,aug);
+        static constexpr int mtxSize = calcStateMtxSize(rotSize,cols);
+
+        typedef typename LieGroup<SE2<cols,aug>,dimension,mtxSize>::TangentVector TangentVector;
+        typedef typename LieGroup<SE2<cols,aug>,dimension,mtxSize>::MatrixCov MatrixCov;
+        typedef typename LieGroup<SE2<cols,aug>,dimension,mtxSize>::MatrixState MatrixState;
         typedef Eigen::Matrix<double, aug, 1> VectorAug;
 
         MatrixState State_;
@@ -86,8 +90,8 @@ class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxS
             }
             return SE2(S);
         }
-        using LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxSize(2,cols)>::Ad;
-        using LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxSize(2,cols)>::log;
+        using LieGroup<SE2<cols,aug>,dimension,mtxSize>::Ad;
+        using LieGroup<SE2<cols,aug>,dimension,mtxSize>::log;
 
         // Group action
         SE2 operator*(const SE2& rhs) const{

@@ -25,19 +25,19 @@ find_package(Eigen3 CONFIG REQUIRED)
 
 
 ###############################################################################
-add_subdirectory(src)
 add_subdirectory(exe)
+add_subdirectory(src)
 
-set(INSTALL_LIBS Core SE2_3_Bias)
-install(TARGETS ${INSTALL_LIBS} EXPORT ${PROJECT_NAME}Config
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        RUNTIME DESTINATION bin)
+# set(INSTALL_LIBS Core SE2_3_Bias)
+# install(TARGETS ${INSTALL_LIBS} EXPORT ${PROJECT_NAME}Config
+#         ARCHIVE DESTINATION lib
+#         LIBRARY DESTINATION lib
+#         RUNTIME DESTINATION bin)
 
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/include" # source directory
-        DESTINATION "${CMAKE_INSTALL_PREFIX}" # target directory
-        FILES_MATCHING PATTERN "*.h" # select header files
-        )
+# install(DIRECTORY "${CMAKE_SOURCE_DIR}/include" # source directory
+#         DESTINATION "${CMAKE_INSTALL_PREFIX}" # target directory
+#         FILES_MATCHING PATTERN "*.h" # select header files
+#         )
 
-install(EXPORT ${PROJECT_NAME}Config NAMESPACE ${PROJECT_NAME}:: DESTINATION share/${PROJECT_NAME}/cmake)
-export(TARGETS ${INSTALL_LIBS} FILE ${PROJECT_NAME}Config.cmake)
+# install(EXPORT ${PROJECT_NAME}Config NAMESPACE ${PROJECT_NAME}:: DESTINATION share/${PROJECT_NAME}/cmake)
+# export(TARGETS ${INSTALL_LIBS} FILE ${PROJECT_NAME}Config.cmake)

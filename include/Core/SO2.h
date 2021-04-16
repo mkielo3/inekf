@@ -9,12 +9,17 @@ namespace InEKF {
 
 template<int aug=0>
 class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>{
-    private:
-        typedef typename LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>::TangentVector TangentVector;
-        typedef typename LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>::MatrixCov MatrixCov;
-        typedef typename LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>::MatrixState MatrixState;
+    public:
+        static constexpr int rotSize = 2;
+        static constexpr int dimension = calcStateDim(rotSize,0,aug);
+        static constexpr int mtxSize = calcStateMtxSize(rotSize,0);
+
+        typedef typename LieGroup<SO2<aug>,dimension,mtxSize>::TangentVector TangentVector;
+        typedef typename LieGroup<SO2<aug>,dimension,mtxSize>::MatrixCov MatrixCov;
+        typedef typename LieGroup<SO2<aug>,dimension,mtxSize>::MatrixState MatrixState;
         typedef Eigen::Matrix<double, aug, 1> VectorAug;
 
+    private:
         MatrixState State_;
         MatrixCov Cov_;
         VectorAug Aug_;
@@ -49,14 +54,18 @@ class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>{
         MatrixCov Cov() const { return Cov_; }
         VectorAug Aug() const { return Aug_; }
         MatrixState operator()() const { return State_; }
+        SO2<> R() const { return SO2<>(State_); }
+
+        // Setters
+        void setCov(MatrixCov Cov) { Cov_ = Cov; };
 
         // Self operations
         SO2<aug> inverse() const{
             MatrixState temp = State_.transpose();
             return SO2(temp);
         }
-        using LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>::Ad;
-        using LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>::log;
+        using LieGroup<SO2<aug>,dimension,mtxSize>::Ad;
+        using LieGroup<SO2<aug>,dimension,mtxSize>::log;
 
         // Group action
         SO2<aug> operator*(const SO2<aug>& rhs) const{

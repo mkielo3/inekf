@@ -5,29 +5,43 @@
 #include <string>
 #include <map>
 
-#include "Core/State.h"
+#include "Core/LieGroup.h"
 #include "Core/MeasureModel.h"
 #include "Core/ProcessModel.h"
 
 namespace InEKF {
 
+// TODO: Make process model not a template?? Make Group a template instead?
+template <class pM>
 class InEKF {
-    
-    public:
-        InEKF(State& state) : state_(state) {};
-        State Predict(const Eigen::VectorXd& u, double dt);
-        State Update(const Eigen::VectorXd& z, std::string type);
 
-        void setProcessModel(ProcessModel& p);
-        void addMeasureModel(MeasureModel& m, std::string name);
-        
     private:
-        State& state_;
-        std::map<std::string, MeasureModel*>  m_models_;
-        ProcessModel * p_model_;
+        typedef typename pM::myU U;
+        typedef typename pM::myGroup Group;
+        typedef typename pM::MatrixCov MatrixCov;
 
+        typedef Eigen::Matrix<double, Group::rotSize, Group::dimension> MatrixH;
+        
+        Group& state_;
+        ERROR error_;
+        std::map<std::string, MeasureModel<Group>*> mModels;
+
+    public:
+        pM pModel;
+
+        InEKF(Group& state, ERROR error=ERROR::RIGHT) : state_(state), error_(error) {};
+
+        Group Predict(const U& u, double dt=1);
+        
+        Group Update(const Eigen::VectorXd& z, std::string type);
+        Group Update(const Eigen::VectorXd& z, std::string type, MatrixH H);
+
+        void addMeasureModel(std::string name, MeasureModel<Group>* m);
+        void addMeasureModels(std::map<std::string, MeasureModel<Group>*> m);
 };
 
 }
+
+#include "InEKF.tpp"
 
 #endif // INEKF

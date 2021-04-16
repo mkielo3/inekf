@@ -5,26 +5,25 @@
 #include <unsupported/Eigen/MatrixFunctions>
 
 #include "Core/ProcessModel.h"
-#include "Core/State.h"
-#include "SE2_3_Bias/SE2_3_Bias.h"
 
 namespace InEKF {
 
-class InertialProcess : public ProcessModel {
+class InertialProcess : public ProcessModel<InertialProcess, SO2<>, Eigen::Vector<double,6>> {
+
+    private:
+        const Eigen::Vector3d g_;
 
     public:
         InertialProcess();
-        ~InertialProcess(){ delete lie_; }
-        void f(const Eigen::VectorXd& u, double dt, State& state);
-        Eigen::MatrixXd MakePhi(const Eigen::VectorXd& u, double dt, const State& state);
+        ~InertialProcess(){}
+        static Group f(U u, double dt, Group state);
+        static MatrixCov MakePhi(const U& u, double dt, const Group& state, ERROR error);
         
         void setGyroNoise(double std);
         void setAccelNoise(double std);
         void setGyroBiasNoise(double std);
         void setAccelBiasNoise(double std);
         
-    private:
-        const Eigen::Vector3d g_;
 
 };
 

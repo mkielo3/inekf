@@ -2,24 +2,33 @@
 #define BASE_PROCESS
 
 #include <Eigen/Dense>
-#include "Core/State.h"
 #include "Core/LieGroup.h"
 
 namespace InEKF {
 
+template <class Class, class Group, class U>
 class ProcessModel {
 
     public:
-        ProcessModel() {};
-        virtual void f(const Eigen::VectorXd& u, double dt, State& state) = 0;
-        virtual Eigen::MatrixXd MakePhi(const Eigen::VectorXd& u, double dt, const State& state) = 0;
-
-        const Eigen::MatrixXd getQ() { return Q_; };
-
-        LieGroup * lie_;
+        typedef typename Group::MatrixCov MatrixCov;
+        typedef Group myGroup;
+        typedef U myU;
 
     protected:
-        Eigen::MatrixXd Q_;
+        MatrixCov Q_;
+
+    public:
+        ProcessModel() {};
+        static Group f(const U& u, double dt, const Group& state) {
+            return Class::f(u, dt, state);
+        }
+        static MatrixCov MakePhi(const U& u, double dt, const Group& state, ERROR error){
+            return Class::MakePhi(u, dt, state, error);
+        }
+
+        const MatrixCov getQ() { return Q_; };
+
+
 
 };
 
