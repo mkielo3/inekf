@@ -12,6 +12,7 @@
 namespace InEKF {
 
 // TODO: Make process model not a template?? Make Group a template instead?
+// the benefit of letting U be anything is probably worth it staying a template.
 template <class pM>
 class InEKF {
 
@@ -29,7 +30,9 @@ class InEKF {
     public:
         pM pModel;
 
-        InEKF(Group& state, ERROR error=ERROR::RIGHT) : state_(state), error_(error) {};
+        InEKF(Group state=Group(true), ERROR error=ERROR::RIGHT) : state_(state), error_(error) {
+            assert(state.Uncertain() == true);
+        };
 
         Group Predict(const U& u, double dt=1);
         

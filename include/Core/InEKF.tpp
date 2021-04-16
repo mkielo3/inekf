@@ -17,7 +17,7 @@ typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){
         Q = Adj_X*Q*Adj_X.transpose();
     }
     Sigma = Phi* (Sigma + Q*dt) *Phi.transpose();
-    state_.setSigma( Sigma );
+    state_.setCov( Sigma );
 
     return state_;
 }

@@ -9,7 +9,7 @@ namespace InEKF {
 
 template <int cols=1, int aug=0>
 class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxSize(2,cols)>{
-    private:
+    public:
         static constexpr int rotSize = 2;
         static constexpr int dimension = calcStateDim(rotSize,cols,aug);
         static constexpr int mtxSize = calcStateMtxSize(rotSize,cols);
@@ -19,6 +19,7 @@ class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxS
         typedef typename LieGroup<SE2<cols,aug>,dimension,mtxSize>::MatrixState MatrixState;
         typedef Eigen::Matrix<double, aug, 1> VectorAug;
 
+    private:
         MatrixState State_;
         MatrixCov Cov_;
         VectorAug Aug_;
@@ -28,10 +29,15 @@ class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxS
 
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-        SE2(const MatrixState& State=MatrixState::Zero(), 
+        SE2(const MatrixState& State=MatrixState::Identity(), 
             const MatrixCov& Cov=MatrixCov::Zero(),
             const VectorAug& Aug=VectorAug::Zero())
                 : State_(State), Cov_(Cov), Aug_(Aug), isUncertain(Cov != MatrixCov::Zero()) {}
+
+        SE2(bool uncertain) : SE2() {
+            Cov_ = MatrixCov::Identity();
+            isUncertain = true;
+        }
 
         SE2(const SE2& State) : SE2(State(), State.Cov(), State.Aug()) {}
         
@@ -80,6 +86,11 @@ class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxS
         // TODO: Implement adding columns. May need to be template specialized
         // void addCol(const Eigen::Matrix3d& x){}
 
+        // Setters
+        void set(MatrixState S) { State_ = S; }
+        void setCov(MatrixCov Cov) { Cov_ = Cov; }
+        void setAug(MatrixCov Aug) { Aug_ = Aug; }
+
         // Self operations
         SE2 inverse() const{
             MatrixState S = MatrixState::Identity();
@@ -107,7 +118,7 @@ class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxS
             MatrixState State = (*this)() * rhs();
             VectorAug Aug = this->Aug() + rhs.Aug();
 
-            return SE2<aug>(State, Cov, Aug);
+            return SE2(State, Cov, Aug);
         }
 
         // Static Operators
@@ -182,7 +193,7 @@ class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxS
 };
 
 template <>
-SE2<1,0>::SE2(double theta, double x, double y,
+inline SE2<1,0>::SE2(double theta, double x, double y,
     const MatrixCov& Cov,
     const VectorAug& Aug) 
         : Cov_(Cov), Aug_(Aug), isUncertain(Cov != MatrixCov::Zero())  {
@@ -194,8 +205,10 @@ SE2<1,0>::SE2(double theta, double x, double y,
 template <int cols, int aug>
 std::ostream& operator<<(std::ostream& os, const SE2<cols, aug>& rhs)  
 {
-  os << rhs();
-  return os;
+    os << "Matrix\n" << rhs()
+        << "\nSigma\n" << rhs.Cov();
+    if(aug != 0) os << "\nAug\n" << rhs.Aug();
+    return os;
 }
 
 }

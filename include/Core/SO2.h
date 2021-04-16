@@ -113,8 +113,10 @@ class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>{
 template <int aug>
 std::ostream& operator<<(std::ostream& os, const SO2<aug>& rhs)  
 {
-  os << rhs();
-  return os;
+    os << "Matrix\n" << rhs()
+        << "\nSigma\n" << rhs.Cov();
+    if(aug != 0) os << "\nAug\n" << rhs.Aug();
+    return os;
 }
 
 

@@ -26,7 +26,8 @@ class ProcessModel {
             return Class::MakePhi(u, dt, state, error);
         }
 
-        const MatrixCov getQ() { return Q_; };
+        MatrixCov getQ() const { return Q_; };
+        void setQ(MatrixCov Q) { Q_ = Q; };
 
 
 

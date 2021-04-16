@@ -5,7 +5,7 @@
 
 namespace InEKF {
 
-enum class ERROR { LEFT, RIGHT };
+enum ERROR { LEFT, RIGHT };
 
 constexpr int calcStateDim(int rotMtxSize, int cols, int aug){
     if(rotMtxSize == Eigen::Dynamic || cols == Eigen::Dynamic){

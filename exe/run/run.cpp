@@ -8,30 +8,19 @@
 
 #include "matplotlibcpp.h"
 #include "InEKF/Core.h"
+#include "InEKF/SE2_SLAM.h"
 namespace plt = matplotlibcpp;
 
 
 int main(){
-    InEKF::MeasureModel<InEKF::SO2<>> temp;
-    InEKF::SO2 start(.1);
+    InEKF::OdometryProcess pm;
+    InEKF::SE2 state(.1, .1, .1);
+    InEKF::SE2 u(.1,.1,.1);
 
-    InEKF::InEKF<InEKF::ProcessModel<InEKF::SO2<>, InEKF::SO2<>, Eigen::Vector2d>> iekf(start);
-    // iekf.addMeasureModel(temp, "dvl");
+    InEKF::InEKF<InEKF::OdometryProcess> iekf;
+    iekf.pModel.setQ(.1);
 
-    // InEKF::SO2 c(.1);
-    // std::cout << c << std::endl;
-
-    // InEKF::InertialProcess temp; 
-
-    // Playing around with dynamic sizes
-    // Eigen::VectorXd aug;
-    // aug << 1,2;
-    // Eigen::Matrix2d state = Eigen::Matrix2d::Identity();
-    // Eigen::MatrixXd cov(2,2);
-    // InEKF::SO2<Eigen::Dynamic> x(state, cov, aug);
-
-    // Eigen::MatrixXd x = Eigen::Matrix2d::Zero();
-
+    std::cout << iekf.Predict(u) << std::endl;
 }
 
 // int main(){
