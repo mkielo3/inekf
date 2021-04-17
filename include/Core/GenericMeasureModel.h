@@ -4,6 +4,7 @@
 #include <Eigen/Dense>
 #include "Core/LieGroup.h"
 #include "Core/MeasureModel.h"
+#include "iostream"
 
 namespace InEKF {
 
@@ -18,21 +19,25 @@ class GenericMeasureModel : public MeasureModel<Group> {
 
         VectorB b_;
 
-    public:        
+    public:      
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
         GenericMeasureModel(MatrixH H, MatrixS M, ERROR error) {
             this->H_ = H;
             this->M_ = M;
             this->error_ = error;
         };
-        GenericMeasureModel(VectorB b, MatrixS M, ERROR error) : b_(b) {
+        GenericMeasureModel(VectorB b, const MatrixS& M, ERROR error) : b_(b) {
+            assert(b.head(Group::rotSize) == VectorV::Zero() && "Non-zero b in rotation portion not supported");
+            
             this->M_ = M;
             this->error_ = error;
 
             this->H_ = MatrixH::Zero();
-            // TODO: Make this handle 1's in rotation portion better?
-            // TODO: Handle H in augmented state?
-            for(int i=Group::rotSize;i<Group::mtxSize;i++){
-                this->H_.block(0, Group::rotSize*i, Group::rotSize, Group::rotSize) = b(i)*MatrixS::Identity();
+
+            int rDim = Group::rotSize*(Group::rotSize - 1) / 2;
+            for(int i=0; i<Group::mtxSize-Group::rotSize; i++){
+                this->H_.block(0, Group::rotSize*i+rDim, Group::rotSize, Group::rotSize) = b(i+Group::rotSize)*MatrixS::Identity();
             }
             if(error == ERROR::RIGHT){
                 this->H_ *= -1;
@@ -44,8 +49,7 @@ class GenericMeasureModel : public MeasureModel<Group> {
         };
 
         VectorV calcV(const VectorV& z, const Group& state){
-            // TODO: Make this handle 1's in rotation portion better?
-            // TODO: Handle H in augmented state?
+            std::cout << "HERE!!" << std::endl;
             VectorB temp = b_;
             temp.head(Group::rotSize) = z;
             return calcV(temp, state);

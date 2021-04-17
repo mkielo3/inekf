@@ -205,8 +205,8 @@ inline SE2<1,0>::SE2(double theta, double x, double y,
 template <int cols, int aug>
 std::ostream& operator<<(std::ostream& os, const SE2<cols, aug>& rhs)  
 {
-    os << "Matrix\n" << rhs()
-        << "\nSigma\n" << rhs.Cov();
+    os << "Matrix\n" << rhs();
+    if(rhs.Uncertain()) os << "\nSigma\n" << rhs.Cov();
     if(aug != 0) os << "\nAug\n" << rhs.Aug();
     return os;
 }

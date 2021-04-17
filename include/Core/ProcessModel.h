@@ -10,6 +10,8 @@ template <class Class, class Group, class U>
 class ProcessModel {
 
     public:
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+        
         typedef typename Group::MatrixCov MatrixCov;
         typedef Group myGroup;
         typedef U myU;

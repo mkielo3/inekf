@@ -17,17 +17,24 @@ template <class pM>
 class InEKF {
 
     private:
-        typedef typename pM::myU U;
         typedef typename pM::myGroup Group;
-        typedef typename pM::MatrixCov MatrixCov;
-
-        typedef Eigen::Matrix<double, Group::rotSize, Group::dimension> MatrixH;
+        // useful for predict step
+        typedef typename pM::myU U;
+        typedef typename Group::MatrixCov MatrixCov;
+        // useful for update step
+        typedef typename Eigen::Matrix<double,Group::rotSize,Group::rotSize> MatrixS;
+        typedef Eigen::Matrix<double,Group::rotSize,Group::dimension> MatrixH;
+        typedef Eigen::Matrix<double,Group::rotSize,1> VectorV;
+        typedef Eigen::Matrix<double,Group::dimension,Group::rotSize> MatrixK;
+        typedef typename Group::TangentVector TangentVector;
         
-        Group& state_;
+        Group state_;
         ERROR error_;
         std::map<std::string, MeasureModel<Group>*> mModels;
 
     public:
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
         pM pModel;
 
         InEKF(Group state=Group(true), ERROR error=ERROR::RIGHT) : state_(state), error_(error) {

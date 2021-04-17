@@ -32,44 +32,36 @@ typename InEKF<pM>::Group InEKF<pM>::Update(const Eigen::VectorXd& z, std::strin
 template <class pM>
 typename InEKF<pM>::Group InEKF<pM>::Update(const Eigen::VectorXd& z, std::string type){
     MeasureModel<Group> * m_model = mModels[type]; 
-
     // Change H via adjoint if necessary
-    Eigen::MatrixXd H = m_model->getHBase();
+    MatrixH H = m_model->getH();
     if( error_ != m_model->getError() ){
         if(error_ == ERROR::RIGHT){
-            H *= Group::Ad( state_.getMu().inverse() );
+            H *= Group::Ad( state_.inverse()() );
         }
         else{
-            H *= Group::Ad( state_.getMu() );
+            H *= Group::Ad( state_() );
         }
     }
-    m_model->setH( H );
-    
+    m_model->setHError( H );
+
     // Use measurement model to make Sinv and V
-    m_model->Observe(z, state_);
-    Eigen::VectorXd V = m_model->getV();
-    Eigen::MatrixXd Sinv = m_model->getSinv();
+    VectorV V = m_model->calcV(z, state_);
+    MatrixS Sinv = m_model->calcSInverse(state_);
 
-    // Caculate K
-    Eigen::MatrixXd K = state_.getSigma() * H.transpose() * Sinv;
-    Eigen::VectorXd dState = K * V;
+    // Caculate K + dX
+    MatrixK K = state_.Cov() * H.transpose() * Sinv;
+    TangentVector K_V = K * V;
 
-    // Apply to all states
-    Eigen::MatrixXd dX = m_model->lie_->ExpMountain( dState.head(m_model->lie_->getMuStates()) );
-    if(state_.error == ERROR::RIGHT){
-        state_.setMu(dX  * state_.getMu());  
+    // Apply to states
+    if(error_ == ERROR::RIGHT){
+        state_ = Group::Exp(K_V) * state_;
     }
     else{
-        state_.setMu(state_.getMu() * dX);  
+        state_ = state_ * Group::Exp(K_V);
     }
 
-    if(m_model->lie_->getAugmentSize() != 0){
-        state_.setAugment( state_.getAugment() + dState.tail(m_model->lie_->getAugmentSize()) );  
-    }
-
-    int dimSigma = state_.getSigma().rows();
-    Eigen::MatrixXd I = Eigen::MatrixXd::Identity(dimSigma, dimSigma);
-    state_.setSigma( (I - K*H)*state_.getSigma() );
+    MatrixCov I = MatrixCov::Identity();
+    state_.setCov( (I - K*H)*state_.Cov() );
 
     return state_;
 }

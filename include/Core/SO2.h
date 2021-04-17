@@ -3,7 +3,6 @@
 
 #include <Eigen/Dense>
 #include "LieGroup.h"
-#include "iostream"
 
 namespace InEKF {
 
@@ -113,8 +112,8 @@ class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>{
 template <int aug>
 std::ostream& operator<<(std::ostream& os, const SO2<aug>& rhs)  
 {
-    os << "Matrix\n" << rhs()
-        << "\nSigma\n" << rhs.Cov();
+    os << "Matrix\n" << rhs();
+    if(rhs.Uncertain()) os << "\nSigma\n" << rhs.Cov();
     if(aug != 0) os << "\nAug\n" << rhs.Aug();
     return os;
 }

@@ -29,6 +29,8 @@ template  <class Class, int N, int M>
 class LieGroup{
 
     public:
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
         typedef Eigen::Matrix<double, N, 1> TangentVector;
         typedef Eigen::Matrix<double, N, N> MatrixCov;
         typedef Eigen::Matrix<double, M, M> MatrixState;

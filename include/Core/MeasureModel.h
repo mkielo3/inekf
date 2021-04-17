@@ -18,21 +18,25 @@ class MeasureModel {
         // These are all constant and should be set once in the constructor
         ERROR error_;
         MatrixS M_;
+
+        // This one can be changed each iteration, or should be set once in constructor
         MatrixH H_;
 
         // This is changed by InEKF based on if it's a RIGHT/LEFT filter
         MatrixH H_error_;
 
 
-    public:        
+    public: 
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+               
         MeasureModel() {};
         VectorV calcV(const Eigen::Matrix<double,Group::mtxSize,1>& z, const Group& state){
             // fill up our stuff
             if(error_ == ERROR::RIGHT){
-                return ( state.inverse()() * z ).head(Group::rotSize);
+                return ( state() * z ).head(Group::rotSize);
             }
             else{
-                return ( state * z ).head(Group::rotSize);
+                return ( state.inverse()() * z ).head(Group::rotSize);
             }
         }
 
@@ -41,10 +45,10 @@ class MeasureModel {
             MatrixS Sinv;
             MatrixS R = state.R()();
             if(error_ == ERROR::RIGHT){
-                Sinv = ( H_error_*state.getSigma()*H_error_.transpose() + R*M_*R.transpose() ).inverse();
+                Sinv = ( H_error_*state.Cov()*H_error_.transpose() + R*M_*R.transpose() ).inverse();
             }
             else{
-                Sinv = ( H_error_*state.getSigma()*H_error_.transpose() + R.transpose()*M_*R ).inverse();
+                Sinv = ( H_error_*state.Cov()*H_error_.transpose() + R.transpose()*M_*R ).inverse();
             }
             return Sinv;
         }

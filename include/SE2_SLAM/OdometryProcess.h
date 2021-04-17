@@ -13,6 +13,7 @@ class OdometryProcess : public ProcessModel<OdometryProcess, SE2<>, SE2<>> {
         const Eigen::Vector3d g_;
 
     public:
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         OdometryProcess(){}
         ~OdometryProcess(){}
         static SE2<> f(SE2<> u, double dt, SE2<> state);
