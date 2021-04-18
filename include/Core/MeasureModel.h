@@ -30,8 +30,11 @@ class MeasureModel {
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
                
         MeasureModel() {};
-        VectorV calcV(const Eigen::Matrix<double,Group::mtxSize,1>& z, const Group& state){
-            // fill up our stuff
+
+        virtual VectorB fillZ(const Eigen::VectorXd&, const Group& state) { throw 1; return VectorB::Zero(); }
+
+        virtual VectorV calcV(const VectorB& z, const Group& state){
+            // calculate V
             if(error_ == ERROR::RIGHT){
                 return ( state() * z ).head(Group::rotSize);
             }
@@ -41,7 +44,7 @@ class MeasureModel {
         }
 
         // TODO: Uniformize getting rotation info from group
-        MatrixS calcSInverse(const Group& state){
+        virtual MatrixS calcSInverse(const Group& state){
             MatrixS Sinv;
             MatrixS R = state.R()();
             if(error_ == ERROR::RIGHT){

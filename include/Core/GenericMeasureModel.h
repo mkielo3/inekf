@@ -48,11 +48,10 @@ class GenericMeasureModel : public MeasureModel<Group> {
             this->error_ = error;
         };
 
-        VectorV calcV(const VectorV& z, const Group& state){
-            std::cout << "HERE!!" << std::endl;
+        VectorB fillZ(const Eigen::VectorXd& z, const Group& state){
             VectorB temp = b_;
             temp.head(Group::rotSize) = z;
-            return calcV(temp, state);
+            return temp;
         }
 };
 

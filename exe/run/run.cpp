@@ -14,24 +14,24 @@ namespace plt = matplotlibcpp;
 
 int main(){
     InEKF::OdometryProcess pm;
-    InEKF::SE2 state(0,0,0, Eigen::Matrix3d::Identity());
+    InEKF::SE2 state(true);
     InEKF::SE2 u(.1,.1,.1);
     std::cout << state << "\n\n" << std::endl;
 
     InEKF::InEKF<InEKF::OdometryProcess> iekf(state, InEKF::RIGHT);
     iekf.pModel.setQ(.1);
     
-    Eigen::Matrix2d x = Eigen::Matrix2d::Ones() * 4;
+    Eigen::Matrix2d x = Eigen::Matrix2d::Ones();
     Eigen::Vector3d b;
     b << 0, 0, 1;
     InEKF::GenericMeasureModel<InEKF::SE2<>> m(b, x, InEKF::LEFT);
     iekf.addMeasureModel("test", &m);
 
     state = iekf.Predict(u);
-    std::cout << state << std::endl;
+    std::cout << state << "\n\n" << std::endl;
 
-    Eigen::Vector3d z;
-    z << .1, .1, 1;
+    Eigen::Vector2d z;
+    z << .1, .1;
     state = iekf.Update(z, "test");
 
     std::cout << state << std::endl;

@@ -44,8 +44,17 @@ typename InEKF<pM>::Group InEKF<pM>::Update(const Eigen::VectorXd& z, std::strin
     }
     m_model->setHError( H );
 
+    // Fill up Z if it's only partially done
+    VectorB z_;
+    if(z.size() == Group::mtxSize){
+        z_ = z;
+    }
+    else if(z.size() == Group::rotSize){
+        z_ = m_model->fillZ(z, state_);
+    }
+
     // Use measurement model to make Sinv and V
-    VectorV V = m_model->calcV(z, state_);
+    VectorV V = m_model->calcV(z_, state_);
     MatrixS Sinv = m_model->calcSInverse(state_);
 
     // Caculate K + dX
