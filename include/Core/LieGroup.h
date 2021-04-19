@@ -8,7 +8,7 @@ namespace InEKF {
 enum ERROR { LEFT, RIGHT };
 
 constexpr int calcStateDim(int rotMtxSize, int cols, int aug){
-    if(rotMtxSize == Eigen::Dynamic || cols == Eigen::Dynamic){
+    if(aug == Eigen::Dynamic || cols == Eigen::Dynamic){
         return Eigen::Dynamic;
     }
     else{
@@ -16,7 +16,7 @@ constexpr int calcStateDim(int rotMtxSize, int cols, int aug){
     }
 }
 constexpr int calcStateMtxSize(int rotMtxSize, int cols){
-    if(rotMtxSize == Eigen::Dynamic || cols == Eigen::Dynamic){
+    if(cols == Eigen::Dynamic){
         return Eigen::Dynamic;
     }
     else{

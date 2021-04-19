@@ -11,30 +11,27 @@
 #include "InEKF/SE2_SLAM.h"
 namespace plt = matplotlibcpp;
 
+void test(Eigen::Matrix<double,Eigen::Dynamic,1>){
+    std::cout << "Vector" << std::endl;
+}
+void test(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>){
+    std::cout << "Matrix" << std::endl;
+}
 
 int main(){
-    InEKF::OdometryProcess pm;
-    InEKF::SE2 state(true);
-    InEKF::SE2 u(.1,.1,.1);
-    std::cout << state << "\n\n" << std::endl;
+    Eigen::Vector<double,-1> x = Eigen::Vector<double,5>::Ones();
 
-    InEKF::InEKF<InEKF::OdometryProcess> iekf(state, InEKF::RIGHT);
-    iekf.pModel.setQ(.1);
-    
-    Eigen::Matrix2d x = Eigen::Matrix2d::Ones();
-    Eigen::Vector3d b;
-    b << 0, 0, 1;
-    InEKF::GenericMeasureModel<InEKF::SE2<>> m(b, x, InEKF::LEFT);
-    iekf.addMeasureModel("test", &m);
-
-    state = iekf.Predict(u);
-    std::cout << state << "\n\n" << std::endl;
-
-    Eigen::Vector2d z;
-    z << .1, .1;
-    state = iekf.Update(z, "test");
-
+    // test(x);
+    InEKF::SE2<1,Eigen::Dynamic> state(x, Eigen::Matrix<double,5,5>::Ones());
     std::cout << state << std::endl;
+
+    // state.addCol(Eigen::Vector2d::Ones()*2, Eigen::Matrix2d::Ones()*2);
+    state.addAug(2, 2);
+    std::cout << state << std::endl;
+
+    // std::cout << Eigen::MatrixXd::Zero(5,5).isZero() << std::endl;
+
+    // Eigen::Matrix4d t = Eigen::Matrix4d::Identity(4,4);
 }
 
 // int main(){
