@@ -2,7 +2,6 @@
 cmake_minimum_required(VERSION 3.11)
 project(InEKF VERSION 0.1 LANGUAGES CXX)
 
-###############################################################################
 #Setup FetchContent
 include(FetchContent)
 if(${CMAKE_VERSION} VERSION_LESS 3.14)
@@ -17,17 +16,34 @@ if(${CMAKE_VERSION} VERSION_LESS 3.14)
   endmacro() 
 endif()
 
-###############################################################################
-# Import necessary external dependencies
-
+#################### IMPORT DEPENDENCIES ####################
 # Eigen 
 find_package(Eigen3 CONFIG REQUIRED)
 
+# Google Test
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG        release-1.10.0
+)
+FetchContent_GetProperties(googletest)
+if(NOT googletest_POPULATED)
+    FetchContent_Populate(googletest)
+    add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
+endif()
 
-###############################################################################
+
+#################### ADD TARGETS ####################
 add_subdirectory(exe)
 add_subdirectory(src)
 
+
+#################### ADD TESTS ####################
+enable_testing()
+add_subdirectory(tests)
+
+
+#################### INSTALL AS LIBRARY ####################
 # set(INSTALL_LIBS Core SE2_3_Bias)
 # install(TARGETS ${INSTALL_LIBS} EXPORT ${PROJECT_NAME}Config
 #         ARCHIVE DESTINATION lib

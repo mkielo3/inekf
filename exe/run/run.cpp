@@ -7,8 +7,8 @@
 #include <cmath>
 
 #include "matplotlibcpp.h"
-#include "InEKF/Core.h"
-#include "InEKF/SE2_SLAM.h"
+#include "InEKF/Core"
+#include "InEKF/SE2_SLAM"
 namespace plt = matplotlibcpp;
 
 void test(Eigen::Matrix<double,Eigen::Dynamic,1>){

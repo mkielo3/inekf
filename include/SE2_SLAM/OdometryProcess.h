@@ -3,7 +3,7 @@
 
 #include <Eigen/Dense>
 
-#include "InEKF/Core.h"
+#include "InEKF/Core"
 
 namespace InEKF {
 
