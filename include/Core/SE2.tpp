@@ -29,8 +29,8 @@ void SE2<cols,aug>::verifyTangentVector(const TangentVector& xi){
 
 // initialize with theta, x, y
 template <>
-inline SE2<1,0>::SE2(double theta, double x, double y, const MatrixCov& Cov, const VectorAug& Aug) 
-        : Cov_(Cov), Aug_(Aug), isUncertain(Cov != MatrixCov::Zero())  {
+inline SE2<1,0>::SE2(double theta, double x, double y, const MatrixCov& Cov) 
+        : LieGroup<SE2<1,0>,dimension,mtxSize,0>(Cov)  {
     State_ << cos(theta), -sin(theta), x,
                 sin(theta),  cos(theta), y,
                 0, 0, 1;
@@ -38,7 +38,7 @@ inline SE2<1,0>::SE2(double theta, double x, double y, const MatrixCov& Cov, con
 
 template <int cols, int aug>
 SE2<cols,aug>::SE2(const TangentVector& xi, const MatrixCov& Cov) 
-        : Cov_(Cov), isUncertain(!Cov.isZero()) {
+        : LieGroup<SE2<cols,aug>,dimension,mtxSize,aug>(Cov) {
     verifyTangentVector(xi);
 
     // figure out state size for dynamic purposes

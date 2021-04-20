@@ -1,4 +1,5 @@
 #include "Core/SO2.h"
+#include "iostream"
 
 namespace InEKF{
 

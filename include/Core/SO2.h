@@ -7,27 +7,27 @@
 namespace InEKF {
 
 template<int aug=0>
-class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>{
+class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2,aug>{
     public:
         static constexpr int rotSize = 2;
         static constexpr int dimension = calcStateDim(rotSize,0,aug);
         static constexpr int mtxSize = calcStateMtxSize(rotSize,0);
 
-        typedef typename LieGroup<SO2<aug>,dimension,mtxSize>::TangentVector TangentVector;
-        typedef typename LieGroup<SO2<aug>,dimension,mtxSize>::MatrixCov MatrixCov;
-        typedef typename LieGroup<SO2<aug>,dimension,mtxSize>::MatrixState MatrixState;
-        typedef Eigen::Matrix<double, aug, 1> VectorAug;
+        using typename LieGroup<SO2<aug>,dimension,mtxSize,aug>::TangentVector;
+        using typename LieGroup<SO2<aug>,dimension,mtxSize,aug>::MatrixCov;
+        using typename LieGroup<SO2<aug>,dimension,mtxSize,aug>::MatrixState;
+        using typename LieGroup<SO2<aug>,dimension,mtxSize,aug>::VectorAug;
 
     private:
         // dummies to help with dynamic initialization
         static constexpr int a = aug == Eigen::Dynamic ? 0 : aug;
         static constexpr int c = aug == Eigen::Dynamic ? 1 : dimension;
 
-        MatrixState State_;
-        MatrixCov Cov_;
-        VectorAug Aug_;
-        bool isUncertain;
-
+        using LieGroup<SO2<aug>,dimension,mtxSize,aug>::Cov_;
+        using LieGroup<SO2<aug>,dimension,mtxSize,aug>::State_;
+        using LieGroup<SO2<aug>,dimension,mtxSize,aug>::Aug_;
+        using LieGroup<SO2<aug>,dimension,mtxSize,aug>::isUncertain;
+        
         void verifySize();
 
     public:
@@ -37,14 +37,14 @@ class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>{
         SO2(const MatrixState& State=MatrixState::Identity(), 
             const MatrixCov& Cov=MatrixCov::Zero(c,c),
             const VectorAug& Aug=VectorAug::Zero(a)) 
-                : State_(State), Cov_(Cov), Aug_(Aug), isUncertain(!Cov.isZero()) { verifySize(); }
+                : LieGroup<SO2<aug>,dimension,mtxSize,aug>(State, Cov, Aug) { verifySize(); }
 
         SO2(const SO2& State) : SO2(State(), State.Cov(), State.Aug()) {}
 
         SO2(double theta, 
             const MatrixCov& Cov=MatrixCov::Zero(c,c),
             const VectorAug& Aug=VectorAug::Zero(a)) 
-                : Cov_(Cov), Aug_(Aug), isUncertain(!Cov.isZero()){
+                : LieGroup<SO2<aug>,dimension,mtxSize,aug>(Cov, Aug) {
             State_ << cos(theta), -sin(theta),
                     sin(theta), cos(theta);
             verifySize();
@@ -56,19 +56,12 @@ class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>{
         ~SO2() {}
 
         // Getters
-        bool Uncertain() const { return isUncertain; }
-        MatrixCov Cov() const { return Cov_; }
-        VectorAug Aug() const { return Aug_; }
-        MatrixState operator()() const { return State_; }
         SO2<> R() const { return SO2<>(State_); }
-
-        // Setters
-        void setCov(MatrixCov Cov) { Cov_ = Cov; };
 
         // Self operations
         SO2<aug> inverse() const;
-        using LieGroup<SO2<aug>,dimension,mtxSize>::Ad;
-        using LieGroup<SO2<aug>,dimension,mtxSize>::log;
+        using LieGroup<SO2<aug>,dimension,mtxSize,aug>::Ad;
+        using LieGroup<SO2<aug>,dimension,mtxSize,aug>::log;
 
         // Group action
         SO2<aug> operator*(const SO2<aug>& rhs) const;

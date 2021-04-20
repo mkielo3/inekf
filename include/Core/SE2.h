@@ -9,16 +9,16 @@
 namespace InEKF {
 
 template <int cols=1, int aug=0>
-class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxSize(2,cols)>{
+class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxSize(2,cols),aug>{
     public:
         static constexpr int rotSize = 2;
         static constexpr int dimension = calcStateDim(rotSize,cols,aug);
         static constexpr int mtxSize = calcStateMtxSize(rotSize,cols);
 
-        typedef typename LieGroup<SE2<cols,aug>,dimension,mtxSize>::TangentVector TangentVector;
-        typedef typename LieGroup<SE2<cols,aug>,dimension,mtxSize>::MatrixCov MatrixCov;
-        typedef typename LieGroup<SE2<cols,aug>,dimension,mtxSize>::MatrixState MatrixState;
-        typedef Eigen::Matrix<double, aug, 1> VectorAug;
+        typedef typename LieGroup<SE2<cols,aug>,dimension,mtxSize,aug>::TangentVector TangentVector;
+        typedef typename LieGroup<SE2<cols,aug>,dimension,mtxSize,aug>::MatrixCov MatrixCov;
+        typedef typename LieGroup<SE2<cols,aug>,dimension,mtxSize,aug>::MatrixState MatrixState;
+        typedef typename LieGroup<SE2<cols,aug>,dimension,mtxSize,aug>::VectorAug VectorAug;
 
     private:
         // dummies to help with dynamic initialization
@@ -26,10 +26,10 @@ class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxS
         static constexpr int c = dimension == Eigen::Dynamic ? 3 : dimension;
         static constexpr int m = mtxSize == Eigen::Dynamic ? 3 : mtxSize;
 
-        MatrixState State_;
-        MatrixCov Cov_;
-        VectorAug Aug_;
-        bool isUncertain;
+        using LieGroup<SE2<cols,aug>,dimension,mtxSize,aug>::Cov_;
+        using LieGroup<SE2<cols,aug>,dimension,mtxSize,aug>::State_;
+        using LieGroup<SE2<cols,aug>,dimension,mtxSize,aug>::Aug_;
+        using LieGroup<SE2<cols,aug>,dimension,mtxSize,aug>::isUncertain;
 
         void verifySize();
         static void verifyTangentVector(const TangentVector& xi);
@@ -41,7 +41,7 @@ class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxS
         SE2(const MatrixState& State=MatrixState::Identity(m,m), 
             const MatrixCov& Cov=MatrixCov::Zero(c,c),
             const VectorAug& Aug=VectorAug::Zero(a,1))
-                : State_(State), Cov_(Cov), Aug_(Aug), isUncertain(!Cov.isZero()) { verifySize(); }
+                : LieGroup<SE2<cols,aug>,dimension,mtxSize,aug>(State, Cov, Aug) { verifySize(); }
         SE2(bool uncertain) : SE2() {
             Cov_ = MatrixCov::Identity(c,c);
             isUncertain = uncertain;
@@ -50,8 +50,7 @@ class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxS
         SE2(const TangentVector& xi,
             const MatrixCov& Cov=MatrixCov::Zero(c,c));
         SE2(double theta, double x, double y,
-            const MatrixCov& Cov=MatrixCov::Zero(c,c),
-            const VectorAug& Aug=VectorAug::Zero(a,1));
+            const MatrixCov& Cov=MatrixCov::Zero(c,c));
         ~SE2() {}
 
         // Getters
@@ -75,8 +74,8 @@ class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxS
 
         // Self operations
         SE2 inverse() const;
-        using LieGroup<SE2<cols,aug>,dimension,mtxSize>::Ad;
-        using LieGroup<SE2<cols,aug>,dimension,mtxSize>::log;
+        using LieGroup<SE2<cols,aug>,dimension,mtxSize,aug>::Ad;
+        using LieGroup<SE2<cols,aug>,dimension,mtxSize,aug>::log;
 
         // Group action
         SE2 operator*(const SE2& rhs) const;

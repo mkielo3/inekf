@@ -24,8 +24,10 @@ constexpr int calcStateMtxSize(int rotMtxSize, int cols){
     }
 }
 
-
-template  <class Class, int N, int M>
+// N = Group dimension
+// M = Lie Group matrix size
+// A = Augmented Euclidean state size
+template  <class Class, int N, int M, int A>
 class LieGroup{
 
     public:
@@ -34,10 +36,33 @@ class LieGroup{
         typedef Eigen::Matrix<double, N, 1> TangentVector;
         typedef Eigen::Matrix<double, N, N> MatrixCov;
         typedef Eigen::Matrix<double, M, M> MatrixState;
+        typedef Eigen::Matrix<double, A, 1> VectorAug;
 
-        LieGroup() {};
+    protected:
+        MatrixState State_;
+        MatrixCov Cov_;
+        VectorAug Aug_;
+        bool isUncertain;
+
+    public:
+        LieGroup() {}
+        LieGroup(MatrixState State, MatrixCov Cov, VectorAug Aug) 
+            : State_(State), Cov_(Cov), Aug_(Aug), isUncertain(!Cov.isZero()) {}
+        LieGroup(MatrixCov Cov, VectorAug Aug) 
+            : Cov_(Cov), Aug_(Aug), isUncertain(!Cov.isZero()) {}
+        LieGroup(MatrixCov Cov) 
+            : Cov_(Cov), isUncertain(!Cov.isZero()) {}
 
         virtual ~LieGroup() {};
+
+        // Getters
+        bool Uncertain() const { return isUncertain; }
+        MatrixCov Cov() const { return Cov_; }
+        VectorAug Aug() const { return Aug_; }
+        MatrixState operator()() const { return State_; }
+        
+        // Setters
+        void setCov(MatrixCov Cov) { Cov_ = Cov; };
 
         // helper to automatically cast things
         const Class & derived() const{
