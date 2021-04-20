@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.11)
 
-find_package(Python3 COMPONENTS Development NumPy)
-
 set(SRCS "run.cpp")
 
 # Create Executable

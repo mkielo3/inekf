@@ -1,5 +1,5 @@
 #################### BASIC SETUP ####################
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.16)
 project(InEKF VERSION 0.1 LANGUAGES CXX)
 
 #Setup FetchContent
@@ -17,8 +17,15 @@ if(${CMAKE_VERSION} VERSION_LESS 3.14)
 endif()
 
 #################### IMPORT DEPENDENCIES ####################
+set(EXAMPLES 1)
+
 # Eigen 
 find_package(Eigen3 CONFIG REQUIRED)
+
+# Python for plotting and/or wrapper
+if(PYTHON OR EXAMPLES)
+  find_package(Python3 COMPONENTS Interpreter Development NumPy)
+endif()
 
 # Google Test
 FetchContent_Declare(
@@ -34,8 +41,10 @@ endif()
 
 
 #################### ADD TARGETS ####################
-add_subdirectory(exe)
 add_subdirectory(src)
+if(EXAMPLES)
+  add_subdirectory(exe)
+endif()
 
 
 #################### ADD TESTS ####################
