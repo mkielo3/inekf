@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include <Eigen/Dense>
+#include <Eigen/Core>
 #include <InEKF/Core>
 
 #define EXPECT_MATRICES_EQ(M_actual, M_expected) \

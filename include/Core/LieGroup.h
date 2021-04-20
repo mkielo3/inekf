@@ -1,7 +1,7 @@
 #ifndef BASE_LIE
 #define BASE_LIE
 
-#include <Eigen/Dense>
+#include <Eigen/Core>
 
 namespace InEKF {
 

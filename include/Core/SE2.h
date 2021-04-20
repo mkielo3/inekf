@@ -1,7 +1,7 @@
 #ifndef CLASS_SE2
 #define CLASS_SE2
 
-#include <Eigen/Dense>
+#include <Eigen/Core>
 #include "LieGroup.h"
 #include "SO2.h"
 #include "iostream"

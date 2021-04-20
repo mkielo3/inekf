@@ -1,7 +1,7 @@
 #ifndef GENERIC_MEASURE
 #define GENERIC_MEASURE
 
-#include <Eigen/Dense>
+#include <Eigen/Core>
 #include "Core/LieGroup.h"
 #include "Core/MeasureModel.h"
 #include "iostream"

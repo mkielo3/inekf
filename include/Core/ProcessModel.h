@@ -1,7 +1,7 @@
 #ifndef BASE_PROCESS
 #define BASE_PROCESS
 
-#include <Eigen/Dense>
+#include <Eigen/Core>
 #include "Core/LieGroup.h"
 
 namespace InEKF {

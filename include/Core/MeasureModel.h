@@ -1,7 +1,8 @@
 #ifndef BASE_MEASURE
 #define BASE_MEASURE
 
-#include <Eigen/Dense>
+#include <Eigen/Core>
+#include <Eigen/LU>
 #include "Core/LieGroup.h"
 
 namespace InEKF {

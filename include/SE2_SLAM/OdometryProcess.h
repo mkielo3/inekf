@@ -1,7 +1,7 @@
 #ifndef ODOMETRY_PROCESS
 #define ODOMETRY_PROCESS
 
-#include <Eigen/Dense>
+#include <Eigen/Core>
 
 #include "InEKF/Core"
 

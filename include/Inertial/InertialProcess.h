@@ -1,7 +1,7 @@
 #ifndef INERTIAL_PROCESS
 #define INERTIAL_PROCESS
 
-#include <Eigen/Dense>
+#include <Eigen/Core>
 #include <unsupported/Eigen/MatrixFunctions>
 
 #include "Core/ProcessModel.h"

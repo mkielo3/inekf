@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include <Eigen/Dense>
+#include <Eigen/Core>
 #include <InEKF/Core>
 #include <InEKF/SE2_SLAM>
 

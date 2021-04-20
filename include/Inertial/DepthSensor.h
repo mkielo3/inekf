@@ -1,7 +1,7 @@
 #ifndef DEPTHSENSOR
 #define DEPTHSENSOR
 
-#include <Eigen/Dense>
+#include <Eigen/Core>
 #include "Core/MeasureModel.h"
 #include "SE2_3_Bias/SE2_3_Bias.h"
 

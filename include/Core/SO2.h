@@ -1,7 +1,7 @@
 #ifndef CLASS_SO2
 #define CLASS_SO2
 
-#include <Eigen/Dense>
+#include <Eigen/Core>
 #include "LieGroup.h"
 
 namespace InEKF {

@@ -1,7 +1,7 @@
 #ifndef INEKF
 #define INEKF
 
-#include <Eigen/Dense>
+#include <Eigen/Core>
 #include <string>
 #include <map>
 
