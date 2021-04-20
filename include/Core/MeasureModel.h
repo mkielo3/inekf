@@ -43,7 +43,6 @@ class MeasureModel {
             }
         }
 
-        // TODO: Uniformize getting rotation info from group
         virtual MatrixS calcSInverse(const Group& state){
             MatrixS Sinv;
             MatrixS R = state.R()();

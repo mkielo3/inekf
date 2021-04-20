@@ -1,5 +1,7 @@
-set(TESTS "test_SE2.cpp")
+set(TESTS test_SE2.cpp
+            test_GenericMeasure.cpp)
 
-set(TEST_LIBS Eigen3::Eigen InEKF::Core)
+set(TEST_LIBS Eigen3::Eigen
+                InEKF::Core)
 
-add_and_install_tests(${TESTS} ${TEST_LIBS})
+add_and_install_tests("${TESTS}" "${TEST_LIBS}")

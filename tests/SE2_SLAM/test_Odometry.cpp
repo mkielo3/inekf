@@ -3,9 +3,9 @@
 #include <InEKF/Core>
 #include <InEKF/SE2_SLAM>
 
-bool MatrixEquality(const Eigen::MatrixXd &lhs, const Eigen::MatrixXd &rhs) {
-  return lhs.isApprox(rhs, 1e-6);
-}
+#define EXPECT_MATRICES_EQ(M_actual, M_expected) \
+  EXPECT_TRUE(M_actual.isApprox(M_expected, 1e-6)) << "  Actual:\n" << M_actual << "\nExpected:\n" << M_expected
+
 
 TEST(OdometryProcess, f){
     InEKF::SE2<> state;
@@ -13,7 +13,7 @@ TEST(OdometryProcess, f){
 
     InEKF::OdometryProcess op;
 
-    EXPECT_PRED2(MatrixEquality, op.f(U, 1, state)(), U());
+    EXPECT_MATRICES_EQ(op.f(U, 1, state)(), U());
 }
 
 TEST(OdometryProcess, MakePhi){
@@ -25,9 +25,9 @@ TEST(OdometryProcess, MakePhi){
 
     // check right
     Phi = op.MakePhi(U, 1, state, InEKF::RIGHT);
-    EXPECT_PRED2(MatrixEquality, Phi, Eigen::Matrix3d::Identity());
+    EXPECT_MATRICES_EQ(Phi, Eigen::Matrix3d::Identity());
 
     // check left
     Phi = op.MakePhi(U, 1, state, InEKF::LEFT);
-    EXPECT_PRED2(MatrixEquality, Phi, U.Ad());
+    EXPECT_MATRICES_EQ(Phi, U.Ad());
 }

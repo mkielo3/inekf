@@ -11,12 +11,13 @@ namespace InEKF {
 template<class Group>
 class GenericMeasureModel : public MeasureModel<Group> {
     
-    protected:
+    public:
         typedef typename MeasureModel<Group>::MatrixS MatrixS;
         typedef typename MeasureModel<Group>::MatrixH MatrixH;
         typedef typename MeasureModel<Group>::VectorV VectorV;
         typedef typename MeasureModel<Group>::VectorB VectorB;
 
+    protected:
         VectorB b_;
 
     public:      
@@ -28,7 +29,9 @@ class GenericMeasureModel : public MeasureModel<Group> {
             this->error_ = error;
         };
         GenericMeasureModel(VectorB b, const MatrixS& M, ERROR error) : b_(b) {
-            assert(b.head(Group::rotSize) == VectorV::Zero() && "Non-zero b in rotation portion not supported");
+            if(b.head(Group::rotSize) != VectorV::Zero()){
+                throw std::range_error("Non-zero b in rotation portion not supported");
+            }
             
             this->M_ = M;
             this->error_ = error;
