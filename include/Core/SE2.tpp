@@ -114,7 +114,7 @@ void SE2<cols,aug>::addAug(double x, double sigma){
 }
 
 template <int cols, int aug>
-inline SE2<cols,aug> SE2<cols, aug>::Exp(const TangentVector& xi){
+SE2<cols,aug> SE2<cols, aug>::Exp(const TangentVector& xi){
     verifyTangentVector(xi);
     double theta = xi(0);
 
@@ -167,6 +167,14 @@ SE2<cols,aug> SE2<cols,aug>::inverse() const{
 
 template <int cols, int aug>
 SE2<cols,aug> SE2<cols,aug>::operator*(const SE2& rhs) const{
+    // Make sure they're both the same size
+    if(cols == Eigen::Dynamic && (*this)().cols() != rhs().cols()){
+        throw std::range_error("Dynamic SE2 elements have different cols");
+    }
+    if(aug == Eigen::Dynamic && (*this).Aug().rows() != rhs.Aug().rows()){
+        throw std::range_error("Dynamic SE2 elements have different Aug");
+    }
+
     // Skirt around composing covariances
     MatrixCov Cov = MatrixCov::Zero(c,c);
     if(this->Uncertain() && rhs.Uncertain()){

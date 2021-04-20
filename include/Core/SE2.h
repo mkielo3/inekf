@@ -23,7 +23,7 @@ class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxS
     private:
         // dummies to help with dynamic initialization
         static constexpr int a = aug == Eigen::Dynamic ? 0 : aug;
-        static constexpr int c = (mtxSize == Eigen::Dynamic || aug == Eigen::Dynamic) ? 3 : dimension;
+        static constexpr int c = dimension == Eigen::Dynamic ? 3 : dimension;
         static constexpr int m = mtxSize == Eigen::Dynamic ? 3 : mtxSize;
 
         MatrixState State_;
@@ -70,7 +70,6 @@ class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxS
         void setCov(MatrixCov Cov) { Cov_ = Cov; }
         void setAug(MatrixCov Aug) { Aug_ = Aug; }
 
-        // TODO: Implement adding columns. May need to be template specialized
         void addCol(const Eigen::Vector2d& x, const Eigen::Matrix2d& sigma=Eigen::Matrix2d::Identity());
         void addAug(double x, double sigma=1);
 

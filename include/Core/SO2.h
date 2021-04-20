@@ -19,32 +19,39 @@ class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>{
         typedef Eigen::Matrix<double, aug, 1> VectorAug;
 
     private:
+        // dummies to help with dynamic initialization
+        static constexpr int a = aug == Eigen::Dynamic ? 0 : aug;
+        static constexpr int c = aug == Eigen::Dynamic ? 1 : dimension;
+
         MatrixState State_;
         MatrixCov Cov_;
         VectorAug Aug_;
         bool isUncertain;
+
+        void verifySize();
 
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
         // Constructors
         SO2(const MatrixState& State=MatrixState::Identity(), 
-            const MatrixCov& Cov=MatrixCov::Zero(),
-            const VectorAug& Aug=VectorAug::Zero()) 
-                : State_(State), Cov_(Cov), Aug_(Aug), isUncertain(Cov != MatrixCov::Zero()) {}
+            const MatrixCov& Cov=MatrixCov::Zero(c,c),
+            const VectorAug& Aug=VectorAug::Zero(a)) 
+                : State_(State), Cov_(Cov), Aug_(Aug), isUncertain(!Cov.isZero()) { verifySize(); }
 
         SO2(const SO2& State) : SO2(State(), State.Cov(), State.Aug()) {}
 
         SO2(double theta, 
-            const MatrixCov& Cov=MatrixCov::Zero(),
-            const VectorAug& Aug=VectorAug::Zero()) 
-                : Cov_(Cov), Aug_(Aug), isUncertain(Cov != MatrixCov::Zero()){
+            const MatrixCov& Cov=MatrixCov::Zero(c,c),
+            const VectorAug& Aug=VectorAug::Zero(a)) 
+                : Cov_(Cov), Aug_(Aug), isUncertain(!Cov.isZero()){
             State_ << cos(theta), -sin(theta),
                     sin(theta), cos(theta);
+            verifySize();
         }
 
-        SO2(const TangentVector& xi, const MatrixCov& Cov=MatrixCov::Zero())
-            : SO2(xi(0), Cov, xi.segment(1,aug)) {}
+        SO2(const TangentVector& xi, const MatrixCov& Cov=MatrixCov::Zero(c,c))
+            : SO2(xi(0), Cov, xi.tail(xi.size()-1)) {}
 
         ~SO2() {}
 
@@ -59,53 +66,18 @@ class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2>{
         void setCov(MatrixCov Cov) { Cov_ = Cov; };
 
         // Self operations
-        SO2<aug> inverse() const{
-            MatrixState temp = State_.transpose();
-            return SO2(temp);
-        }
+        SO2<aug> inverse() const;
         using LieGroup<SO2<aug>,dimension,mtxSize>::Ad;
         using LieGroup<SO2<aug>,dimension,mtxSize>::log;
 
         // Group action
-        SO2<aug> operator*(const SO2<aug>& rhs) const{
-            // Skirt around composing covariances
-            MatrixCov Cov = MatrixCov::Zero();
-            if(this->Uncertain() && rhs.Uncertain()){
-                throw "Can't compose uncertain LieGroups";
-            }
-            if(this->Uncertain()) Cov = this->Cov();
-            if(rhs.Uncertain()) Cov = rhs.Cov();
-
-            // Compose state + augment
-            MatrixState State = (*this)() * rhs();
-            VectorAug Aug = this->Aug() + rhs.Aug();
-
-            return SO2<aug>(State, Cov, Aug);
-        }
+        SO2<aug> operator*(const SO2<aug>& rhs) const;
 
         // Static Operators
-        static MatrixState Wedge(const TangentVector& xi){
-            MatrixState State;
-            double theta = xi(0);
-            State << 0, -theta,
-                    theta, 0;
-            return State;
-        }
-        static SO2 Exp(const TangentVector& xi){
-            double theta = xi(0);
-            return SO2(theta,
-                        MatrixCov::Zero(),
-                        xi.segment(1,aug));
-        }
-        static TangentVector Log(const SO2& g){
-            TangentVector xi;
-            xi(0) = atan2(g()(1,0), g()(0,0));
-            xi.segment(1, aug) = g.Aug();
-            return xi;
-        }
-        static MatrixCov Ad(const SO2& g){
-            return MatrixCov::Identity();
-        }
+        static MatrixState Wedge(const TangentVector& xi);
+        static SO2 Exp(const TangentVector& xi);
+        static TangentVector Log(const SO2& g);
+        static MatrixCov Ad(const SO2& g){ return MatrixCov::Identity(); }
 
 };
 
@@ -120,5 +92,7 @@ std::ostream& operator<<(std::ostream& os, const SO2<aug>& rhs)
 
 
 }
+
+#include "SO2.tpp"
 
 #endif // CLASS_SO2
