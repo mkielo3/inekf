@@ -32,7 +32,7 @@ class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxS
         bool isUncertain;
 
         void verifySize();
-        void verifyTangentVector(const TangentVector& xi);
+        static void verifyTangentVector(const TangentVector& xi);
 
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
