@@ -39,7 +39,7 @@ class GenericMeasureModel : public MeasureModel<Group> {
             this->H_ = MatrixH::Zero();
 
             int rDim = Group::rotSize*(Group::rotSize - 1) / 2;
-            for(int i=0; i<Group::mtxSize-Group::rotSize; i++){
+            for(int i=0; i<Group::M-Group::rotSize; i++){
                 this->H_.block(0, Group::rotSize*i+rDim, Group::rotSize, Group::rotSize) = b(i+Group::rotSize)*MatrixS::Identity();
             }
             if(error == ERROR::RIGHT){

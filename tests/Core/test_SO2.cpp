@@ -12,27 +12,27 @@
 TEST(SO2, BaseConstructor1){
     Eigen::Matrix2d mtx = Eigen::Matrix2d::Identity();
     Eigen::Matrix3d sigma = Eigen::Matrix3d::Identity();
-    Eigen::Vector2d aug = Eigen::Vector2d::Ones();
+    Eigen::Vector2d A = Eigen::Vector2d::Ones();
 
-    InEKF::SO2<2> x(mtx, sigma, aug);
+    InEKF::SO2<2> x(mtx, sigma, A);
 
     EXPECT_MATRICES_EQ(mtx, x());
     EXPECT_MATRICES_EQ(sigma, x.Cov());
-    EXPECT_MATRICES_EQ(aug, x.Aug());
+    EXPECT_MATRICES_EQ(A, x.Aug());
     EXPECT_TRUE(x.Uncertain());
 }
 
 TEST(SO2, BaseConstructor2){
     Eigen::Matrix2d mtx = Eigen::Matrix2d::Identity();
     Eigen::Matrix3d sigma = Eigen::Matrix3d::Identity();
-    Eigen::VectorXd aug = Eigen::Vector2d::Ones();
+    Eigen::VectorXd A = Eigen::Vector2d::Ones();
 
-    InEKF::SO2<Eigen::Dynamic> x(mtx, sigma, aug);
+    InEKF::SO2<Eigen::Dynamic> x(mtx, sigma, A);
 
     // make sure it gets mad if we pass the wrong sigma
     EXPECT_THROW(InEKF::SO2<Eigen::Dynamic> x(mtx, sigma);, std::range_error);
     // Or doesn't if we pass the right one
-    EXPECT_NO_THROW(  (InEKF::SO2<Eigen::Dynamic>(mtx, sigma, aug)) );
+    EXPECT_NO_THROW(  (InEKF::SO2<Eigen::Dynamic>(mtx, sigma, A)) );
     // default also works
     EXPECT_NO_THROW( (InEKF::SO2<Eigen::Dynamic>()) );
 }

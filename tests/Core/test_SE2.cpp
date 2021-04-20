@@ -107,7 +107,6 @@ TEST(SE2, AddAug){
     EXPECT_THROW( y.addAug(2), std::range_error);
 }
 
-// TESTS still to write: wedge, aug
 TEST(SE2, Inverse){
     InEKF::SE2<> x(1,1,1);
     EXPECT_MATRICES_EQ(x().inverse(), x.inverse()());

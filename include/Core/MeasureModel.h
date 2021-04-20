@@ -11,10 +11,10 @@ template<class Group>
 class MeasureModel {
     
     protected:
-        typedef typename Eigen::Matrix<double,Group::rotSize,Group::rotSize> MatrixS;
-        typedef Eigen::Matrix<double,Group::rotSize,Group::dimension> MatrixH;
+        typedef Eigen::Matrix<double,Group::rotSize,Group::rotSize> MatrixS;
+        typedef Eigen::Matrix<double,Group::rotSize,Group::N> MatrixH;
         typedef Eigen::Matrix<double,Group::rotSize,1> VectorV;
-        typedef Eigen::Matrix<double,Group::mtxSize,1> VectorB;
+        typedef Eigen::Matrix<double,Group::M,1> VectorB;
 
         // These are all constant and should be set once in the constructor
         ERROR error_;

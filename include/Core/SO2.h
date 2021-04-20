@@ -6,27 +6,27 @@
 
 namespace InEKF {
 
-template<int aug=0>
-class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2,aug>{
+template<int A=0>
+class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
     public:
         static constexpr int rotSize = 2;
-        static constexpr int dimension = calcStateDim(rotSize,0,aug);
-        static constexpr int mtxSize = calcStateMtxSize(rotSize,0);
+        static constexpr int N = calcStateDim(rotSize,0,A);
+        static constexpr int M = calcStateMtxSize(rotSize,0);
 
-        using typename LieGroup<SO2<aug>,dimension,mtxSize,aug>::TangentVector;
-        using typename LieGroup<SO2<aug>,dimension,mtxSize,aug>::MatrixCov;
-        using typename LieGroup<SO2<aug>,dimension,mtxSize,aug>::MatrixState;
-        using typename LieGroup<SO2<aug>,dimension,mtxSize,aug>::VectorAug;
+        using typename LieGroup<SO2<A>,N,M,A>::TangentVector;
+        using typename LieGroup<SO2<A>,N,M,A>::MatrixCov;
+        using typename LieGroup<SO2<A>,N,M,A>::MatrixState;
+        using typename LieGroup<SO2<A>,N,M,A>::VectorAug;
 
     private:
         // dummies to help with dynamic initialization
-        static constexpr int a = aug == Eigen::Dynamic ? 0 : aug;
-        static constexpr int c = aug == Eigen::Dynamic ? 1 : dimension;
+        static constexpr int a = A == Eigen::Dynamic ? 0 : A;
+        static constexpr int c = A == Eigen::Dynamic ? 1 : N;
 
-        using LieGroup<SO2<aug>,dimension,mtxSize,aug>::Cov_;
-        using LieGroup<SO2<aug>,dimension,mtxSize,aug>::State_;
-        using LieGroup<SO2<aug>,dimension,mtxSize,aug>::Aug_;
-        using LieGroup<SO2<aug>,dimension,mtxSize,aug>::isUncertain;
+        using LieGroup<SO2<A>,N,M,A>::Cov_;
+        using LieGroup<SO2<A>,N,M,A>::State_;
+        using LieGroup<SO2<A>,N,M,A>::Aug_;
+        using LieGroup<SO2<A>,N,M,A>::isUncertain;
         
         void verifySize();
 
@@ -37,14 +37,14 @@ class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2,aug>{
         SO2(const MatrixState& State=MatrixState::Identity(), 
             const MatrixCov& Cov=MatrixCov::Zero(c,c),
             const VectorAug& Aug=VectorAug::Zero(a)) 
-                : LieGroup<SO2<aug>,dimension,mtxSize,aug>(State, Cov, Aug) { verifySize(); }
+                : LieGroup<SO2<A>,N,M,A>(State, Cov, Aug) { verifySize(); }
 
         SO2(const SO2& State) : SO2(State(), State.Cov(), State.Aug()) {}
 
         SO2(double theta, 
             const MatrixCov& Cov=MatrixCov::Zero(c,c),
             const VectorAug& Aug=VectorAug::Zero(a)) 
-                : LieGroup<SO2<aug>,dimension,mtxSize,aug>(Cov, Aug) {
+                : LieGroup<SO2<A>,N,M,A>(Cov, Aug) {
             State_ << cos(theta), -sin(theta),
                     sin(theta), cos(theta);
             verifySize();
@@ -59,12 +59,12 @@ class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2,aug>{
         SO2<> R() const { return SO2<>(State_); }
 
         // Self operations
-        SO2<aug> inverse() const;
-        using LieGroup<SO2<aug>,dimension,mtxSize,aug>::Ad;
-        using LieGroup<SO2<aug>,dimension,mtxSize,aug>::log;
+        SO2<A> inverse() const;
+        using LieGroup<SO2<A>,N,M,A>::Ad;
+        using LieGroup<SO2<A>,N,M,A>::log;
 
         // Group action
-        SO2<aug> operator*(const SO2<aug>& rhs) const;
+        SO2<A> operator*(const SO2<A>& rhs) const;
 
         // Static Operators
         static MatrixState Wedge(const TangentVector& xi);
@@ -74,12 +74,12 @@ class SO2 : public LieGroup<SO2<aug>,calcStateDim(2,0,aug),2,aug>{
 
 };
 
-template <int aug>
-std::ostream& operator<<(std::ostream& os, const SO2<aug>& rhs)  
+template <int A>
+std::ostream& operator<<(std::ostream& os, const SO2<A>& rhs)  
 {
     os << "Matrix\n" << rhs();
     if(rhs.Uncertain()) os << "\nSigma\n" << rhs.Cov();
-    if(aug != 0) os << "\nAug\n" << rhs.Aug();
+    if(A != 0) os << "\nAug\n" << rhs.Aug();
     return os;
 }
 

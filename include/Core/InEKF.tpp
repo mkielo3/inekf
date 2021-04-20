@@ -46,7 +46,7 @@ typename InEKF<pM>::Group InEKF<pM>::Update(const Eigen::VectorXd& z, std::strin
 
     // Fill up Z if it's only partially done
     VectorB z_;
-    if(z.size() == Group::mtxSize){
+    if(z.size() == Group::M){
         z_ = z;
     }
     else if(z.size() == Group::rotSize){
