@@ -6,22 +6,15 @@
 #include <vector>
 #include <cmath>
 
-#include "matplotlibcpp.h"
+#include "InEKF/Plot"
 #include "InEKF/Core"
 #include "InEKF/SE2_SLAM"
-namespace plt = matplotlibcpp;
 
-void test(Eigen::Matrix<double,Eigen::Dynamic,1>){
-    std::cout << "Vector" << std::endl;
-}
-void test(Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>){
-    std::cout << "Matrix" << std::endl;
-}
+namespace plt = matplotlibcpp;
 
 int main(){
     Eigen::Vector<double,-1> x = Eigen::Vector<double,5>::Ones();
 
-    // test(x);
     InEKF::SE2<1,Eigen::Dynamic> state(x, Eigen::Matrix<double,5,5>::Ones());
     std::cout << state << std::endl;
 
@@ -32,6 +25,7 @@ int main(){
     // std::cout << Eigen::MatrixXd::Zero(5,5).isZero() << std::endl;
 
     // Eigen::Matrix4d t = Eigen::Matrix4d::Identity(4,4);
+
 }
 
 // int main(){
