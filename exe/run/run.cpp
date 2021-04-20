@@ -26,6 +26,8 @@ int main(){
 
     // Eigen::Matrix4d t = Eigen::Matrix4d::Identity(4,4);
 
+    plt::plot({1,3,2,4});
+    plt::show();
 }
 
 // int main(){

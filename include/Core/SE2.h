@@ -72,7 +72,7 @@ class SE2 : public LieGroup<SE2<cols,aug>,calcStateDim(2,cols,aug),calcStateMtxS
 
         // TODO: Implement adding columns. May need to be template specialized
         void addCol(const Eigen::Vector2d& x, const Eigen::Matrix2d& sigma=Eigen::Matrix2d::Identity());
-        void addAug(double x, double sigma);
+        void addAug(double x, double sigma=1);
 
         // Self operations
         SE2 inverse() const;

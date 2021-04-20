@@ -58,8 +58,6 @@ SE2<cols,aug>::SE2(const TangentVector& xi, const MatrixCov& Cov)
     for(int i=0;i<curr_cols;i++){
         State_.block(0,2+i,2,1) = xi.segment(2*i+1,2);
     }
-    std::cout << curr_aug << std::endl;
-    std::cout << curr_cols << std::endl;
     Aug_ = xi.tail(curr_aug);
     verifySize();
 }
