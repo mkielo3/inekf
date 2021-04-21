@@ -103,4 +103,13 @@ class LieGroup{
 
 }
 
+template <class Class, int N, int M, int A>
+std::ostream& operator<<(std::ostream& os, const InEKF::LieGroup<Class,N,M,A>& rhs)  
+{
+    os << "Matrix\n" << rhs();
+    if(rhs.Uncertain()) os << "\nSigma\n" << rhs.Cov();
+    if(A != 0) os << "\nAug\n" << rhs.Aug();
+    return os;
+}
+
 #endif // BASE_LIE

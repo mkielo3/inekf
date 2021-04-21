@@ -1,5 +1,4 @@
 #include "Core/SO2.h"
-#include "iostream"
 
 namespace InEKF{
 
@@ -16,6 +15,28 @@ void SO2<A>::verifySize() {
     }
 }
 
+template <int A>
+void SO2<A>::addAug(double x, double sigma){
+    if(A != Eigen::Dynamic) throw std::range_error("Can't add augment, not dynamic");
+    
+    // Add it into state
+    int curr_size = Aug_.rows();
+    VectorAug V(curr_size+1);
+    V.head(curr_size) = Aug_;
+    V(curr_size) = x;
+    Aug_ = V;
+
+    // Add into Sigma
+    if(isUncertain){
+        int curr_dim = Cov_.rows();
+
+        MatrixCov Sig = MatrixCov::Zero(curr_dim+1, curr_dim+1);
+        Sig.topLeftCorner(curr_dim,curr_dim) = Cov_;
+
+        Sig(curr_dim,curr_dim) = sigma;
+        Cov_ = Sig;
+    }
+}
 
 template <int A>
 SO2<A> SO2<A>::inverse() const{

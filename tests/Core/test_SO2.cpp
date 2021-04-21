@@ -55,7 +55,17 @@ TEST(SO2, TangentConstructor){
 }
 
 TEST(SO2, AddAug){
+    InEKF::SO2<Eigen::Dynamic> x;
+    EXPECT_EQ(x.Aug().rows(), 0);
 
+    x.addAug(2);
+
+    EXPECT_EQ(x.Aug()(0), 2);
+
+    // TODO: Test adding to Cov
+
+    InEKF::SE2<> y;
+    EXPECT_THROW( y.addAug(2), std::range_error);
 }
 
 TEST(SO2, Inverse){

@@ -4,7 +4,6 @@
 #include <Eigen/Core>
 #include "Core/LieGroup.h"
 #include "Core/MeasureModel.h"
-#include "iostream"
 
 namespace InEKF {
 

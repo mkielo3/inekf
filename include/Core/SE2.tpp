@@ -92,7 +92,7 @@ void SE2<C,A>::addCol(const Eigen::Vector2d& x, const Eigen::Matrix2d& sigma){
 
 template <int C, int A>
 void SE2<C,A>::addAug(double x, double sigma){
-    if(A != Eigen::Dynamic) throw std::range_error("Can't add columns, not dynamic");
+    if(A != Eigen::Dynamic) throw std::range_error("Can't add augment, not dynamic");
     
     // Add it into state
     int curr_size = Aug_.rows();
@@ -261,15 +261,6 @@ typename SE2<C,A>::MatrixCov SE2<C,A>::Ad(const SE2& g){
         Ad_X(2+2*i,0) = -g[i][0];
     }
     return Ad_X;
-}
-
-template <int C, int A>
-std::ostream& operator<<(std::ostream& os, const SE2<C, A>& rhs)  
-{
-    os << "Matrix\n" << rhs();
-    if(rhs.Uncertain()) os << "\nSigma\n" << rhs.Cov();
-    if(A != 0) os << "\nAug\n" << rhs.Aug();
-    return os;
 }
 
 }

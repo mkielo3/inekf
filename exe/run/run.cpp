@@ -13,21 +13,9 @@
 namespace plt = matplotlibcpp;
 
 int main(){
-    Eigen::Vector<double,-1> x = Eigen::Vector<double,5>::Ones();
-
-    InEKF::SE2<1,Eigen::Dynamic> state(x, Eigen::Matrix<double,5,5>::Ones());
-    std::cout << state << std::endl;
-
-    // state.addCol(Eigen::Vector2d::Ones()*2, Eigen::Matrix2d::Ones()*2);
-    state.addAug(2, 2);
-    std::cout << state << std::endl;
-
-    // std::cout << Eigen::MatrixXd::Zero(5,5).isZero() << std::endl;
-
-    // Eigen::Matrix4d t = Eigen::Matrix4d::Identity(4,4);
-
-    plt::plot({1,3,2,4});
-    plt::show();
+    Eigen::Matrix3d temp = Eigen::Matrix3d::Identity(); 
+    InEKF::SE2 x(temp, Eigen::Matrix3d::Identity());
+    std::cout << x << std::endl;
 }
 
 // int main(){

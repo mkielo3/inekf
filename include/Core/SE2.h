@@ -4,7 +4,6 @@
 #include <Eigen/Core>
 #include "LieGroup.h"
 #include "SO2.h"
-#include "iostream"
 
 namespace InEKF {
 
@@ -42,6 +41,7 @@ class SE2 : public LieGroup<SE2<C,A>,calcStateDim(2,C,A),calcStateMtxSize(2,C),A
             const MatrixCov& Cov=MatrixCov::Zero(c,c),
             const VectorAug& Aug=VectorAug::Zero(a,1))
                 : LieGroup<SE2<C,A>,N,M,A>(State, Cov, Aug) { verifySize(); }
+        // TODO: Turn this off for dynamic sizes
         SE2(bool uncertain) : SE2() {
             Cov_ = MatrixCov::Identity(c,c);
             isUncertain = uncertain;
@@ -54,20 +54,11 @@ class SE2 : public LieGroup<SE2<C,A>,calcStateDim(2,C,A),calcStateMtxSize(2,C),A
         ~SE2() {}
 
         // Getters
-        bool Uncertain() const { return isUncertain; }
-        MatrixCov Cov() const { return Cov_; }
-        VectorAug Aug() const { return Aug_; }
-        MatrixState operator()() const { return State_; }
         SO2<> R() const { 
             Eigen::Matrix2d R = State_.block(0,0,2,2);
             return SO2<>(R); 
         }
         Eigen::Vector2d operator[](int idx) const { return State_.block(0,2+idx,2,1); }
-        
-        // Setters
-        void set(MatrixState S) { State_ = S; }
-        void setCov(MatrixCov Cov) { Cov_ = Cov; }
-        void setAug(MatrixCov Aug) { Aug_ = Aug; }
 
         void addCol(const Eigen::Vector2d& x, const Eigen::Matrix2d& sigma=Eigen::Matrix2d::Identity());
         void addAug(double x, double sigma=1);

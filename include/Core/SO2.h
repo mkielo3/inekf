@@ -58,6 +58,8 @@ class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
         // Getters
         SO2<> R() const { return SO2<>(State_); }
 
+        void addAug(double x, double sigma=1);
+
         // Self operations
         SO2<A> inverse() const;
         using LieGroup<SO2<A>,N,M,A>::Ad;
@@ -73,16 +75,6 @@ class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
         static MatrixCov Ad(const SO2& g){ return MatrixCov::Identity(); }
 
 };
-
-template <int A>
-std::ostream& operator<<(std::ostream& os, const SO2<A>& rhs)  
-{
-    os << "Matrix\n" << rhs();
-    if(rhs.Uncertain()) os << "\nSigma\n" << rhs.Cov();
-    if(A != 0) os << "\nAug\n" << rhs.Aug();
-    return os;
-}
-
 
 }
 
