@@ -42,7 +42,7 @@ TEST(GenericMeasureModel, bConstructor){
     EXPECT_THROW( (InEKF::GenericMeasureModel<Group>(b, M, InEKF::LEFT)), std::range_error);
 }
 
-TEST(GenericMeasureModel, fillZ){
+TEST(GenericMeasureModel, processZ){
     // make b, H and M
     VectorB b;
     b << 0, 0, 0, 1;
@@ -56,5 +56,5 @@ TEST(GenericMeasureModel, fillZ){
     VectorB expected;
     expected << 2,2,0,1;
 
-    EXPECT_MATRICES_EQ(S.fillZ(z, state), expected);
+    EXPECT_MATRICES_EQ(S.processZ(z, state), expected);
 }

@@ -2,17 +2,22 @@
 #define DEPTHSENSOR
 
 #include <Eigen/Core>
-#include "Core/MeasureModel.h"
-#include "SE2_3_Bias/SE2_3_Bias.h"
+#include <InEKF/Core>
 
 namespace InEKF {
 
-class DepthSensor : public MeasureModel {
+class DepthSensor : public MeasureModel<SE3<2,6>> {
     
     public:
-        DepthSensor();
-        ~DepthSensor(){ delete lie_; }
-        void Observe(const Eigen::VectorXd& z, const State& state);
+        typedef typename MeasureModel<SE3<2,6>>::MatrixS MatrixS;
+        typedef typename MeasureModel<SE3<2,6>>::MatrixH MatrixH;
+        typedef typename MeasureModel<SE3<2,6>>::VectorV VectorV;
+        typedef typename MeasureModel<SE3<2,6>>::VectorB VectorB;
+
+        DepthSensor(double std=1);
+        ~DepthSensor(){ }
+        VectorB processZ(const Eigen::VectorXd& z, const SE3<2,6>& state);
+        MatrixS calcSInverse(const SE3<2,6>& state);
         void setNoise(double std);
 };
 

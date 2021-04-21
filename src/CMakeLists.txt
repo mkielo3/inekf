@@ -1,3 +1,3 @@
 add_subdirectory(Core)
 add_subdirectory(SE2_SLAM)
-# add_subdirectory(SE2_3_Bias)
+add_subdirectory(Inertial)

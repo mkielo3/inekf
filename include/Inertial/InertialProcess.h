@@ -3,21 +3,24 @@
 
 #include <Eigen/Core>
 #include <unsupported/Eigen/MatrixFunctions>
+#include <InEKF/Core>
 
-#include "Core/ProcessModel.h"
+namespace Eigen{
+    typedef Matrix<double,6,1> Vector6d;
+}
 
 namespace InEKF {
 
-class InertialProcess : public ProcessModel<InertialProcess, SO2<>, Eigen::Vector<double,6>> {
+class InertialProcess : public ProcessModel<SE3<2,6>, Eigen::Vector<double,6>> {
 
     private:
-        const Eigen::Vector3d g_;
+        const Eigen::Vector3d g_ = (Eigen::Vector3d() << 0,0,-9.81).finished();
 
     public:
         InertialProcess();
         ~InertialProcess(){}
-        static Group f(U u, double dt, Group state);
-        static MatrixCov MakePhi(const U& u, double dt, const Group& state, ERROR error);
+        SE3<2,6> f(Eigen::Vector6d u, double dt, SE3<2,6> state);
+        MatrixCov MakePhi(const Eigen::Vector6d& u, double dt, const SE3<2,6>& state, ERROR error);
         
         void setGyroNoise(double std);
         void setAccelNoise(double std);

@@ -1,16 +1,15 @@
-#include "SE2_3_Bias/InertialProcess.h"
+#include "Inertial/InertialProcess.h"
 
 namespace InEKF {
 
-InertialProcess::InertialProcess()
-    :  g_((Eigen::VectorXd(3) << 0,0,-9.81).finished()) {
-    Q_ = MatrixCov::Zero();
+InertialProcess::InertialProcess() {
+    Q_ = MatrixCov::Identity();
 }
 
-static Group f(U u, double dt, Group state){
+SE3<2,6> InertialProcess::f(Eigen::Vector6d u, double dt, SE3<2,6> state){
     // TODO: Clean this up
     // Get everything we need
-    Eigen::Vector<double, 6> u_shifted = u - state.Aug();
+    Eigen::Vector6d u_shifted = u - state.Aug();
     Eigen::Vector3d omega = u_shifted.head(3);
     Eigen::Vector3d a = u_shifted.tail(3);
     Eigen::Matrix3d R = state.R()();
@@ -18,16 +17,19 @@ static Group f(U u, double dt, Group state){
     Eigen::Vector3d p = state[1];
 
     // Calculate
-    // TODO: Make setters for a class
-    state.R()() = R * lie_->ExpCross(omega*dt);
-    state[0] = v + (R*a + g_)*dt;
-    state[1] = p + v*dt + (R*a + g_)*dt*dt/2;
+    MatrixState S = MatrixState::Identity();
+    S.block(0,0,3,3) = R * SO3<>::Exp(omega*dt)();
+    S.block(0,3,3,1) = v + (R*a + g_)*dt;
+    S.block(0,4,3,1) = p + v*dt + (R*a + g_)*dt*dt/2;
 
+    state.setState(S);
     // state.setLastu(u_shifted);
+
     return state;
 }
 
-static MatrixCov InertialProcess::MakePhi(const U& u, double dt, const Group& state, ERROR error){
+typedef typename SE3<2,6>::MatrixCov MatrixCov;
+MatrixCov InertialProcess::MakePhi(const Eigen::Vector6d& u, double dt, const SE3<2,6>& state, ERROR error){
     MatrixCov A = MatrixCov::Zero();
 
     // TODO: Figure out where error should be saved (probably in InEKF)

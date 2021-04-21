@@ -2,7 +2,6 @@
 #include <Eigen/Core>
 #include <unsupported/Eigen/MatrixFunctions>
 #include <InEKF/Core>
-#include "iostream"
 
 #define EXPECT_MATRICES_EQ(M_actual, M_expected) \
   EXPECT_TRUE(M_actual.isApprox(M_expected, 1e-6)) << "  Actual:\n" << M_actual << "\nExpected:\n" << M_expected

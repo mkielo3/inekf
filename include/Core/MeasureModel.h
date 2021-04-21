@@ -16,14 +16,15 @@ class MeasureModel {
         typedef Eigen::Matrix<double,Group::rotSize,1> VectorV;
         typedef Eigen::Matrix<double,Group::M,1> VectorB;
 
-        // These are all constant and should be set once in the constructor
+        // These are all constant and should be set once
         ERROR error_;
         MatrixS M_;
 
-        // This one can be changed each iteration, or should be set once in constructor
+        // This one can be changed each iteration, or should be set once
         MatrixH H_;
 
         // This is changed by InEKF based on if it's a RIGHT/LEFT filter
+        // Use this in calcSInverse if you override it
         MatrixH H_error_;
 
 
@@ -32,7 +33,7 @@ class MeasureModel {
                
         MeasureModel() {};
 
-        virtual VectorB fillZ(const Eigen::VectorXd&, const Group& state) { throw 1; return VectorB::Zero(); }
+        virtual VectorB processZ(const Eigen::VectorXd& z, const Group& state) { throw 1; return VectorB::Zero(); }
 
         virtual VectorV calcV(const VectorB& z, const Group& state){
             // calculate V

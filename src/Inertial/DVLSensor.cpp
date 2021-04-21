@@ -1,19 +1,24 @@
-#include "SE2_3_Bias/DVLSensor.h"
+#include "Inertial/DVLSensor.h"
 
 namespace InEKF {
 
-DVLSensor::DVLSensor(Eigen::Matrix3d dvl_r, Eigen::Vector3d dvl_p)
-    : dvl_r(dvl_r) {
-    M_ = Eigen::Matrix3d::Zero();
+DVLSensor::DVLSensor(SO3<> dvlR, Eigen::Vector3d dvlT)
+    : dvlR_(dvlR), dvlT_(SO3<>::Wedge(dvlT)){
     error_ = ERROR::RIGHT;
-    H_base_ = Eigen::Matrix<double, 3, 15>::Zero();
-    H_base_.block<3,3>(0,3) = Eigen::Matrix3d::Identity();
-    lie_ = new SE2_3_Bias;
-    this->dvl_p = lie_->Cross(dvl_p);
+
+    M_ = Eigen::Matrix3d::Zero();
+    H_ = Eigen::Matrix<double, 3, 15>::Zero();
+    H_.block<3,3>(0,3) = Eigen::Matrix3d::Identity();
 }
 
+DVLSensor::DVLSensor(SE3<> dvlH)
+    : DVLSensor(dvlH.R(), dvlH[0]) {}
+
+DVLSensor::DVLSensor(Eigen::Matrix3d dvlR, Eigen::Vector3d dvlT)
+    : DVLSensor(SO3<>(dvlR), dvlT) {}
+
 DVLSensor::DVLSensor() 
-    : DVLSensor(Eigen::Matrix3d::Identity(), Eigen::Vector3d::Zero()) {
+    : DVLSensor(SO3<>(), Eigen::Vector3d::Zero()) {
 }
 
 void DVLSensor::setNoise(double std_dvl, double std_imu){
@@ -21,23 +26,19 @@ void DVLSensor::setNoise(double std_dvl, double std_imu){
     
     // Rotate into IMU frame
     Eigen::Matrix3d IMU = Eigen::Matrix3d::Identity() * std_imu*std_imu;
-    M_ = dvl_r*M_*dvl_r.transpose() + dvl_p*IMU*dvl_p.transpose();
+    M_ = dvlR_()*M_*dvlR_().transpose() + dvlT_*IMU*dvlT_.transpose();
 }
 
-void DVLSensor::Observe(const Eigen::VectorXd& z, const State& state){
-    // Convert to IMU frame
+DVLSensor::VectorB DVLSensor::processZ(const Eigen::VectorXd& z, const SE3<2,6>& state){
+    // Fill up Z
     Eigen::Vector<double, 5> z_full;
     z_full << z[0], z[1], z[2], -1, 0;
 
-    Eigen::Vector3d omega = state.getLastu().head(3);
-    z_full.head(3) = dvl_r*z_full.head(3) + dvl_p*omega;
+    // Convert to IMU frame
+    Eigen::Vector3d omega = z.tail(3);
+    z_full.head(3) = dvlR_()*z_full.head(3) + dvlT_*omega;
 
-    // Find V
-    V_ = (state.getMu() * z_full).head(3);
-
-    // Calculate Sinv
-    Eigen::Matrix3d R = state[0];
-    Sinv_ = ( H_*state.getSigma()*H_.transpose() + R*M_*R.transpose() ).inverse();
+    return z_full;
 }
 
 }

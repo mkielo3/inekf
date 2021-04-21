@@ -63,6 +63,7 @@ class LieGroup{
         
         // Setters
         void setCov(MatrixCov Cov) { Cov_ = Cov; };
+        void setState(MatrixState State) { State_ = State; }
 
         // helper to automatically cast things
         const Class & derived() const{

@@ -53,7 +53,7 @@ add_subdirectory(tests)
 
 
 #################### INSTALL AS LIBRARY ####################
-# set(INSTALL_LIBS Core SE2_3_Bias)
+# set(INSTALL_LIBS Core SE2_SLAM Inertial)
 # install(TARGETS ${INSTALL_LIBS} EXPORT ${PROJECT_NAME}Config
 #         ARCHIVE DESTINATION lib
 #         LIBRARY DESTINATION lib

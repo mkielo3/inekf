@@ -50,7 +50,7 @@ typename InEKF<pM>::Group InEKF<pM>::Update(const Eigen::VectorXd& z, std::strin
         z_ = z;
     }
     else if(z.size() == Group::rotSize){
-        z_ = m_model->fillZ(z, state_);
+        z_ = m_model->processZ(z, state_);
     }
 
     // Use measurement model to make Sinv and V

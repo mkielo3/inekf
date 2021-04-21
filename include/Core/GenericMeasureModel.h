@@ -50,7 +50,7 @@ class GenericMeasureModel : public MeasureModel<Group> {
             this->error_ = error;
         };
 
-        VectorB fillZ(const Eigen::VectorXd& z, const Group& state){
+        VectorB processZ(const Eigen::VectorXd& z, const Group& state){
             VectorB temp = b_;
             temp.head(Group::rotSize) = z;
             return temp;
