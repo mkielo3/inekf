@@ -43,21 +43,7 @@ class SO3 : public LieGroup<SO3<A>,calcStateDim(3,0,A),3,A>{
 
         SO3(double w1, double w2, double w3, 
             const MatrixCov& Cov=MatrixCov::Zero(c,c),
-            const VectorAug& Aug=VectorAug::Zero(a)) 
-                : LieGroup<SO3<A>,N,M,A>(Cov, Aug) {
-            Eigen::Vector3d w;
-            w << w1, w2, w3;
-            double theta = w.norm();
-            MatrixState wx = SO3<>::Wedge(w);
-
-            if(theta < .0001){
-                State_ = MatrixState::Identity() + wx/2 + wx*wx/6 + wx*wx*wx/24;
-            }
-            else{
-                State_ = MatrixState::Identity() + wx*(sin(theta)/theta) + wx*wx*((1 - cos(theta))/(theta*theta));
-            }
-            verifySize();
-        }
+            const VectorAug& Aug=VectorAug::Zero(a));
 
         SO3(const TangentVector& xi, const MatrixCov& Cov=MatrixCov::Zero(c,c))
             : SO3(xi(0), xi(1), xi(2), Cov, xi.tail(xi.size()-3)) {}

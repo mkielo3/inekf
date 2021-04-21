@@ -15,6 +15,23 @@ void SO3<A>::verifySize() {
     }
 }
 
+template<int A>
+SO3<A>::SO3(double w1, double w2, double w3, const MatrixCov& Cov, const VectorAug& Aug) 
+        : LieGroup<SO3<A>,N,M,A>(Cov, Aug) {
+    Eigen::Vector3d w;
+    w << w1, w2, w3;
+    double theta = w.norm();
+    MatrixState wx = SO3<>::Wedge(w);
+
+    if(theta < .0001){
+        State_ = MatrixState::Identity() + wx/2 + wx*wx/6 + wx*wx*wx/24;
+    }
+    else{
+        State_ = MatrixState::Identity() + wx*(sin(theta)/theta) + wx*wx*((1 - cos(theta))/(theta*theta));
+    }
+    verifySize();
+}
+
 template <int A>
 void SO3<A>::addAug(double x, double sigma){
     if(A != Eigen::Dynamic) throw std::range_error("Can't add augment, not dynamic");
