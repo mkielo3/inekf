@@ -1,10 +1,10 @@
-#include "Core/SO2.h"
+#include "Core/SO3.h"
 
 namespace InEKF{
 
 // helper functions
 template <int A>
-void SO2<A>::verifySize() {
+void SO3<A>::verifySize() {
     // we only care if it's off when it's uncertain && dynamic
     if(isUncertain && A == Eigen::Dynamic){
         int curr_A = Aug_.rows();
@@ -16,7 +16,7 @@ void SO2<A>::verifySize() {
 }
 
 template <int A>
-void SO2<A>::addAug(double x, double sigma){
+void SO3<A>::addAug(double x, double sigma){
     if(A != Eigen::Dynamic) throw std::range_error("Can't add augment, not dynamic");
     
     // Add it into state
@@ -39,13 +39,13 @@ void SO2<A>::addAug(double x, double sigma){
 }
 
 template <int A>
-SO2<A> SO2<A>::inverse() const{
+SO3<A> SO3<A>::inverse() const{
     MatrixState temp = State_.transpose();
-    return SO2(temp);
+    return SO3(temp);
 }
 
 template <int A>
-SO2<A> SO2<A>::operator*(const SO2<A>& rhs) const{
+SO3<A> SO3<A>::operator*(const SO3<A>& rhs) const{
     // Make sure they're both the same size
     if(A == Eigen::Dynamic && (*this).Aug().rows() != rhs.Aug().rows()){
         throw std::range_error("Dynamic SE2 elements have different Aug");
@@ -63,38 +63,43 @@ SO2<A> SO2<A>::operator*(const SO2<A>& rhs) const{
     MatrixState State = (*this)() * rhs();
     VectorAug Aug = this->Aug() + rhs.Aug();
 
-    return SO2<A>(State, Cov, Aug);
+    return SO3<A>(State, Cov, Aug);
 }
 
 template <int A>
-typename SO2<A>::MatrixState SO2<A>::Wedge(const TangentVector& xi){
+typename SO3<A>::MatrixState SO3<A>::Wedge(const TangentVector& xi){
     MatrixState State;
-    double theta = xi(0);
-    State << 0, -theta,
-            theta, 0;
+    State <<     0, -xi(2),  xi(1),
+             xi(2),      0, -xi(0),
+            -xi(1),  xi(0),      0;
     return State;
 }
 
 template <int A>
-SO2<A> SO2<A>::Exp(const TangentVector& xi){
-    double theta = xi(0);
-    return SO2(theta,
-                MatrixCov::Zero(c,c),
-                xi.tail(xi.rows()-1));
+SO3<A> SO3<A>::Exp(const TangentVector& xi){
+    return SO3(xi, MatrixCov::Zero(c,c));
 }
 
 template <int A>
-typename SO2<A>::TangentVector SO2<A>::Log(const SO2& g){
-    TangentVector xi(g.Aug().rows()+1);
-    xi(0) = atan2(g()(1,0), g()(0,0));
-    xi.tail(xi.rows()-1) = g.Aug();
+typename SO3<A>::TangentVector SO3<A>::Log(const SO3& g){
+    TangentVector xi(g.Aug().rows()+3);
+
+    double theta = acos( (g().trace()-1)/2 );
+    xi(0) = g()(2,1) - g()(1,2);
+    xi(1) = g()(0,2) - g()(2,0);
+    xi(2) = g()(1,0) - g()(0,1);
+    xi.head(3) *= theta / (2*sin(theta));
+
+    xi.tail(xi.rows()-3) = g.Aug();
     return xi;
 }
 
 template <int A>
-typename SO2<A>::MatrixCov SO2<A>::Ad(const SO2& g){
-    int curr_dim = g.Aug().rows() + 1;
-    return MatrixCov::Identity(curr_dim,curr_dim);
+typename SO3<A>::MatrixCov SO3<A>::Ad(const SO3& g){
+    int curr_dim = g.Aug().rows() + 3;
+    MatrixCov adjoint = MatrixCov::Identity(curr_dim,curr_dim);
+    adjoint.block(0,0,3,3) = g();
+    return adjoint;
 }
 
 }

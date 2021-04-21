@@ -72,7 +72,7 @@ class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
         static MatrixState Wedge(const TangentVector& xi);
         static SO2 Exp(const TangentVector& xi);
         static TangentVector Log(const SO2& g);
-        static MatrixCov Ad(const SO2& g){ return MatrixCov::Identity(); }
+        static MatrixCov Ad(const SO2& g);
 
 };
 

@@ -1,5 +1,6 @@
 set(TESTS test_SE2.cpp
             test_SO2.cpp
+            test_SO3.cpp
             test_GenericMeasure.cpp)
 
 set(TEST_LIBS Eigen3::Eigen

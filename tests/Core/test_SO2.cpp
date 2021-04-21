@@ -71,7 +71,7 @@ TEST(SO2, AddAug){
 TEST(SO2, Inverse){
     InEKF::SO2<> x(PI/2);
 
-    EXPECT_MATRICES_EQ(x.inverse()(), x().transpose());
+    EXPECT_MATRICES_EQ(x.inverse()(), x().inverse());
 }
 
 TEST(SO2, Exp){
