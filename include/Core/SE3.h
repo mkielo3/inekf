@@ -49,6 +49,8 @@ class SE3 : public LieGroup<SE3<C,A>,calcStateDim(3,C,A),calcStateMtxSize(3,C),A
         SE3(const SE3& State) : SE3(State(), State.Cov(), State.Aug()) {}
         SE3(const TangentVector& xi,
             const MatrixCov& Cov=MatrixCov::Zero(c,c));
+        SE3(const SO3<> R, const Eigen::Matrix<double,N-3,1> xi,
+            const MatrixCov& Cov=MatrixCov::Zero(c,c));
         SE3(double w1, double w2, double w3, double x, double y, double z,
             const MatrixCov& Cov=MatrixCov::Zero(c,c));
         ~SE3() {}

@@ -33,7 +33,14 @@ class MeasureModel {
                
         MeasureModel() {};
 
-        virtual VectorB processZ(const Eigen::VectorXd& z, const Group& state) { throw 1; return VectorB::Zero(); }
+        virtual VectorB processZ(const Eigen::VectorXd& z, const Group& state) { 
+            if(z.rows() == Group::M){
+                return z;
+            }
+            else{
+                throw std::range_error("Wrong sized z");
+            }
+        }
 
         virtual VectorV calcV(const VectorB& z, const Group& state){
             // calculate V

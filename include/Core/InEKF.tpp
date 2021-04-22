@@ -13,7 +13,7 @@ typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){
 
     MatrixCov Q = pModel.getQ();
     if(error_ == ERROR::RIGHT){
-        MatrixCov Adj_X = Group::Ad( state_() );
+        MatrixCov Adj_X = Group::Ad( state_ );
         Q = Adj_X*Q*Adj_X.transpose();
     }
     Sigma = Phi* (Sigma + Q*dt) *Phi.transpose();
@@ -44,14 +44,8 @@ typename InEKF<pM>::Group InEKF<pM>::Update(const Eigen::VectorXd& z, std::strin
     }
     m_model->setHError( H );
 
-    // Fill up Z if it's only partially done
-    VectorB z_;
-    if(z.size() == Group::M){
-        z_ = z;
-    }
-    else if(z.size() == Group::rotSize){
-        z_ = m_model->processZ(z, state_);
-    }
+    // Do any preprocessing on z (fill it up, frame changes, etc)
+    VectorB z_ = m_model->processZ(z, state_);;
 
     // Use measurement model to make Sinv and V
     VectorV V = m_model->calcV(z_, state_);

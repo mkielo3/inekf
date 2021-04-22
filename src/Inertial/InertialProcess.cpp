@@ -23,7 +23,6 @@ SE3<2,6> InertialProcess::f(Eigen::Vector6d u, double dt, SE3<2,6> state){
     S.block(0,4,3,1) = p + v*dt + (R*a + g_)*dt*dt/2;
 
     state.setState(S);
-    // state.setLastu(u_shifted);
 
     return state;
 }
@@ -32,12 +31,11 @@ typedef typename SE3<2,6>::MatrixCov MatrixCov;
 MatrixCov InertialProcess::MakePhi(const Eigen::Vector6d& u, double dt, const SE3<2,6>& state, ERROR error){
     MatrixCov A = MatrixCov::Zero();
 
-    // TODO: Figure out where error should be saved (probably in InEKF)
     if(error == ERROR::RIGHT){
         // Get everything we need
         Eigen::Matrix3d R = state.R()();
-        Eigen::Matrix3d v_cross = SO3<>::Wedge( state[1] );
-        Eigen::Matrix3d p_cross = SO3<>::Wedge( state[2] );
+        Eigen::Matrix3d v_cross = SO3<>::Wedge( state[0] );
+        Eigen::Matrix3d p_cross = SO3<>::Wedge( state[1] );
 
         A.block<3,3>(3,0) = SO3<>::Wedge(g_);
         A.block<3,3>(6,3) = Eigen::Matrix3d::Identity();

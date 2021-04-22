@@ -66,6 +66,34 @@ SE3<C,A>::SE3(const TangentVector& xi, const MatrixCov& Cov)
 }
 
 template <int C, int A>
+SE3<C,A>::SE3(const SO3<> R, const Eigen::Matrix<double,N-3,1> xi, const MatrixCov& Cov)
+        : LieGroup<SE3<C,A>,N,M,A>(Cov) {
+    TangentVector xi_copy = TangentVector::Zero(xi.rows()+3);
+    xi_copy.tail(xi.rows()) = xi;
+    verifyTangentVector(xi_copy);
+
+    // figure out state size for dynamic purposes
+    int curr_cols = C;
+    int curr_A = A;
+    if (C == Eigen::Dynamic){
+        curr_cols = (xi.rows() - A) / rotSize;
+    }
+    else if(A == Eigen::Dynamic){
+        curr_A  = (xi.rows() - C*3);
+    }
+    int curr_M = calcStateMtxSize(rotSize, curr_cols);
+
+    // fill it up!
+    State_ = MatrixState::Identity(curr_M, curr_M);
+    State_.block(0,0,3,3) = R();
+    for(int i=0;i<curr_cols;i++){
+        State_.block(0,3+i,3,1) = xi.segment(3*i,3);
+    }
+    Aug_ = xi.tail(curr_A);
+    verifySize();
+}
+
+template <int C, int A>
 void SE3<C,A>::addCol(const Eigen::Vector3d& x, const Eigen::Matrix3d& sigma){
     if (C != Eigen::Dynamic) throw std::range_error("Can't add columns, not dynamic");
     

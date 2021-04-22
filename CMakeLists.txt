@@ -43,7 +43,7 @@ endif()
 #################### ADD TARGETS ####################
 add_subdirectory(src)
 if(EXAMPLES)
-  add_subdirectory(exe)
+  add_subdirectory(examples)
 endif()
 
 

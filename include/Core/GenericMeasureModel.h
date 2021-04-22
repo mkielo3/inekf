@@ -51,9 +51,17 @@ class GenericMeasureModel : public MeasureModel<Group> {
         };
 
         VectorB processZ(const Eigen::VectorXd& z, const Group& state){
-            VectorB temp = b_;
-            temp.head(Group::rotSize) = z;
-            return temp;
+            if(z.rows() == Group::M){
+                return z;
+            }
+            else if(z.rows() == Group::rotSize){
+                VectorB temp = b_;
+                temp.head(Group::rotSize) = z;
+                return temp;
+            }
+            else{
+                throw std::range_error("Wrong sized z");
+            }
         }
 };
 
