@@ -1,0 +1,79 @@
+cmake_minimum_required(VERSION 3.16)
+
+# https://stackoverflow.com/questions/13959434/cmake-out-of-source-build-python-files
+function(create_symlinks source_folder dest_folder)
+  if(${source_folder} STREQUAL ${dest_folder})
+    return()
+  endif()
+
+  file(GLOB files
+       LIST_DIRECTORIES true
+       RELATIVE "${source_folder}"
+       "${source_folder}/*")
+  foreach(path_file ${files})
+    get_filename_component(folder ${path_file} PATH)
+    get_filename_component(ext ${path_file} EXT)
+    set(ignored_ext ".tpl" ".h")
+    list (FIND ignored_ext "${ext}" _index)
+    if (${_index} GREATER -1)
+      continue()
+    endif ()
+    # Create REAL folder
+    file(MAKE_DIRECTORY "${dest_folder}")
+
+    # Delete symlink if it exists
+    file(REMOVE "${dest_folder}/${path_file}")
+
+    # Get OS dependent path to use in `execute_process`
+    file(TO_NATIVE_PATH "${dest_folder}/${path_file}" link)
+    file(TO_NATIVE_PATH "${source_folder}/${path_file}" target)
+
+    # cmake-format: off
+    if(UNIX)
+      set(command ln -s ${target} ${link})
+    else()
+      set(command cmd.exe /c mklink ${link} ${target})
+    endif()
+    # cmake-format: on
+
+    execute_process(COMMAND ${command}
+                    RESULT_VARIABLE result
+                    ERROR_VARIABLE output)
+
+    if(NOT ${result} EQUAL 0)
+      message(
+        FATAL_ERROR
+          "Could not create symbolic link for: ${target} --> ${output}")
+    endif()
+
+  endforeach(path_file)
+endfunction(create_symlinks)
+
+# TODO: Find way to see if it's installed systemwide first
+# Get pybind
+FetchContent_Declare(
+    pybind11
+    GIT_REPOSITORY https://github.com/pybind/pybind11.git
+    GIT_TAG        v2.6.2
+)
+FetchContent_MakeAvailable(pybind11)
+# find_package(pybind11 REQUIRED)
+
+set(SRCS src/main.cpp 
+        src/LieGroup.cpp
+        src/SO.cpp 
+        src/SE.cpp
+    )
+
+set(PYTHON_BUILD_DIRECTORY ${PROJECT_BINARY_DIR}/python)
+message(STATUS "PYTHON_BUILD_DIRECTORY ${PYTHON_BUILD_DIRECTORY}")
+
+pybind11_add_module(_inekf "${SRCS}")
+target_link_libraries(_inekf PUBLIC Core Inertial SE2_SLAM)
+target_compile_options(_inekf PUBLIC "-fvisibility=hidden")
+
+add_custom_target(python-install
+    COMMAND ${PYTHON_EXECUTABLE} ${PYTHON_BUILD_DIRECTORY}/setup.py install
+    WORKING_DIRECTORY python)
+
+create_symlinks("${CMAKE_CURRENT_SOURCE_DIR}/inekf" "${PYTHON_BUILD_DIRECTORY}/inekf")

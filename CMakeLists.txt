@@ -18,8 +18,10 @@ endif()
 
 #################### IMPORT DEPENDENCIES ####################
 set(EXAMPLES 1)
+set(PYTHON 1)
 
 # Eigen 
+# Download eigen instead? Way to check?
 find_package(Eigen3 CONFIG REQUIRED)
 
 # Python for plotting and/or wrapper
@@ -33,17 +35,16 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/google/googletest.git
     GIT_TAG        release-1.10.0
 )
-FetchContent_GetProperties(googletest)
-if(NOT googletest_POPULATED)
-    FetchContent_Populate(googletest)
-    add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
-endif()
+FetchContent_MakeAvailable(googletest)
 
 
 #################### ADD TARGETS ####################
 add_subdirectory(src)
 if(EXAMPLES)
   add_subdirectory(examples)
+endif()
+if(PYTHON)
+  add_subdirectory(python)
 endif()
 
 
