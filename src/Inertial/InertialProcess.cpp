@@ -44,6 +44,8 @@ MatrixCov InertialProcess::MakePhi(const Eigen::Vector6d& u, double dt, const SE
         A.block<3,3>(3,9) = -v_cross * R;
         A.block<3,3>(6,9) = -p_cross * R;
         A.block<3,3>(3,12) = -R;
+
+        return MatrixCov::Identity() + A*dt + A*A*dt*dt/2 + A*A*A*dt*dt*dt/6;
     }
     else{
         Eigen::Matrix3d w_cross = SO3<>::Wedge( u.head(3) );
@@ -57,9 +59,10 @@ MatrixCov InertialProcess::MakePhi(const Eigen::Vector6d& u, double dt, const SE
 
         A.block<3,3>(0,9) = -Eigen::Matrix3d::Identity();
         A.block<3,3>(3,12) = -Eigen::Matrix3d::Identity();
+        
+        return (A*dt).exp();
     }
 
-    return (A*dt).exp();
 }
 
 void InertialProcess::setGyroNoise(double std){
