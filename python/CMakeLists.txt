@@ -67,9 +67,8 @@ set(SRCS src/main.cpp
 set(PYTHON_BUILD_DIRECTORY ${PROJECT_BINARY_DIR}/python)
 message(STATUS "PYTHON_BUILD_DIRECTORY ${PYTHON_BUILD_DIRECTORY}")
 
-pybind11_add_module(_inekf "${SRCS}")
+pybind11_add_module(_inekf "${SRCS}" OPT_SIZE THIN_LTO)
 target_link_libraries(_inekf PUBLIC Core Inertial SE2_SLAM)
-target_compile_options(_inekf PUBLIC "-fvisibility=hidden")
 target_include_directories(_inekf PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/python/include>
   $<INSTALL_INTERFACE:include>

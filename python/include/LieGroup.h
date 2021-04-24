@@ -47,7 +47,8 @@ py::class_<T> make_group(py::module &m, std::string name, int num1, int num2=-10
 
         // Misc
         .def("addAug", &T::addAug, "x"_a, "sigma"_a=1)
-        .def("__str__", &T::toString);
+        .def("__str__", &T::toString)
+        .def("__repr__", &T::toString);
 
     return myClass;
 }
@@ -69,9 +70,14 @@ void makeSE2(py::module &m){
                 "State"_a=SE2_MS::Identity(ma,ma), "Cov"_a=SE2_MC::Zero(c,c), "Aug"_a=SE2_VA::Zero(a))
         .def(py::init<InEKF::SE2<C,A> const &>())
         .def(py::init<SE2_TV, SE2_MC>(),
-            "xi"_a, "Cov"_a=SE2_MC::Zero(c,c));
-        // .def(py::init<double, double, double, SE2_MC, SE2_VA>(),
-            // "theta"_a, "x"_a, "y"_a, "Cov"_a=SE2_MC::Zero(c,c), "Aug"_a=SE2_VA::Zero(a));
+            "xi"_a, "Cov"_a=SE2_MC::Zero(c,c))
+        .def(py::init<double, double, double, SE2_MC>(),
+            "theta"_a, "x"_a, "y"_a, "Cov"_a=SE2_MC::Zero(c,c))
+
+        .def("__getitem__", &InEKF::SE2<C,A>::operator[])
+        .def("addCol", &InEKF::SE2<C,A>::addCol,
+            "x"_a, "sigma"_a=Eigen::Matrix2d::Identity());
+
 }
 
 template <int C, int A>
@@ -81,8 +87,9 @@ void makeSE3(py::module &m){
 
     // Fill in SE3 Constructors
     int a = A == Eigen::Dynamic ? 0 : A;
-    int c = (A == Eigen::Dynamic || C == Eigen::Dynamic) ? 6 : InEKF::calcStateDim(3,C,A);
     int ma = C == Eigen::Dynamic ? 4 : InEKF::calcStateMtxSize(3,C);
+    constexpr int c = (A == Eigen::Dynamic || C == Eigen::Dynamic) ? 6 : InEKF::calcStateDim(3,C,A);
+    static constexpr int small_xi = (A == Eigen::Dynamic || C == Eigen::Dynamic) ? Eigen::Dynamic : c-3;
     typedef typename InEKF::SE3<C,A>::TangentVector SE3_TV;
     typedef typename InEKF::SE3<C,A>::MatrixCov SE3_MC;
     typedef typename InEKF::SE3<C,A>::MatrixState SE3_MS;
@@ -92,14 +99,16 @@ void makeSE3(py::module &m){
                 "State"_a=SE3_MS::Identity(ma,ma), "Cov"_a=SE3_MC::Zero(c,c), "Aug"_a=SE3_VA::Zero(a))
         .def(py::init<InEKF::SE3<C,A> const &>())
         .def(py::init<SE3_TV, SE3_MC>(),
-            "xi"_a, "Cov"_a=SE3_MC::Zero(c,c));
-        // .def(py::init<double, double, double, double, double, double, SE3_MC, SE3_VA>(),
-        //     "w1"_a, "w2"_a, "w3"_a, "x"_a, "y"_a, "z"_a, "Cov"_a=SE3_MC::Zero(c,c), "Aug"_a=SE3_VA::Zero(a))
-        // .def(py::init<InEKF::SO3<>, Eigen::Matrix<double,InEKF::calcStateDim(3,C,A)-3,1>, SE3_MC>,
+            "xi"_a, "Cov"_a=SE3_MC::Zero(c,c))
+        .def(py::init<double, double, double, double, double, double, SE3_MC>(),
+            "w1"_a, "w2"_a, "w3"_a, "x"_a, "y"_a, "z"_a, "Cov"_a=SE3_MC::Zero(c,c))
+        // .def(py::init<InEKF::SO3<>, Eigen::Matrix<double,small_xi,1>, SE3_MC>)
                 // "R"_a, "xi"_a, "Cov"_a=SE3_MC::Zero(c,c));
-    // TODO AddCol
+
+        .def("__getitem__", &InEKF::SE3<C,A>::operator[])
+        .def("addCol", &InEKF::SE3<C,A>::addCol,
+            "x"_a, "sigma"_a=Eigen::Matrix3d::Identity());
     // TODO Fix these constructors freaking out!
-    // TODO add [] overload
 
 }
 

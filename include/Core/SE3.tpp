@@ -66,7 +66,7 @@ SE3<C,A>::SE3(const TangentVector& xi, const MatrixCov& Cov)
 }
 
 template <int C, int A>
-SE3<C,A>::SE3(const SO3<> R, const Eigen::Matrix<double,N-3,1> xi, const MatrixCov& Cov)
+SE3<C,A>::SE3(const SO3<> R, const Eigen::Matrix<double,small_xi,1>& xi, const MatrixCov& Cov)
         : LieGroup<SE3<C,A>,N,M,A>(Cov) {
     TangentVector xi_copy = TangentVector::Zero(xi.rows()+3);
     xi_copy.tail(xi.rows()) = xi;

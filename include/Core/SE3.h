@@ -25,6 +25,8 @@ class SE3 : public LieGroup<SE3<C,A>,calcStateDim(3,C,A),calcStateMtxSize(3,C),A
         static constexpr int c = N == Eigen::Dynamic ? 6 : N;
         static constexpr int m = M == Eigen::Dynamic ? 4 : M;
 
+        static constexpr int small_xi = N == Eigen::Dynamic ? Eigen::Dynamic : N-3;
+
         using LieGroup<SE3<C,A>,N,M,A>::Cov_;
         using LieGroup<SE3<C,A>,N,M,A>::State_;
         using LieGroup<SE3<C,A>,N,M,A>::Aug_;
@@ -51,10 +53,12 @@ class SE3 : public LieGroup<SE3<C,A>,calcStateDim(3,C,A),calcStateMtxSize(3,C),A
             const MatrixCov& Cov=MatrixCov::Zero(c,c));
         // TODO the -3 here is going to wreck havoc on dynamic types
         // Fix in python side too
-        SE3(const SO3<> R, const Eigen::Matrix<double,N-3,1> xi,
+        SE3(const SO3<> R, const Eigen::Matrix<double,small_xi,1>& xi,
             const MatrixCov& Cov=MatrixCov::Zero(c,c));
         SE3(double w1, double w2, double w3, double x, double y, double z,
-            const MatrixCov& Cov=MatrixCov::Zero(c,c));
+            const MatrixCov& Cov=MatrixCov::Zero(c,c)){ 
+                throw std::invalid_argument("Can't use this constructor with those templates");
+        }
         ~SE3() {}
 
         // Getters
@@ -62,7 +66,13 @@ class SE3 : public LieGroup<SE3<C,A>,calcStateDim(3,C,A),calcStateMtxSize(3,C),A
             Eigen::Matrix3d R = State_.block(0,0,3,3);
             return SO3<>(R); 
         }
-        Eigen::Vector3d operator[](int idx) const { return State_.block(0,3+idx,3,1); }
+        Eigen::Vector3d operator[](int idx) const {
+            int curr_cols = State_.cols() - rotSize;
+            if(idx >= curr_cols){
+                throw std::out_of_range("Sliced out of range");
+            }
+            return State_.block(0,3+idx,3,1); 
+        }
 
         void addCol(const Eigen::Vector3d& x, const Eigen::Matrix3d& sigma=Eigen::Matrix3d::Identity());
         void addAug(double x, double sigma=1);
