@@ -60,7 +60,6 @@ FetchContent_MakeAvailable(pybind11)
 # find_package(pybind11 REQUIRED)
 
 set(SRCS src/main.cpp 
-        src/LieGroup.cpp
         src/SO.cpp 
         src/SE.cpp
     )
@@ -71,6 +70,11 @@ message(STATUS "PYTHON_BUILD_DIRECTORY ${PYTHON_BUILD_DIRECTORY}")
 pybind11_add_module(_inekf "${SRCS}")
 target_link_libraries(_inekf PUBLIC Core Inertial SE2_SLAM)
 target_compile_options(_inekf PUBLIC "-fvisibility=hidden")
+target_include_directories(_inekf PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/python/include>
+  $<INSTALL_INTERFACE:include>
+  )  
+
 
 add_custom_target(python-install
     COMMAND ${PYTHON_EXECUTABLE} ${PYTHON_BUILD_DIRECTORY}/setup.py install
