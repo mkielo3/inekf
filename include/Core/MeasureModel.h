@@ -20,7 +20,8 @@ class MeasureModel {
         ERROR error_;
         MatrixS M_;
 
-        // This one can be changed each iteration, or should be set once
+        // This one can be changed each iteration in InEKF.Update, 
+        // or should be set once in constructor
         MatrixH H_;
 
         // This is changed by InEKF based on if it's a RIGHT/LEFT filter

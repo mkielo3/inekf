@@ -5,16 +5,23 @@
 #include "LieGroup.h"
 
 // Definitions found in SO.cpp and SE.cpp
-void makeSO(py::module &m);
-void makeSE(py::module &m);
+void makeAllSO(py::module &m);
+void makeAllSE(py::module &m);
+void makeAllMeasure(py::module &m);
 
 PYBIND11_MODULE(_inekf, m) {
     m.doc() = "Invariant Extended Kalman Filter"; // optional module docstring
 
     // The amount each of these instantiate is found in
     // the top of SO.cpp and SE.cpp
-    makeSO(m);
-    makeSE(m);
+    makeAllSO(m);
+    makeAllSE(m);
+
+    makeAllMeasure(m);
+
+    py::enum_<InEKF::ERROR>(m, "ERROR")
+        .value("RIGHT", InEKF::RIGHT)
+        .value("LEFT", InEKF::LEFT);
 
     // If more LieGroups are needed, can declare them here with appropriate template(s)
     // These template functions found in LieGroup.h

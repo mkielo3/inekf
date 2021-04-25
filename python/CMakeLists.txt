@@ -60,8 +60,9 @@ FetchContent_MakeAvailable(pybind11)
 # find_package(pybind11 REQUIRED)
 
 set(SRCS src/main.cpp 
-        src/SO.cpp 
-        src/SE.cpp
+        src/makeSO.cpp 
+        src/makeSE.cpp
+        src/makeMeasure.cpp
     )
 
 set(PYTHON_BUILD_DIRECTORY ${PROJECT_BINARY_DIR}/python)

@@ -1,12 +1,8 @@
 #include "LieGroup.h"
+#include "globals.h"
 
 namespace py = pybind11;
 using namespace pybind11::literals;
-
-/*********************** GLOBAL VARIABLES ***********************/
-/********** USE TO DEFINE HOW MANY TEMPLATES ARE MADE **********/
-constexpr int SE_AUG = 6;
-constexpr int SE_COL = 3;
 
 
 // Compile time double for loop
@@ -31,7 +27,7 @@ struct forLoopSE<0,A>{
 template <int C>
 struct forLoopSE<C,-2>{
     static void value(py::module &m){
-        forLoopSE<C-1,SE_AUG>::value(m);
+        forLoopSE<C-1,AUG>::value(m);
     }
 };
 
@@ -41,4 +37,4 @@ struct forLoopSE<-2,A> {
     static void value(py::module &m){}
 };
 
-void makeSE(py::module &m){ forLoopSE<SE_COL,SE_AUG>::value(m); }
+void makeAllSE(py::module &m){ forLoopSE<COL,AUG>::value(m); }
