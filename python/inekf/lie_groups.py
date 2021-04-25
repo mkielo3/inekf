@@ -23,6 +23,7 @@ def _get_class(group, param1, param2=None):
 ############################ SE3 ##############################
 class _meta_SE3(type):
     # if we used both default arguments
+    __name__ = "SE3_1_0"
     def __call__(self, *args, **kwargs):
         return _inekf.SE3_1_0(*args, **kwargs)
 
@@ -44,6 +45,7 @@ class SE3(metaclass=_meta_SE3):
 ############################ SE2 ##############################
 class _meta_SE2(type):
     # if we used both default arguments
+    __name__ = "SE2_1_0"
     def __call__(self, *args, **kwargs):
         return _inekf.SE2_1_0(*args, **kwargs)
 
@@ -65,6 +67,7 @@ class SE2(metaclass=_meta_SE2):
 ############################ SO3 ##############################
 class _meta_SO3(type):
     # if we used default argument
+    __name__ = "SO3_0"
     def __call__(self, *args, **kwargs):
         return _inekf.SO3_0(*args, **kwargs)
 
@@ -82,6 +85,7 @@ class SO3(metaclass=_meta_SO3):
 ############################ SO2 ##############################
 class _meta_SO2(type):
     # if we used default argument
+    __name__ = "SO2_0"
     def __call__(self, *args, **kwargs):
         return _inekf.SO2_0(*args, **kwargs)
 
