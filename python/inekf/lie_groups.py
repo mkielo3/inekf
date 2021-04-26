@@ -1,5 +1,4 @@
 import enum
-import _inekf
 
 class Eigen(enum.Enum):
     Dynamic = -1

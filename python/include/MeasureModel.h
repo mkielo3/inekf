@@ -57,7 +57,7 @@ class PyMeasureModel : public InEKF::MeasureModel<Group> {
 };
 
 template<class T>
-py::class_<T> make_measure(py::module &m, std::string name){
+void make_measure(py::module &m, std::string name){
     using K = InEKF::MeasureModel<T>;
 
     name = "MeasureModel_" + name;
@@ -76,8 +76,6 @@ py::class_<T> make_measure(py::module &m, std::string name){
         .def_property("H", &K::getH, &K::setH)
         .def_readwrite("M", &PyMeasureModel<T>::M_)
         .def_readwrite("error", &PyMeasureModel<T>::error_);
-
-    return myClass;
 }
 
 #endif // PYTHON_MEASUREMODEL

@@ -63,6 +63,7 @@ set(SRCS src/main.cpp
         src/makeSO.cpp 
         src/makeSE.cpp
         src/makeMeasure.cpp
+        src/makeProcess.cpp
     )
 
 set(PYTHON_BUILD_DIRECTORY ${PROJECT_BINARY_DIR}/python)
