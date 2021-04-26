@@ -64,10 +64,15 @@ set(SRCS src/main.cpp
         src/makeSE.cpp
         src/makeMeasure.cpp
         src/makeProcess.cpp
+        src/makeInertial.cpp
     )
 
 set(PYTHON_BUILD_DIRECTORY ${PROJECT_BINARY_DIR}/python)
 message(STATUS "PYTHON_BUILD_DIRECTORY ${PYTHON_BUILD_DIRECTORY}")
+
+# make linked libraries
+set_target_properties(Inertial PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+set_target_properties(SE2_SLAM PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 
 pybind11_add_module(_inekf "${SRCS}" OPT_SIZE THIN_LTO)
 target_link_libraries(_inekf PUBLIC Core Inertial SE2_SLAM)

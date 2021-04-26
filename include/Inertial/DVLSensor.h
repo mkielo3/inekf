@@ -22,7 +22,7 @@ class DVLSensor : public MeasureModel<SE3<2,6>> {
 
         void setNoise(double std_dvl, double std_imu);
 
-        VectorB processZ(const Eigen::VectorXd& z, const SE3<2,6>& state);
+        VectorB processZ(const Eigen::VectorXd& z, const SE3<2,6>& state) override;
 
     private:
         Eigen::Matrix3d dvlT_;
