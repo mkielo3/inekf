@@ -27,6 +27,9 @@ struct forLoopMeasure {
         make_measure<InEKF::SE2<C,A>>(m, makeNameSE<C,A>("SE2"));
         make_measure<InEKF::SE3<C,A>>(m, makeNameSE<C,A>("SE3"));
 
+        makeGenericMeasure<InEKF::SE2<C,A>>(m, makeNameSE<C,A>("SE2"));
+        makeGenericMeasure<InEKF::SE3<C,A>>(m, makeNameSE<C,A>("SE3"));
+
         forLoopMeasure<C, A-1>::value(m);
     }
 };
@@ -54,7 +57,23 @@ struct forLoopMeasure<-2,A> {
         make_measure<InEKF::SO2<A>>(m, makeNameSO<A>("SO2"));
         make_measure<InEKF::SO3<A>>(m, makeNameSO<A>("SO3"));
 
+        makeGenericMeasure<InEKF::SO2<A>>(m, makeNameSO<A>("SO2"));
+        makeGenericMeasure<InEKF::SO3<A>>(m, makeNameSO<A>("SO3"));
+
         forLoopMeasure<-2, A-1>::value(m);
+    }
+};
+
+// Skip SO2_0 for Generic Measure
+template <>
+struct forLoopMeasure<-2,0> {
+    static void value(py::module &m){
+        make_measure<InEKF::SO2<0>>(m, makeNameSO<0>("SO2"));
+        make_measure<InEKF::SO3<0>>(m, makeNameSO<0>("SO3"));
+
+        makeGenericMeasure<InEKF::SO3<0>>(m, makeNameSO<0>("SO3"));
+
+        forLoopMeasure<-2, -1>::value(m);
     }
 };
 

@@ -11,6 +11,19 @@ class _meta_Measure(type):
 class MeasureModel(metaclass=_meta_Measure):
     pass
 
+############################ Generic Measure Model ##############################
+class _meta_GenericMeasure(type):
+    def __getitem__(cls,key):
+        # Parse name
+        group_name = key.__name__
+        name = "GenericMeasureModel_" + group_name
+
+        module = __import__("_inekf")
+        return getattr(module, name)
+
+class GenericMeasureModel(metaclass=_meta_Measure):
+    pass
+
 ############################ Process Model ##############################
 class _meta_Process(type):
     def __getitem__(cls,key):

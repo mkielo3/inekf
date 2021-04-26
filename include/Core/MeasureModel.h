@@ -10,12 +10,13 @@ namespace InEKF {
 template<class Group>
 class MeasureModel {
     
-    protected:
+    public:
         typedef Eigen::Matrix<double,Group::rotSize,Group::rotSize> MatrixS;
         typedef Eigen::Matrix<double,Group::rotSize,Group::N> MatrixH;
         typedef Eigen::Matrix<double,Group::rotSize,1> VectorV;
         typedef Eigen::Matrix<double,Group::M,1> VectorB;
 
+    protected:
         // These are all constant and should be set once
         ERROR error_;
         MatrixS M_;
@@ -33,6 +34,15 @@ class MeasureModel {
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
                
         MeasureModel() {};
+        MeasureModel(MatrixH H, MatrixS M, ERROR error) {
+            this->H_ = H;
+            this->M_ = M;
+            this->error_ = error;
+        };
+        MeasureModel(MatrixS M, ERROR error) {
+            this->M_ = M;
+            this->error_ = error;
+        };
 
         virtual VectorB processZ(const Eigen::VectorXd& z, const Group& state) { 
             if(z.rows() == Group::M){

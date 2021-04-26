@@ -27,12 +27,13 @@ PYBIND11_MODULE(_inekf, m) {
         .value("RIGHT", InEKF::RIGHT)
         .value("LEFT", InEKF::LEFT);
 
-    // If more LieGroups are needed, can declare them here with appropriate template(s)
-    // These template functions found in LieGroup.h
+    // If more templates of any kind are needed, use these functions
+    // These template functions found in headers
     // makeSO2<11>(m);
     // makeSO3<12>(m);
     // makeSE2<13,14>(m);
     // makeSE3<15,16>(m);
-    // make_measure<InEKF::SO2<1>>(m);
-    // make_process<InEKF::SO2<1>,Eigen::Vector5d>(m);
+    // make_measure<InEKF::SO2<1>>(m, "SO2");
+    // makeGenericMeasure<InEKF::SO2<1>>(m, "SO2");
+    // make_process<InEKF::SO2<1>,Eigen::Vector5d>(m, "SO2_Vec5");
 }
