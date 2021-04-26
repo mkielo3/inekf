@@ -65,6 +65,7 @@ set(SRCS src/main.cpp
         src/makeMeasure.cpp
         src/makeProcess.cpp
         src/makeInertial.cpp
+        src/makeSE2_SLAM.cpp
     )
 
 set(PYTHON_BUILD_DIRECTORY ${PROJECT_BINARY_DIR}/python)

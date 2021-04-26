@@ -1,4 +1,5 @@
 import enum
+import _inekf
 
 class Eigen(enum.Enum):
     Dynamic = -1
@@ -15,8 +16,7 @@ def _get_class(group, param1, param2=None):
         name += f"_{param2}"
 
     # return
-    module = __import__("_inekf")
-    return getattr(module, name)
+    return getattr(_inekf, name)
 
 
 ############################ SE3 ##############################

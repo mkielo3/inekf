@@ -11,7 +11,9 @@ void makeAllSO(py::module &m);
 void makeAllSE(py::module &m);
 void makeAllMeasure(py::module &m);
 void makeAllProcess(py::module &m);
+
 void makeInertial(py::module &m);
+void makeSE2_SLAM(py::module &m);
 
 PYBIND11_MODULE(_inekf, m) {
     m.doc() = "Invariant Extended Kalman Filter"; // optional module docstring
@@ -25,6 +27,7 @@ PYBIND11_MODULE(_inekf, m) {
     makeAllProcess(m);
 
     makeInertial(m);
+    makeSE2_SLAM(m);
 
     py::enum_<InEKF::ERROR>(m, "ERROR")
         .value("RIGHT", InEKF::RIGHT)
