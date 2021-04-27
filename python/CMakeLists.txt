@@ -64,28 +64,39 @@ set(SRCS src/main.cpp
         src/makeSE.cpp
         src/makeMeasure.cpp
         src/makeProcess.cpp
-        src/makeInEKF.cpp
+        # src/makeInEKF.cpp
         src/makeInertial.cpp
         src/makeSE2_SLAM.cpp
     )
 
+# Setup various python things
 set(PYTHON_BUILD_DIRECTORY ${PROJECT_BINARY_DIR}/python)
-message(STATUS "PYTHON_BUILD_DIRECTORY ${PYTHON_BUILD_DIRECTORY}")
+file(READ "${PROJECT_SOURCE_DIR}/README.md" README_CONTENTS)
+configure_file(${PROJECT_SOURCE_DIR}/python/setup.py.in
+                ${PYTHON_BUILD_DIRECTORY}/setup.py)
 
 # make linked libraries
 set_target_properties(Inertial PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 set_target_properties(SE2_SLAM PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 
 pybind11_add_module(_inekf "${SRCS}" OPT_SIZE THIN_LTO)
+
 target_link_libraries(_inekf PUBLIC Core Inertial SE2_SLAM)
 target_include_directories(_inekf PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/python/include>
   $<INSTALL_INTERFACE:include>
   )  
-
+set_target_properties(_inekf PROPERTIES
+  INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib"
+  INSTALL_RPATH_USE_LINK_PATH TRUE
+  OUTPUT_NAME "_inekf"
+  LIBRARY_OUTPUT_DIRECTORY "${PYTHON_BUILD_DIRECTORY}/inekf"
+  DEBUG_POSTFIX "" # Otherwise you will have a wrong name
+  RELWITHDEBINFO_POSTFIX "" # Otherwise you will have a wrong name
+)
 
 add_custom_target(python-install
     COMMAND ${PYTHON_EXECUTABLE} ${PYTHON_BUILD_DIRECTORY}/setup.py install
-    WORKING_DIRECTORY python)
+    WORKING_DIRECTORY ${PYTHON_BUILD_DIRECTORY})
 
 create_symlinks("${CMAKE_CURRENT_SOURCE_DIR}/inekf" "${PYTHON_BUILD_DIRECTORY}/inekf")

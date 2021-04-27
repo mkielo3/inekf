@@ -17,8 +17,9 @@ if(${CMAKE_VERSION} VERSION_LESS 3.14)
 endif()
 
 #################### IMPORT DEPENDENCIES ####################
-set(EXAMPLES 1)
-set(PYTHON 1)
+option(EXAMPLES "Build Examples" ON)
+option(PYTHON   "Build Python Wrapper" ON)
+option(TESTS    "Build Tests" ON)
 
 # Eigen 
 # Download eigen instead? Way to check?
@@ -50,8 +51,9 @@ endif()
 
 #################### ADD TESTS ####################
 enable_testing()
-add_subdirectory(tests)
-
+if(TESTS)
+  add_subdirectory(tests)
+endif()
 
 #################### INSTALL AS LIBRARY ####################
 # set(INSTALL_LIBS Core SE2_SLAM Inertial)

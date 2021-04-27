@@ -1,4 +1,4 @@
-import _inekf
+from . import _inekf
 
 ########################### Measurement Model ##############################
 # figure this one out
