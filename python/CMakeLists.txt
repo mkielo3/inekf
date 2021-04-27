@@ -64,6 +64,7 @@ set(SRCS src/main.cpp
         src/makeSE.cpp
         src/makeMeasure.cpp
         src/makeProcess.cpp
+        src/makeInEKF.cpp
         src/makeInertial.cpp
         src/makeSE2_SLAM.cpp
     )

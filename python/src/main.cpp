@@ -5,18 +5,24 @@
 #include "LieGroup.h"
 #include "MeasureModel.h"
 #include "ProcessModel.h"
+#include "InEKF.h"
 
 // Definitions found in other cpp files
 void makeAllSO(py::module &m);
 void makeAllSE(py::module &m);
 void makeAllMeasure(py::module &m);
 void makeAllProcess(py::module &m);
+void makeAllInEKF(py::module &m);
 
 void makeInertial(py::module &m);
 void makeSE2_SLAM(py::module &m);
 
 PYBIND11_MODULE(_inekf, m) {
     m.doc() = "Invariant Extended Kalman Filter"; // optional module docstring
+
+    py::enum_<InEKF::ERROR>(m, "ERROR")
+        .value("RIGHT", InEKF::RIGHT)
+        .value("LEFT", InEKF::LEFT);
 
     // The amount each of these instantiate is found in globals.cpp
     // If only need specific templates for a smaller binary, turn these off and select what you need below
@@ -25,13 +31,11 @@ PYBIND11_MODULE(_inekf, m) {
 
     makeAllMeasure(m);
     makeAllProcess(m);
+    makeAllInEKF(m);
 
-    makeInertial(m);
+    // makeInertial(m);
     makeSE2_SLAM(m);
 
-    py::enum_<InEKF::ERROR>(m, "ERROR")
-        .value("RIGHT", InEKF::RIGHT)
-        .value("LEFT", InEKF::LEFT);
 
     // If more templates of any kind are needed, use these functions
     // These template functions found in headers
@@ -42,4 +46,5 @@ PYBIND11_MODULE(_inekf, m) {
     // make_measure<InEKF::SO2<1>>(m, "SO2");
     // makeGenericMeasure<InEKF::SO2<1>>(m, "SO2");
     // make_process<InEKF::SO2<1>,Eigen::Vector5d>(m, "SO2_Vec5");
+    // makeInEKF<InEKF::SO2<1>,Eigen::Vector5d>(m, "SO2_Vec5");
 }

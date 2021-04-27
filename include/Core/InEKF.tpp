@@ -6,12 +6,12 @@ template <class pM>
 typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){    
     // Predict mu
     MatrixCov Sigma = state_.Cov();
-    state_ = pModel.f(u, dt, state_);
+    state_ = pModel->f(u, dt, state_);
 
     // Predict Sigma
-    MatrixCov Phi = pModel.MakePhi(u, dt, state_, error_);
+    MatrixCov Phi = pModel->MakePhi(u, dt, state_, error_);
 
-    MatrixCov Q = pModel.getQ();
+    MatrixCov Q = pModel->getQ();
     if(error_ == ERROR::RIGHT){
         MatrixCov Adj_X = Group::Ad( state_ );
         Q = Adj_X*Q*Adj_X.transpose();
@@ -25,8 +25,8 @@ typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){
 
 template <class pM>
 typename InEKF<pM>::Group InEKF<pM>::Update(const Eigen::VectorXd& z, std::string type, MatrixH H){
-    mModels[type].setH(H);
-    Update(z, type);
+    mModels[type]->setH(H);
+    return Update(z, type);
 }
 
 template <class pM>
@@ -63,7 +63,8 @@ typename InEKF<pM>::Group InEKF<pM>::Update(const Eigen::VectorXd& z, std::strin
         state_ = state_ * Group::Exp(K_V);
     }
 
-    MatrixCov I = MatrixCov::Identity();
+    int size = state_.Cov().rows();
+    MatrixCov I = MatrixCov::Identity(size, size);
     state_.setCov( (I - K*H)*state_.Cov() );
 
     return state_;

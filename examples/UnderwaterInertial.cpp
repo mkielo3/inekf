@@ -46,10 +46,10 @@ int main(){
     iekf.addMeasureModel("Depth", &depth);
 
     // Set up Inertial noise
-    iekf.pModel.setGyroNoise( .005 *  (3.14/180)  * sqrt(200.0) );
-    iekf.pModel.setAccelNoise( 20.0 * (pow(10, -6)/9.81) * sqrt(200.0) );
-    iekf.pModel.setGyroBiasNoise(0.001);
-    iekf.pModel.setAccelBiasNoise(0.001);
+    iekf.pModel->setGyroNoise( .005 *  (3.14/180)  * sqrt(200.0) );
+    iekf.pModel->setAccelNoise( 20.0 * (pow(10, -6)/9.81) * sqrt(200.0) );
+    iekf.pModel->setGyroBiasNoise(0.001);
+    iekf.pModel->setAccelBiasNoise(0.001);
 
 
 

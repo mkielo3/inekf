@@ -47,7 +47,7 @@ void make_process(py::module &m, std::string name){
     using K = InEKF::ProcessModel<T,S>;
 
     name = "ProcessModel_" + name;
-    py::class_<K, PyProcessModel<T,S>> myClass(m, name.c_str());
+    py::class_<K, PyProcessModel<T,S>, std::shared_ptr<K>> myClass(m, name.c_str());
     myClass
         .def(py::init<>())
         // Overrideable methods

@@ -19,7 +19,7 @@ void makeSE2_SLAM(py::module &m){
     // Just have to put in new classes
 
     // OdometryProcess
-    py::class_<InEKF::OdometryProcess, BaseProcess>(m, "OdometryProcess")
+    py::class_<InEKF::OdometryProcess, BaseProcess, std::shared_ptr<InEKF::OdometryProcess>>(m, "OdometryProcess")
         .def(py::init<>())
         .def("setQ", py::overload_cast<double>(&InEKF::OdometryProcess::setQ),
             "q"_a)
