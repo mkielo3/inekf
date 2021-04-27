@@ -19,7 +19,7 @@ void makeInertial(py::module &m){
     // Just have to put in new classes
 
     // InertialProcess
-    py::class_<InEKF::InertialProcess, BaseProcess>(m, "InertialProcess")
+    py::class_<InEKF::InertialProcess, BaseProcess, std::shared_ptr<InEKF::InertialProcess>>(m, "InertialProcess")
         .def(py::init<>())
         .def("setGyroNoise", &InEKF::InertialProcess::setGyroNoise,
             "std"_a)

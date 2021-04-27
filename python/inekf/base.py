@@ -1,3 +1,42 @@
+import _inekf
+
+########################### Measurement Model ##############################
+# figure this one out
+class _meta_InEKF(type):
+    def __getitem__(cls,key):
+        # Parse name
+        group_name = key.__mro__[-3].__name__
+        name = "InEKF_" + group_name.split('_',1)[1]
+
+        return InEKF(getattr(_inekf, name), key)
+
+# Wrapper class since we need to set process model manually 
+# (isn't templated for custom classes)
+class InEKF(metaclass=_meta_InEKF):
+    def __init__(self, base, pModel):
+        # save for later
+        self.base = base
+        self.pModel = pModel
+
+    # This is secretly used as our init function
+    def __call__(self, *args, **kwargs):
+        # initialize base
+        self.base = self.base(*args, **kwargs)
+        # initialize process model
+        self.base.pModel = self.pModel()
+        self.pModel = self.base.pModel
+
+        return self
+
+    def Predict(self, *args, **kwargs):
+        return self.base.Predict(*args, **kwargs)
+
+    def Update(self, *args, **kwargs):
+        return self.base.Update(*args, **kwargs)
+
+    def addMeasureModel(self, *args, **kwargs):
+        return self.base.addMeasureModel(*args, **kwargs)
+
 ############################ Measurement Model ##############################
 class _meta_Measure(type):
     def __getitem__(cls,key):
@@ -5,8 +44,7 @@ class _meta_Measure(type):
         group_name = key.__name__
         name = "MeasureModel_" + group_name
 
-        module = __import__("_inekf")
-        return getattr(module, name)
+        return getattr(_inekf, name)
 
 class MeasureModel(metaclass=_meta_Measure):
     pass
@@ -18,8 +56,7 @@ class _meta_GenericMeasure(type):
         group_name = key.__name__
         name = "GenericMeasureModel_" + group_name
 
-        module = __import__("_inekf")
-        return getattr(module, name)
+        return getattr(_inekf, name)
 
 class GenericMeasureModel(metaclass=_meta_Measure):
     pass
@@ -41,8 +78,8 @@ class _meta_Process(type):
             else:
                 name += key[1].__name__
 
-            module = __import__("_inekf")
-            return getattr(module, name)
+
+            return getattr(_inekf, name)
 
 class ProcessModel(metaclass=_meta_Process):
     pass
