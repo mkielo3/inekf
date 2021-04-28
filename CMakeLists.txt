@@ -22,7 +22,6 @@ option(PYTHON   "Build Python Wrapper" ON)
 option(TESTS    "Build Tests" ON)
 
 # Eigen 
-# Download eigen instead? Way to check?
 find_package(Eigen3 CONFIG REQUIRED)
 
 # Python for plotting and/or wrapper

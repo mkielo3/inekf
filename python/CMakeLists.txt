@@ -1,63 +1,18 @@
 cmake_minimum_required(VERSION 3.16)
 
-# https://stackoverflow.com/questions/13959434/cmake-out-of-source-build-python-files
-function(create_symlinks source_folder dest_folder)
-  if(${source_folder} STREQUAL ${dest_folder})
-    return()
-  endif()
+include(CMake_Macros.txt)
 
-  file(GLOB files
-       LIST_DIRECTORIES true
-       RELATIVE "${source_folder}"
-       "${source_folder}/*")
-  foreach(path_file ${files})
-    get_filename_component(folder ${path_file} PATH)
-    get_filename_component(ext ${path_file} EXT)
-    set(ignored_ext ".tpl" ".h")
-    list (FIND ignored_ext "${ext}" _index)
-    if (${_index} GREATER -1)
-      continue()
-    endif ()
-    # Create REAL folder
-    file(MAKE_DIRECTORY "${dest_folder}")
-
-    # Delete symlink if it exists
-    file(REMOVE "${dest_folder}/${path_file}")
-
-    # Get OS dependent path to use in `execute_process`
-    file(TO_NATIVE_PATH "${dest_folder}/${path_file}" link)
-    file(TO_NATIVE_PATH "${source_folder}/${path_file}" target)
-
-    # cmake-format: off
-    if(UNIX)
-      set(command ln -s ${target} ${link})
-    else()
-      set(command cmd.exe /c mklink ${link} ${target})
-    endif()
-    # cmake-format: on
-
-    execute_process(COMMAND ${command}
-                    RESULT_VARIABLE result
-                    ERROR_VARIABLE output)
-
-    if(NOT ${result} EQUAL 0)
-      message(
-        FATAL_ERROR
-          "Could not create symbolic link for: ${target} --> ${output}")
-    endif()
-
-  endforeach(path_file)
-endfunction(create_symlinks)
-
-# TODO: Find way to see if it's installed systemwide first
-# Get pybind
-FetchContent_Declare(
-    pybind11
-    GIT_REPOSITORY https://github.com/pybind/pybind11.git
-    GIT_TAG        v2.6.2
-)
-FetchContent_MakeAvailable(pybind11)
-# find_package(pybind11 REQUIRED)
+# Get pybind, if not local, pull from git
+find_package(pybind11)
+if(NOT pybind11_FOUND)
+  message(STATUS "Pulling pybind11 from git...")
+  FetchContent_Declare(
+      pybind11
+      GIT_REPOSITORY https://github.com/pybind/pybind11.git
+      GIT_TAG        v2.6.2
+  )
+  FetchContent_MakeAvailable(pybind11)
+endif()
 
 set(SRCS src/main.cpp 
         src/makeInEKFSE2.cpp
