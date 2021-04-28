@@ -4,22 +4,6 @@
 namespace py = pybind11;
 using namespace pybind11::literals;
 
-template <int C, int A>
-std::string makeNameSE(){
-    std::string name = "_";
-    name += C == Eigen::Dynamic ? "D" : std::to_string(C);
-    name += "_";
-    name += A == Eigen::Dynamic ? "D" : std::to_string(A);
-    return name;
-}
-
-template <int A>
-std::string makeNameSO(){
-    std::string name = "_";
-    name += A == Eigen::Dynamic ? "D" : std::to_string(A);
-    return name;
-}
-
 // mini for loop for iterating over vectors
 template<class G, int V>
 struct forLoopInEKFVector {
@@ -41,11 +25,11 @@ struct forLoopInEKF {
     static void value(py::module &m){
         std::string nameSE2 = "SE2"+makeNameSE<C,A>() + "_SE2"+makeNameSE<C,A>();
         makeInEKF<InEKF::SE2<C,A>,InEKF::SE2<C,A>>(m, nameSE2);
-        std::string nameSE3 = "SE3"+makeNameSE<C,A>() + "_SE3"+makeNameSE<C,A>();
-        makeInEKF<InEKF::SE3<C,A>,InEKF::SE3<C,A>>(m, nameSE3);
+        // std::string nameSE3 = "SE3"+makeNameSE<C,A>() + "_SE3"+makeNameSE<C,A>();
+        // makeInEKF<InEKF::SE3<C,A>,InEKF::SE3<C,A>>(m, nameSE3);
 
         forLoopInEKFVector<InEKF::SE2<C,A>, VEC>::value(m, "SE2"+makeNameSE<C,A>());
-        forLoopInEKFVector<InEKF::SE3<C,A>, VEC>::value(m, "SE3"+makeNameSE<C,A>());
+        // forLoopInEKFVector<InEKF::SE3<C,A>, VEC>::value(m, "SE3"+makeNameSE<C,A>());
 
         forLoopInEKF<C, A-1>::value(m);
     }
@@ -71,15 +55,15 @@ struct forLoopInEKF<C,-2>{
 template <int A>
 struct forLoopInEKF<-2,A> {
     static void value(py::module &m){
-        std::string nameSO2 = "SO2"+makeNameSO<A>() + "_SO2"+makeNameSO<A>();
-        makeInEKF<InEKF::SO2<A>,InEKF::SO2<A>>(m, nameSO2);
-        std::string nameSO3 = "SO3"+makeNameSO<A>() + "_SO3"+makeNameSO<A>();
-        makeInEKF<InEKF::SO3<A>,InEKF::SO3<A>>(m, nameSO3);
+        // std::string nameSO2 = "SO2"+makeNameSO<A>() + "_SO2"+makeNameSO<A>();
+        // makeInEKF<InEKF::SO2<A>,InEKF::SO2<A>>(m, nameSO2);
+        // std::string nameSO3 = "SO3"+makeNameSO<A>() + "_SO3"+makeNameSO<A>();
+        // makeInEKF<InEKF::SO3<A>,InEKF::SO3<A>>(m, nameSO3);
 
-        forLoopInEKFVector<InEKF::SO2<A>, VEC>::value(m, "SO2"+makeNameSO<A>());
-        forLoopInEKFVector<InEKF::SO3<A>, VEC>::value(m, "SO3"+makeNameSO<A>());
+        // forLoopInEKFVector<InEKF::SO2<A>, VEC>::value(m, "SO2"+makeNameSO<A>());
+        // forLoopInEKFVector<InEKF::SO3<A>, VEC>::value(m, "SO3"+makeNameSO<A>());
 
-        forLoopInEKF<-2, A-1>::value(m);
+        // forLoopInEKF<-2, A-1>::value(m);
     }
 };
 

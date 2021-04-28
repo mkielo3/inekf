@@ -60,13 +60,20 @@ FetchContent_MakeAvailable(pybind11)
 # find_package(pybind11 REQUIRED)
 
 set(SRCS src/main.cpp 
-        src/makeSO.cpp 
-        src/makeSE.cpp
-        src/makeMeasure.cpp
-        src/makeProcess.cpp
-        # src/makeInEKF.cpp
+        src/makeInEKFSE2.cpp
+        src/makeLieSO.cpp 
+        src/makeLieSE.cpp
+        src/makeProcessSO2.cpp
+        src/makeProcessSO3.cpp
+        src/makeProcessSE2.cpp
+        src/makeProcessSE3.cpp
+        src/makeMeasureSO.cpp
+        src/makeMeasureSE.cpp
         src/makeInertial.cpp
         src/makeSE2_SLAM.cpp
+        src/makeInEKFSO2.cpp
+        src/makeInEKFSO3.cpp
+        src/makeInEKFSE3.cpp
     )
 
 # Setup various python things
@@ -94,6 +101,7 @@ set_target_properties(_inekf PROPERTIES
   DEBUG_POSTFIX "" # Otherwise you will have a wrong name
   RELWITHDEBINFO_POSTFIX "" # Otherwise you will have a wrong name
 )
+target_compile_features(_inekf PUBLIC cxx_std_17)
 
 add_custom_target(python-install
     COMMAND ${PYTHON_EXECUTABLE} ${PYTHON_BUILD_DIRECTORY}/setup.py install

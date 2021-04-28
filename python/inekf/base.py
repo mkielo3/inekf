@@ -1,4 +1,5 @@
 from . import _inekf
+import inspect
 
 ########################### Measurement Model ##############################
 # figure this one out
@@ -23,8 +24,9 @@ class InEKF(metaclass=_meta_InEKF):
         # initialize base
         self.base = self.base(*args, **kwargs)
         # initialize process model
-        self.base.pModel = self.pModel()
-        self.pModel = self.base.pModel
+        if inspect.isclass(self.pModel):
+            self.pModel = self.pModel()
+        self.base = self.pModel
 
         return self
 
@@ -74,7 +76,10 @@ class _meta_Process(type):
             if isinstance(key[1], str):
                 name += key[1]
             elif isinstance(key[1], int):
-                name += "Vec" + str(key[1])
+                if key[1] == -1:
+                    name += "Vec" + "D"
+                else:
+                    name += "Vec" + str(key[1])
             else:
                 name += key[1].__name__
 

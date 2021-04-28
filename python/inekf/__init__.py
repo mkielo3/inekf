@@ -4,7 +4,7 @@ from inekf.base import MeasureModel, GenericMeasureModel, ProcessModel, InEKF
 from ._inekf import ERROR
 
 # import inertial objects
-from ._inekf import InertialProcess, DVLSensor, DepthSensor
+# from ._inekf import InertialProcess, DVLSensor, DepthSensor
 
 # import SE2_SLAM objects
 from ._inekf import OdometryProcess

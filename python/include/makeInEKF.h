@@ -13,6 +13,12 @@
 namespace py = pybind11;
 using namespace pybind11::literals;
 
+template <int C, int A>
+std::string makeNameSE();
+
+template <int A>
+std::string makeNameSO();
+
 template<class G, class U>
 void makeInEKF(py::module &m, std::string name){
     using T = InEKF::InEKF<InEKF::ProcessModel<G,U>>;

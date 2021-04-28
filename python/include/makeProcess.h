@@ -42,12 +42,28 @@ class PyProcessModel : public InEKF::ProcessModel<Group,U> {
         }
 };
 
-template<class T, class S>
-void make_process(py::module &m, std::string name){
-    using K = InEKF::ProcessModel<T,S>;
+template <int C, int A>
+std::string makeNameSE(){
+    std::string name = "_";
+    name += C == Eigen::Dynamic ? "D" : std::to_string(C);
+    name += "_";
+    name += A == Eigen::Dynamic ? "D" : std::to_string(A);
+    return name;
+}
 
-    name = "ProcessModel_" + name;
-    py::class_<K, PyProcessModel<T,S>, std::shared_ptr<K>> myClass(m, name.c_str());
+template <int A>
+std::string makeNameSO(){
+    std::string name = "_";
+    name += A == Eigen::Dynamic ? "D" : std::to_string(A);
+    return name;
+}
+
+template<class G, class U>
+void makeProcess(py::module &m, std::string name){
+    using K = InEKF::ProcessModel<G,U>;
+
+    std::string namePM = "ProcessModel_" + name;
+    py::class_<K, PyProcessModel<G,U>, std::shared_ptr<K>> myClass(m, namePM.c_str());
     myClass
         .def(py::init<>())
         // Overrideable methods
