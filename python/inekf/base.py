@@ -26,7 +26,7 @@ class InEKF(metaclass=_meta_InEKF):
         # initialize process model
         if inspect.isclass(self.pModel):
             self.pModel = self.pModel()
-        self.base = self.pModel
+        self.base.pModel = self.pModel
 
         return self
 
