@@ -3,12 +3,12 @@
 
 void makeAllMeasureSO(py::module &m) { 
     forSO( [&m](auto A){
-        makeMeasure<InEKF::SO2<A>>(m, makeNameSO<A>("SO2"));
-        makeMeasure<InEKF::SO3<A>>(m, makeNameSO<A>("SO3"));
+        makeMeasure<InEKF::SO2<A>>(m, "SO2"+makeNameSO<A>());
+        makeMeasure<InEKF::SO3<A>>(m, "SO3"+makeNameSO<A>());
 
         if constexpr(A != 0){
-            makeGenericMeasure<InEKF::SO2<A>>(m, makeNameSO<A>("SO2"));
+            makeGenericMeasure<InEKF::SO2<A>>(m, "SO2"+makeNameSO<A>());
         }
-        makeGenericMeasure<InEKF::SO3<A>>(m, makeNameSO<A>("SO3"));
+        makeGenericMeasure<InEKF::SO3<A>>(m, "SO3"+makeNameSO<A>());
     });
 }

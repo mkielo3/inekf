@@ -42,22 +42,6 @@ class PyProcessModel : public InEKF::ProcessModel<Group,U> {
         }
 };
 
-template <int C, int A>
-std::string makeNameSE(){
-    std::string name = "_";
-    name += C == Eigen::Dynamic ? "D" : std::to_string(C);
-    name += "_";
-    name += A == Eigen::Dynamic ? "D" : std::to_string(A);
-    return name;
-}
-
-template <int A>
-std::string makeNameSO(){
-    std::string name = "_";
-    name += A == Eigen::Dynamic ? "D" : std::to_string(A);
-    return name;
-}
-
 template<class G, class U>
 void makeProcess(py::module &m, std::string name){
     using K = InEKF::ProcessModel<G,U>;

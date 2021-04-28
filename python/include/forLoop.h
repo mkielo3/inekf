@@ -71,4 +71,22 @@ constexpr void forSEVec(F&& f){
     forConstSingle<-1,AUG+1>([&f](auto j){ f(std::integral_constant<int, -1>(),j,std::integral_constant<int, -1>()); });
 }
 
+
+// Helpers for elsewhere
+template <int C, int A>
+std::string makeNameSE(){
+    std::string name = "_";
+    name += C == Eigen::Dynamic ? "D" : std::to_string(C);
+    name += "_";
+    name += A == Eigen::Dynamic ? "D" : std::to_string(A);
+    return name;
+}
+
+template <int A>
+std::string makeNameSO(){
+    std::string name = "_";
+    name += A == Eigen::Dynamic ? "D" : std::to_string(A);
+    return name;
+}
+
 #endif // FOR_LOOP
