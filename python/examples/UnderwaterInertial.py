@@ -42,7 +42,7 @@ iekf.pModel.setAccelBiasNoise(0.001)
 
 # iterate through all of data
 num = 3000
-f = open('holodeck_data.txt')
+f = open('../../data/holodeck_data.txt')
 
 # create place to hold everything
 actual = []
