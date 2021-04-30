@@ -19,7 +19,6 @@ def _get_class(group, param1, param2=None):
     return getattr(_inekf, name)
 
 
-# TODO: static operations?? Maybe just as a passthrough??
 ############################ SE3 ##############################
 class _meta_SE3(type):
     # if we used both default arguments
@@ -39,7 +38,21 @@ class _meta_SE3(type):
         raise TypeError("Invalid Options")
 
 class SE3(metaclass=_meta_SE3):
-    pass
+    @staticmethod
+    def Wedge(*args, **kwargs):
+        return _inekf.SE3_1_0.Wedge(*args, **kwargs)
+
+    @staticmethod
+    def Exp(*args, **kwargs):
+        return _inekf.SE3_1_0.Exp(*args, **kwargs)
+
+    @staticmethod
+    def Log(*args, **kwargs):
+        return _inekf.SE3_1_0.Log(*args, **kwargs)
+
+    @staticmethod
+    def Ad(*args, **kwargs):
+        return _inekf.SE3_1_0.Ad(*args, **kwargs)
 
 
 ############################ SE2 ##############################
@@ -61,7 +74,21 @@ class _meta_SE2(type):
         raise TypeError("Invalid Options")
 
 class SE2(metaclass=_meta_SE2):
-    pass
+    @staticmethod
+    def Wedge(*args, **kwargs):
+        return _inekf.SE2_1_0.Wedge(*args, **kwargs)
+
+    @staticmethod
+    def Exp(*args, **kwargs):
+        return _inekf.SE2_1_0.Exp(*args, **kwargs)
+
+    @staticmethod
+    def Log(*args, **kwargs):
+        return _inekf.SE2_1_0.Log(*args, **kwargs)
+
+    @staticmethod
+    def Ad(*args, **kwargs):
+        return _inekf.SE2_1_0.Ad(*args, **kwargs)
 
 
 ############################ SO3 ##############################
@@ -79,7 +106,21 @@ class _meta_SO3(type):
         raise TypeError("Invalid Options")
 
 class SO3(metaclass=_meta_SO3):
-    pass
+    @staticmethod
+    def Wedge(*args, **kwargs):
+        return _inekf.SO3_0.Wedge(*args, **kwargs)
+
+    @staticmethod
+    def Exp(*args, **kwargs):
+        return _inekf.SO3_0.Exp(*args, **kwargs)
+
+    @staticmethod
+    def Log(*args, **kwargs):
+        return _inekf.SO3_0.Log(*args, **kwargs)
+
+    @staticmethod
+    def Ad(*args, **kwargs):
+        return _inekf.SO3_0.Ad(*args, **kwargs)
 
 
 ############################ SO2 ##############################
@@ -97,4 +138,18 @@ class _meta_SO2(type):
         raise TypeError("Invalid Options")
 
 class SO2(metaclass=_meta_SO2):
-    pass
+    @staticmethod
+    def Wedge(*args, **kwargs):
+        return _inekf.SO2_0.Wedge(*args, **kwargs)
+
+    @staticmethod
+    def Exp(*args, **kwargs):
+        return _inekf.SO2_0.Exp(*args, **kwargs)
+
+    @staticmethod
+    def Log(*args, **kwargs):
+        return _inekf.SO2_0.Log(*args, **kwargs)
+
+    @staticmethod
+    def Ad(*args, **kwargs):
+        return _inekf.SO2_0.Ad(*args, **kwargs)
