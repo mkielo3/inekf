@@ -12,16 +12,6 @@ using MatrixS = InEKF::GenericMeasureModel<Group>::MatrixS;
 using VectorV = InEKF::GenericMeasureModel<Group>::VectorV;
 using VectorB = InEKF::GenericMeasureModel<Group>::VectorB;
 
-TEST(GenericMeasureModel, StandardConstructor){
-    MatrixH H = MatrixH::Zero();
-    MatrixS M = MatrixS::Identity();
-
-    InEKF::GenericMeasureModel<Group> S(H, M, InEKF::LEFT);
-
-    EXPECT_MATRICES_EQ(H, S.getH());
-    EXPECT_EQ(InEKF::LEFT, S.getError());
-}
-
 TEST(GenericMeasureModel, bConstructor){
     // make b, H and M
     VectorB b;

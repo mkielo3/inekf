@@ -43,6 +43,7 @@ py::class_<T> make_group(py::module &m, std::string name, int num1, int num2=-10
         .def_static("Wedge", &T::Wedge, "xi"_a)
         .def_static("Exp", &T::Exp, "xi"_a)
         .def_static("Log", &T::Exp, "g"_a)
+        // Can't overload combination of static/instance methods
         .def_static("Adjoint", py::overload_cast<const T&>(&T::Ad), "g"_a)
 
         // Misc

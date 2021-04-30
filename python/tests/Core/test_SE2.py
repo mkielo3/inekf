@@ -91,7 +91,7 @@ def test_Exp():
 
 def test_Log():
     xi = np.array([.1, 2, 3])
-    x = SE2().Exp(xi)
+    x = SE2.Exp(xi)
 
     assert_allclose(x.log(), xi)
 
