@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 include(CMake_Macros.txt)
 
 # Get pybind, if not local, pull from git
-find_package(pybind11)
+find_package(pybind11 QUIET)
 if(NOT pybind11_FOUND)
   message(STATUS "Pulling pybind11 from git...")
   FetchContent_Declare(
@@ -41,6 +41,7 @@ configure_file(${PROJECT_SOURCE_DIR}/python/setup.py.in
 set_target_properties(Inertial PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 set_target_properties(SE2_SLAM PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 
+# make target and all properties
 pybind11_add_module(_inekf "${SRCS}" OPT_SIZE THIN_LTO)
 
 target_link_libraries(_inekf PUBLIC Core Inertial SE2_SLAM)
@@ -58,8 +59,8 @@ set_target_properties(_inekf PROPERTIES
 )
 target_compile_features(_inekf PUBLIC cxx_std_17)
 
+# setup things to install
 add_custom_target(python-install
     COMMAND ${PYTHON_EXECUTABLE} ${PYTHON_BUILD_DIRECTORY}/setup.py install
     WORKING_DIRECTORY ${PYTHON_BUILD_DIRECTORY})
-
 create_symlinks("${CMAKE_CURRENT_SOURCE_DIR}/inekf" "${PYTHON_BUILD_DIRECTORY}/inekf")
