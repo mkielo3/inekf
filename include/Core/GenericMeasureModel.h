@@ -1,6 +1,8 @@
 #ifndef GENERIC_MEASURE
 #define GENERIC_MEASURE
 
+#include <type_traits>
+
 #include <Eigen/Core>
 #include "Core/LieGroup.h"
 #include "Core/MeasureModel.h"
@@ -10,6 +12,9 @@ namespace InEKF {
 template<class Group>
 class GenericMeasureModel : public MeasureModel<Group> {
     
+    static_assert(!std::is_same<Group, SO2<>>::value,
+            "GenericMeasureModel not supported for SO2");
+
     public:
         typedef typename MeasureModel<Group>::MatrixS MatrixS;
         typedef typename MeasureModel<Group>::MatrixH MatrixH;
@@ -22,20 +27,18 @@ class GenericMeasureModel : public MeasureModel<Group> {
     public:      
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-        GenericMeasureModel(MatrixH H, MatrixS M, ERROR error) {
-            this->H_ = H;
-            this->M_ = M;
-            this->error_ = error;
-        };
         GenericMeasureModel(VectorB b, const MatrixS& M, ERROR error) : b_(b) {
-            if(b.head(Group::rotSize) != VectorV::Zero()){
+            if(Group::N == Eigen::Dynamic){
+                throw std::range_error("Can't use GenericMeasureModel on group with dynamic columns");
+            }
+            if(b.head(Group::rotSize) != VectorV::Zero(Group::rotSize)){
                 throw std::range_error("Non-zero b in rotation portion not supported");
             }
-            
+
             this->M_ = M;
             this->error_ = error;
 
-            this->H_ = MatrixH::Zero();
+            this->H_ = MatrixH::Zero(Group::rotSize, Group::N);
 
             int rDim = Group::rotSize*(Group::rotSize - 1) / 2;
             for(int i=0; i<Group::M-Group::rotSize; i++){
@@ -45,12 +48,8 @@ class GenericMeasureModel : public MeasureModel<Group> {
                 this->H_ *= -1;
             }
         }
-        GenericMeasureModel(MatrixS M, ERROR error) {
-            this->M_ = M;
-            this->error_ = error;
-        };
 
-        VectorB processZ(const Eigen::VectorXd& z, const Group& state){
+        VectorB processZ(const Eigen::VectorXd& z, const Group& state) override {
             if(z.rows() == Group::M){
                 return z;
             }

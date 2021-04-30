@@ -6,7 +6,7 @@ function(add_and_install_tests TESTS TEST_LIBS)
   foreach(source_file ${TESTS})
     # message(STATUS "Making ${source_file}")
     get_filename_component(exe_suffix ${source_file} NAME_WE)
-    # string(REGEX REPLACE "_" "-" exe_suffix ${exe_suffix}) # underscore
+    string(REGEX REPLACE "_" "-" exe_suffix ${exe_suffix}) # underscore
     # message(STATUS "exe_suffix: ${exe_suffix}")
     set(EXE_NAME ${exe_suffix})
 

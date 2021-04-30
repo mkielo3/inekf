@@ -4,6 +4,7 @@
 #include <Eigen/Core>
 #include <string>
 #include <map>
+#include <memory>
 
 #include "Core/LieGroup.h"
 #include "Core/MeasureModel.h"
@@ -36,9 +37,9 @@ class InEKF {
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-        pM pModel;
+        std::shared_ptr<pM> pModel = std::make_shared<pM>();
 
-        InEKF(Group state=Group(true), ERROR error=ERROR::RIGHT) : state_(state), error_(error) {
+        InEKF(Group state, ERROR error=ERROR::RIGHT) : state_(state), error_(error) {
             assert(state.Uncertain() == true);
         };
 

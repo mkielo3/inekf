@@ -19,8 +19,8 @@ class InertialProcess : public ProcessModel<SE3<2,6>, Eigen::Vector<double,6>> {
     public:
         InertialProcess();
         ~InertialProcess(){}
-        SE3<2,6> f(Eigen::Vector6d u, double dt, SE3<2,6> state);
-        MatrixCov MakePhi(const Eigen::Vector6d& u, double dt, const SE3<2,6>& state, ERROR error);
+        SE3<2,6> f(Eigen::Vector6d u, double dt, SE3<2,6> state) override;
+        MatrixCov MakePhi(const Eigen::Vector6d& u, double dt, const SE3<2,6>& state, ERROR error) override;
         
         void setGyroNoise(double std);
         void setAccelNoise(double std);

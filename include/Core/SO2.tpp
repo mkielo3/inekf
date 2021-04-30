@@ -52,7 +52,7 @@ SO2<A> SO2<A>::operator*(const SO2<A>& rhs) const{
     }
 
     // Skirt around composing covariances
-    MatrixCov Cov = MatrixCov::Zero(c);
+    MatrixCov Cov = MatrixCov::Zero(c,c);
     if(this->Uncertain() && rhs.Uncertain()){
         throw "Can't compose uncertain LieGroups";
     }

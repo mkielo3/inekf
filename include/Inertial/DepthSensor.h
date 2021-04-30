@@ -16,8 +16,8 @@ class DepthSensor : public MeasureModel<SE3<2,6>> {
 
         DepthSensor(double std=1);
         ~DepthSensor(){ }
-        VectorB processZ(const Eigen::VectorXd& z, const SE3<2,6>& state);
-        MatrixS calcSInverse(const SE3<2,6>& state);
+        VectorB processZ(const Eigen::VectorXd& z, const SE3<2,6>& state) override;
+        MatrixS calcSInverse(const SE3<2,6>& state) override;
         void setNoise(double std);
 };
 

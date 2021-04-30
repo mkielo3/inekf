@@ -3,7 +3,7 @@
 namespace InEKF {
 
 InertialProcess::InertialProcess() {
-    Q_ = MatrixCov::Identity();
+    Q_ = MatrixCov::Zero();
 }
 
 SE3<2,6> InertialProcess::f(Eigen::Vector6d u, double dt, SE3<2,6> state){
@@ -48,8 +48,9 @@ MatrixCov InertialProcess::MakePhi(const Eigen::Vector6d& u, double dt, const SE
         return MatrixCov::Identity() + A*dt + A*A*dt*dt/2 + A*A*A*dt*dt*dt/6;
     }
     else{
-        Eigen::Matrix3d w_cross = SO3<>::Wedge( u.head(3) );
-        Eigen::Matrix3d a_cross = SO3<>::Wedge( u.tail(3) );
+        Eigen::Vector6d u_shifted = u - state.Aug();
+        Eigen::Matrix3d w_cross = SO3<>::Wedge( u_shifted.head(3) );
+        Eigen::Matrix3d a_cross = SO3<>::Wedge( u_shifted.tail(3) );
 
         A.block<3,3>(0,0) = -w_cross;
         A.block<3,3>(3,3) = -w_cross;

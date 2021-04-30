@@ -5,13 +5,19 @@ namespace InEKF {
 // helper functions
 template <int C, int A>
 void SE3<C,A>::verifySize() {
+    if(State_.rows() != State_.cols()){
+        throw std::invalid_argument("Matrix passed is not square");
+    }
     // we only care if it's off when it's uncertain && dynamic
     if(isUncertain &&  (C == Eigen::Dynamic || A == Eigen::Dynamic)){
+        if(Cov_.rows() != Cov_.cols()){
+            throw std::invalid_argument("Covariance passed is not square");
+        }
         int curr_A = Aug_.rows();
         int curr_cols = State_.rows() - rotSize;
         int curr_dim = Cov_.rows();
         if(calcStateDim(rotSize, curr_cols, curr_A) != curr_dim){
-            throw std::range_error("Covariance size doesn't match State N");
+            throw std::range_error("Covariance size doesn't match State Dimension");
         }
     }
 }
@@ -66,7 +72,7 @@ SE3<C,A>::SE3(const TangentVector& xi, const MatrixCov& Cov)
 }
 
 template <int C, int A>
-SE3<C,A>::SE3(const SO3<> R, const Eigen::Matrix<double,N-3,1> xi, const MatrixCov& Cov)
+SE3<C,A>::SE3(const SO3<> R, const Eigen::Matrix<double,small_xi,1>& xi, const MatrixCov& Cov)
         : LieGroup<SE3<C,A>,N,M,A>(Cov) {
     TangentVector xi_copy = TangentVector::Zero(xi.rows()+3);
     xi_copy.tail(xi.rows()) = xi;

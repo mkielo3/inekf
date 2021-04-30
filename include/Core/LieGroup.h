@@ -2,6 +2,8 @@
 #define BASE_LIE
 
 #include <Eigen/Core>
+#include <string>
+#include <ostream>
 
 namespace InEKF {
 
@@ -63,6 +65,7 @@ class LieGroup{
         
         // Setters
         void setCov(MatrixCov Cov) { Cov_ = Cov; };
+        void setAug(VectorAug Aug) { Aug_ = Aug; };
         void setState(MatrixState State) { State_ = State; }
 
         // helper to automatically cast things
@@ -98,6 +101,16 @@ class LieGroup{
         }
         static MatrixCov Ad(const Class& g){
             return Class::Ad(g);
+        }
+
+        std::string toString() const{
+            std::ostringstream os;
+
+            os << "Matrix\n" << State_;
+            if(isUncertain) os << "\nSigma\n" << Cov_;
+            if(A != 0) os << "\nAug\n" << Aug_;
+
+            return os.str();
         }
 
 };

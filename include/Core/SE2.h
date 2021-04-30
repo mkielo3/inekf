@@ -50,7 +50,9 @@ class SE2 : public LieGroup<SE2<C,A>,calcStateDim(2,C,A),calcStateMtxSize(2,C),A
         SE2(const TangentVector& xi,
             const MatrixCov& Cov=MatrixCov::Zero(c,c));
         SE2(double theta, double x, double y,
-            const MatrixCov& Cov=MatrixCov::Zero(c,c));
+            const MatrixCov& Cov=MatrixCov::Zero(c,c)) { 
+                throw std::invalid_argument("Can't use this constructor with those templates");
+        }
         ~SE2() {}
 
         // Getters
@@ -58,7 +60,13 @@ class SE2 : public LieGroup<SE2<C,A>,calcStateDim(2,C,A),calcStateMtxSize(2,C),A
             Eigen::Matrix2d R = State_.block(0,0,2,2);
             return SO2<>(R); 
         }
-        Eigen::Vector2d operator[](int idx) const { return State_.block(0,2+idx,2,1); }
+        Eigen::Vector2d operator[](int idx) const { 
+            int curr_cols = State_.cols() - rotSize;
+            if(idx >= curr_cols){
+                throw std::out_of_range("Sliced out of range");
+            }
+            return State_.block(0,2+idx,2,1); 
+        }
 
         void addCol(const Eigen::Vector2d& x, const Eigen::Matrix2d& sigma=Eigen::Matrix2d::Identity());
         void addAug(double x, double sigma=1);

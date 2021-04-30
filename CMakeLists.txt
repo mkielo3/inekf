@@ -17,7 +17,9 @@ if(${CMAKE_VERSION} VERSION_LESS 3.14)
 endif()
 
 #################### IMPORT DEPENDENCIES ####################
-set(EXAMPLES 1)
+option(EXAMPLES "Build Examples"        ON)
+option(PYTHON   "Build Python Wrapper"  ON)
+option(TESTS    "Build Tests"           ON)
 
 # Eigen 
 find_package(Eigen3 CONFIG REQUIRED)
@@ -27,30 +29,36 @@ if(PYTHON OR EXAMPLES)
   find_package(Python3 COMPONENTS Interpreter Development NumPy)
 endif()
 
-# Google Test
-FetchContent_Declare(
-    googletest
-    GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG        release-1.10.0
-)
-FetchContent_GetProperties(googletest)
-if(NOT googletest_POPULATED)
-    FetchContent_Populate(googletest)
-    add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
-endif()
-
-
 #################### ADD TARGETS ####################
 add_subdirectory(src)
+
 if(EXAMPLES)
   add_subdirectory(examples)
 endif()
 
-
 #################### ADD TESTS ####################
-enable_testing()
-add_subdirectory(tests)
-
+if(TESTS)
+  # Google Test
+  FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG        release-1.10.0
+  )
+  FetchContent_MakeAvailable(googletest)
+    
+  enable_testing()
+  add_subdirectory(tests)
+endif()
+  
+#################### ADD PYTHON WRAPPER ####################
+if(PYTHON)
+  add_subdirectory(python)
+  add_test(NAME test-python
+    COMMAND ${PYTHON_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/python
+  )
+endif()
+  
 
 #################### INSTALL AS LIBRARY ####################
 # set(INSTALL_LIBS Core SE2_SLAM Inertial)
