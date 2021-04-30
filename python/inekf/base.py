@@ -60,7 +60,7 @@ class _meta_GenericMeasure(type):
 
         return getattr(_inekf, name)
 
-class GenericMeasureModel(metaclass=_meta_Measure):
+class GenericMeasureModel(metaclass=_meta_GenericMeasure):
     pass
 
 ############################ Process Model ##############################

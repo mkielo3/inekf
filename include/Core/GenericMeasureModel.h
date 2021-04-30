@@ -26,8 +26,6 @@ class GenericMeasureModel : public MeasureModel<Group> {
 
     public:      
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-        // use base class constructor as well
-        using MeasureModel<Group>::MeasureModel; 
 
         GenericMeasureModel(VectorB b, const MatrixS& M, ERROR error) : b_(b) {
             if(Group::N == Eigen::Dynamic){
