@@ -19,6 +19,7 @@ def _get_class(group, param1, param2=None):
     return getattr(_inekf, name)
 
 
+# TODO: static operations?? Maybe just as a passthrough??
 ############################ SE3 ##############################
 class _meta_SE3(type):
     # if we used both default arguments
@@ -28,7 +29,7 @@ class _meta_SE3(type):
 
     def __getitem__(cls,key):
         # if we used 2nd default argument
-        if isinstance(key, int):
+        if isinstance(key, int) or isinstance(key, str):
             key = (key,0)
         
         # if there's 2 arguments return
@@ -50,7 +51,7 @@ class _meta_SE2(type):
 
     def __getitem__(cls,key):
         # if we used 2nd default argument
-        if isinstance(key, int):
+        if isinstance(key, int) or isinstance(key, str):
             key = (key,0)
         
         # if there's 2 arguments return
@@ -72,7 +73,7 @@ class _meta_SO3(type):
 
     def __getitem__(cls,key):
         # Return what they asked for
-        if isinstance(key, int):
+        if isinstance(key, int) or isinstance(key, str):
             return _get_class("SO3", key)
 
         raise TypeError("Invalid Options")
@@ -90,7 +91,7 @@ class _meta_SO2(type):
 
     def __getitem__(cls,key):
         # Return what they asked for
-        if isinstance(key, int):
+        if isinstance(key, int) or isinstance(key, str):
             return _get_class("SO2", key)
 
         raise TypeError("Invalid Options")

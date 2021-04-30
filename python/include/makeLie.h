@@ -66,11 +66,13 @@ void makeSE2(py::module &m){
     typedef typename InEKF::SE2<C,A>::MatrixState SE2_MS;
     typedef typename InEKF::SE2<C,A>::VectorAug SE2_VA;
 
-    mySE2.def(py::init<SE2_MS, SE2_MC, SE2_VA>(), 
+    // Make sure tangent constructor is first. When using a dynamic type
+    // a TV could it in a nxm matrix, but a matrix can't fit in a nx1 vector.
+    mySE2.def(py::init<SE2_TV, SE2_MC>(),
+            "xi"_a, "Cov"_a=SE2_MC::Zero(c,c))
+        .def(py::init<SE2_MS, SE2_MC, SE2_VA>(), 
                 "State"_a=SE2_MS::Identity(ma,ma), "Cov"_a=SE2_MC::Zero(c,c), "Aug"_a=SE2_VA::Zero(a))
         .def(py::init<InEKF::SE2<C,A> const &>())
-        .def(py::init<SE2_TV, SE2_MC>(),
-            "xi"_a, "Cov"_a=SE2_MC::Zero(c,c))
         .def(py::init<double, double, double, SE2_MC>(),
             "theta"_a, "x"_a, "y"_a, "Cov"_a=SE2_MC::Zero(c,c))
 
@@ -95,11 +97,11 @@ void makeSE3(py::module &m){
     typedef typename InEKF::SE3<C,A>::MatrixState SE3_MS;
     typedef typename InEKF::SE3<C,A>::VectorAug SE3_VA;
 
-    mySE3.def(py::init<SE3_MS, SE3_MC, SE3_VA>(), 
+    mySE3.def(py::init<SE3_TV, SE3_MC>(),
+            "xi"_a, "Cov"_a=SE3_MC::Zero(c,c))
+        .def(py::init<SE3_MS, SE3_MC, SE3_VA>(), 
                 "State"_a=SE3_MS::Identity(ma,ma), "Cov"_a=SE3_MC::Zero(c,c), "Aug"_a=SE3_VA::Zero(a))
         .def(py::init<InEKF::SE3<C,A> const &>())
-        .def(py::init<SE3_TV, SE3_MC>(),
-            "xi"_a, "Cov"_a=SE3_MC::Zero(c,c))
         .def(py::init<double, double, double, double, double, double, SE3_MC>(),
             "w1"_a, "w2"_a, "w3"_a, "x"_a, "y"_a, "z"_a, "Cov"_a=SE3_MC::Zero(c,c))
         // .def(py::init<InEKF::SO3<>, Eigen::Matrix<double,small_xi,1>, SE3_MC>)
