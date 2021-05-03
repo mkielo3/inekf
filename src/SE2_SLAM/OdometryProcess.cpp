@@ -13,7 +13,7 @@ MatrixCov OdometryProcess::MakePhi(const SE2<>& u, double dt, const SE2<>& state
         return MatrixCov::Identity();
     }
     else{
-        return SE2<>::Ad(u);
+        return SE2<>::Ad(u.inverse());
     }
 }
 

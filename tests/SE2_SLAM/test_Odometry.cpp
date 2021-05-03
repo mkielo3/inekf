@@ -29,5 +29,5 @@ TEST(OdometryProcess, MakePhi){
 
     // check left
     Phi = op.MakePhi(U, 1, state, InEKF::LEFT);
-    EXPECT_MATRICES_EQ(Phi, U.Ad());
+    EXPECT_MATRICES_EQ(Phi, U.inverse().Ad());
 }
