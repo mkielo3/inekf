@@ -126,7 +126,7 @@ SE2<C,A> SE2<C, A>::Exp(const TangentVector& xi){
 
     // Find V
     Eigen::Matrix2d V;
-    if(theta < .0001){
+    if(abs(theta) < .0001){
         Eigen::Matrix2d wx = SO2<>::Wedge(xi.segment(0,1));
         V = Eigen::Matrix2d::Identity() + wx/2 + wx*wx/6 + wx*wx*wx/24;
     }
@@ -229,7 +229,7 @@ typename SE2<C,A>::TangentVector SE2<C,A>::Log(const SE2& g){
 
     double theta = SO2<>::Log(g.R())(0);
     double a, b, scale;
-    if(theta < .0001){
+    if(abs(theta) < .0001){
         a = 1;
         b = 0;
         scale = 1;

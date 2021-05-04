@@ -4,11 +4,8 @@ namespace InEKF {
 
 template <class pM>
 typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){    
-    // Predict mu
-    MatrixCov Sigma = state_.Cov();
-    state_ = pModel->f(u, dt, state_);
-
     // Predict Sigma
+    MatrixCov Sigma = state_.Cov();
     MatrixCov Phi = pModel->MakePhi(u, dt, state_, error_);
 
     MatrixCov Q = pModel->getQ();
@@ -18,6 +15,9 @@ typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){
     }
     Sigma = Phi* (Sigma + Q*dt) *Phi.transpose();
     state_.setCov( Sigma );
+
+    // Predict mu
+    state_ = pModel->f(u, dt, state_);
 
     return state_;
 }

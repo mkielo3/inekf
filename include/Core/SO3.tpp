@@ -23,7 +23,7 @@ SO3<A>::SO3(double w1, double w2, double w3, const MatrixCov& Cov, const VectorA
     double theta = w.norm();
     MatrixState wx = SO3<>::Wedge(w);
 
-    if(theta < .0001){
+    if(abs(theta) < .0001){
         State_ = MatrixState::Identity() + wx/2 + wx*wx/6 + wx*wx*wx/24;
     }
     else{

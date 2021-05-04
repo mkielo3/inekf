@@ -158,7 +158,7 @@ SE3<C,A> SE3<C, A>::Exp(const TangentVector& xi){
     // Find V
     Eigen::Matrix3d V;
     Eigen::Matrix3d wx = SO3<>::Wedge(xi.head(3));
-    if(theta < .0001){
+    if(abs(theta) < .0001){
         V = Eigen::Matrix3d::Identity() + wx/2 + wx*wx/6 + wx*wx*wx/24;
     }
     else{
@@ -266,7 +266,7 @@ typename SE3<C,A>::TangentVector SE3<C,A>::Log(const SE3& g){
     // Find V inverse
     Eigen::Matrix3d V;
     Eigen::Matrix3d wx = SO3<>::Wedge(w);
-    if(theta < .0001){
+    if(abs(theta) < .0001){
         V = Eigen::Matrix3d::Identity() + wx/2 + wx*wx/6 + wx*wx*wx/24;
     }
     else{
