@@ -44,6 +44,21 @@ class MeasureModel {
             this->error_ = error;
         };
 
+        virtual MatrixH makeHError(const Group& state, ERROR iekfERROR){
+            if( iekfERROR != error_ ){
+                if(iekfERROR == ERROR::RIGHT){
+                    H_error_ = H_*Group::Ad( state.inverse()() );
+                }
+                else{
+                    H_error_ = H_*Group::Ad( state() );
+                }
+            }
+            else{
+                H_error_ = H_;
+            }
+            return H_error_;
+        }
+
         virtual VectorB processZ(const Eigen::VectorXd& z, const Group& state) { 
             if(z.rows() == Group::M){
                 return z;
@@ -79,7 +94,6 @@ class MeasureModel {
         ERROR getError() { return error_; }
 
         void setH(MatrixH H) { H_ = H; }
-        void setHError(MatrixH H) { H_error_ = H; }
 };
 
 }

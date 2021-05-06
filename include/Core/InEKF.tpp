@@ -32,17 +32,9 @@ typename InEKF<pM>::Group InEKF<pM>::Update(const Eigen::VectorXd& z, std::strin
 template <class pM>
 typename InEKF<pM>::Group InEKF<pM>::Update(const Eigen::VectorXd& z, std::string type){
     MeasureModel<Group> * m_model = mModels[type]; 
+
     // Change H via adjoint if necessary
-    MatrixH H = m_model->getH();
-    if( error_ != m_model->getError() ){
-        if(error_ == ERROR::RIGHT){
-            H *= Group::Ad( state_.inverse()() );
-        }
-        else{
-            H *= Group::Ad( state_() );
-        }
-    }
-    m_model->setHError( H );
+    MatrixH H = m_model->makeHError(state_, error_);
 
     // Do any preprocessing on z (fill it up, frame changes, etc)
     VectorB z_ = m_model->processZ(z, state_);;

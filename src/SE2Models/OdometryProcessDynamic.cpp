@@ -5,7 +5,7 @@ namespace InEKF {
 
 SE2<Eigen::Dynamic> OdometryProcessDynamic::f(SE2<> u, double dt, SE2<Eigen::Dynamic> state){
     SE2<Eigen::Dynamic>::MatrixState s = state();
-    s = state().block<3,3>(0,0) * u();
+    s.block<3,3>(0,0) = state().block<3,3>(0,0) * u();
     state.setState(s);
     return state;
 }
