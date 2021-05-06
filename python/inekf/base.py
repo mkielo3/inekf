@@ -5,8 +5,12 @@ import inspect
 # figure this one out
 class _meta_InEKF(type):
     def __getitem__(cls,key):
+        # make instance if it's not one
+        if inspect.isclass(key):
+            key = key()
+
         # Parse name
-        group_name = key.__mro__[-3].__name__
+        group_name = key.__class__.__mro__[-3].__name__
         name = "InEKF_" + group_name.split('_',1)[1]
 
         return InEKF(getattr(_inekf, name), key)
@@ -24,8 +28,6 @@ class InEKF(metaclass=_meta_InEKF):
         # initialize base
         self.base = self.base(*args, **kwargs)
         # initialize process model
-        if inspect.isclass(self.pModel):
-            self.pModel = self.pModel()
         self.base.pModel = self.pModel
 
         return self
@@ -38,6 +40,10 @@ class InEKF(metaclass=_meta_InEKF):
 
     def addMeasureModel(self, *args, **kwargs):
         return self.base.addMeasureModel(*args, **kwargs)
+
+    @property
+    def state(self):
+        return self.base.state
 
 ############################ Measurement Model ##############################
 class _meta_Measure(type):

@@ -61,7 +61,7 @@ endif()
   
 
 #################### INSTALL AS LIBRARY ####################
-# set(INSTALL_LIBS Core SE2_SLAM Inertial)
+# set(INSTALL_LIBS Core SE2Models Inertial)
 # install(TARGETS ${INSTALL_LIBS} EXPORT ${PROJECT_NAME}Config
 #         ARCHIVE DESTINATION lib
 #         LIBRARY DESTINATION lib

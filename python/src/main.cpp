@@ -24,7 +24,7 @@ void makeAllInEKFSO3(py::module &m);
 void makeAllInEKFSE3(py::module &m);
 
 void makeInertial(py::module &m);
-void makeSE2_SLAM(py::module &m);
+void makeSE2Models(py::module &m);
 
 PYBIND11_MODULE(_inekf, m) {
     m.doc() = "Invariant Extended Kalman Filter"; // optional module docstring
@@ -52,8 +52,7 @@ PYBIND11_MODULE(_inekf, m) {
     makeAllInEKFSE3(m);
 
     makeInertial(m);
-    makeSE2_SLAM(m);
-
+    makeSE2Models(m);
 
     // If more templates of any kind are needed, use these functions
     // These template functions found in headers

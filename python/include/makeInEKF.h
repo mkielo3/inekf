@@ -33,6 +33,7 @@ void makeInEKF(py::module &m, std::string name){
         .def("addMeasureModel", &T::addMeasureModel,
             "name"_a, "m"_a)
 
+        .def_readwrite("state", &T::state_)
         .def_readwrite("pModel", &T::pModel);
 
 }

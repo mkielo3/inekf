@@ -28,7 +28,7 @@ This will install a custom target that can be linked via CMake as
 ```cmake
 find_package(Eigen3 CONFIG REQUIRED)
 find_package(InEKF CONFIG REQUIRED)
-target_link_libraries(mytarget PUBLIC InEKF::Core InEKF::Inertial InEKF::SE2_SLAM)
+target_link_libraries(mytarget PUBLIC InEKF::Core InEKF::Inertial InEKF::SE2Models)
 ```
 
 A python wrapper is also [available](python/README.md).
@@ -43,7 +43,7 @@ This library includes all the Lie Groups, `InEKF`, and `GenericMeasureModel` cla
 ### Inertial
 This is the implementation of the Lie Group `SE_2(3)` along with an augmented bias state. Along with it are various process/measurement models defined on this group including as of now `DVLSensor`, `DepthSensor`, and `InertialProcess`.
 
-### SE2_SLAM
+### SE2Models
 Exactly what it sounds like, is used for SLAM in SE2. 
 
 ## Extending

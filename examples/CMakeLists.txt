@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.11)
 
 set(SRCS UnderwaterInertial.cpp)
 
-set(LIBS Eigen3::Eigen Core SE2_SLAM Inertial
+set(LIBS Eigen3::Eigen Core SE2Models Inertial
         Python3::Python Python3::NumPy)
 
 # Iterate through all examples

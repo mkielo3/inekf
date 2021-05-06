@@ -2,6 +2,13 @@ cmake_minimum_required(VERSION 3.16)
 
 include(CMake_Macros.txt)
 
+# setup globals for templating purposes
+set(COL "2" CACHE STRING "Number of columns to template")
+set(AUG "2" CACHE STRING "Number of augmented states to template")
+set(VEC "4" CACHE STRING "Number of vectors controls to template")
+configure_file(${PROJECT_SOURCE_DIR}/python/include/globals.h.in
+                ${PROJECT_SOURCE_DIR}/python/include/globals.h)
+
 # Get pybind, if not local, pull from git
 find_package(pybind11 QUIET)
 if(NOT pybind11_FOUND)
@@ -25,7 +32,7 @@ set(SRCS src/main.cpp
         src/makeMeasureSO.cpp
         src/makeMeasureSE.cpp
         src/makeInertial.cpp
-        src/makeSE2_SLAM.cpp
+        src/makeSE2Models.cpp
         src/makeInEKFSO2.cpp
         src/makeInEKFSO3.cpp
         src/makeInEKFSE3.cpp
@@ -38,13 +45,13 @@ configure_file(${PROJECT_SOURCE_DIR}/python/setup.py.in
                 ${PYTHON_BUILD_DIRECTORY}/setup.py)
 
 # make linked libraries
-set_target_properties(Inertial PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
-set_target_properties(SE2_SLAM PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+set_target_properties(Inertial  PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+set_target_properties(SE2Models PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
 
 # make target and all properties
 pybind11_add_module(_inekf "${SRCS}" OPT_SIZE THIN_LTO)
 
-target_link_libraries(_inekf PUBLIC Core Inertial SE2_SLAM)
+target_link_libraries(_inekf PUBLIC Core Inertial SE2Models)
 target_include_directories(_inekf PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/python/include>
   $<INSTALL_INTERFACE:include>

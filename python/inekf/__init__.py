@@ -6,5 +6,5 @@ from ._inekf import ERROR
 # import inertial objects
 from ._inekf import InertialProcess, DVLSensor, DepthSensor
 
-# import SE2_SLAM objects
-from ._inekf import OdometryProcess
+# import SE2 objects
+from ._inekf import OdometryProcess, OdometryProcessDynamic, LandmarkSensor, GPSSensor

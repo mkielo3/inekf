@@ -53,6 +53,7 @@ class PyMeasureModel : public InEKF::MeasureModel<Group> {
         // Make a few protected things available
         using InEKF::MeasureModel<Group>::H_error_;
         using InEKF::MeasureModel<Group>::M_;
+        using InEKF::MeasureModel<Group>::H_;
         using InEKF::MeasureModel<Group>::error_;
 
 };
@@ -82,8 +83,8 @@ void makeMeasure(py::module &m, std::string name){
             "state"_a)
 
         // Properties
-        .def_property("H", &K::getH, &K::setH)
         .def_readonly("H_error", &PyMeasureModel<T>::H_error_)
+        .def_readwrite("H", &PyMeasureModel<T>::H_)
         .def_readwrite("M", &PyMeasureModel<T>::M_)
         .def_readwrite("error", &PyMeasureModel<T>::error_);
 }
