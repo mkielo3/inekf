@@ -47,8 +47,9 @@ void makeSE2Models(py::module &m){
 
     // Landmark Sensor
     py::class_<InEKF::LandmarkSensor, BaseMeasure>(m, "LandmarkSensor")
-        .def(py::init<double>(), "std"_a)
-        .def("sawLandmark", &InEKF::LandmarkSensor::sawLandmark);
+        .def(py::init<double, double>(), "std_r"_a, "std_b"_a)
+        .def("sawLandmark", &InEKF::LandmarkSensor::sawLandmark)
+        .def("calcMahDist", &InEKF::LandmarkSensor::calcMahDist);
         
     // Landmark Sensor
     py::class_<InEKF::GPSSensor, BaseMeasure>(m, "GPSSensor")

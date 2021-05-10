@@ -189,10 +189,18 @@ SE2<C,A> SE2<C,A>::operator*(const SE2& rhs) const{
     if(this->Uncertain()) Cov = this->Cov();
     if(rhs.Uncertain()) Cov = rhs.Cov();
 
-    // Compose state + Augment
-    MatrixState State = (*this)() * rhs();
+    // Compose Augment
     VectorAug Aug = this->Aug() + rhs.Aug();
 
+    // Smart multiply state matrix
+    int curr_cols = (*this)().cols() - rotSize;
+    Eigen::Matrix<double,rotSize,rotSize> thisR = this->R()(); 
+    MatrixState State = MatrixState::Identity((*this)().cols(), (*this)().cols());
+
+    State.block(0,0,rotSize,rotSize) = thisR*rhs().block(0,0,rotSize,rotSize);
+    for(int i=0;i<curr_cols;i++){
+        State.block(0,2+i,rotSize,1) = thisR*rhs[i] + (*this)[i];
+    }
     return SE2(State, Cov, Aug);
 }
 

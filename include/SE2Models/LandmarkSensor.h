@@ -7,8 +7,6 @@
 namespace InEKF {
 
 class LandmarkSensor : public MeasureModel<SE2<Eigen::Dynamic>> {
-    private:
-        Eigen::VectorXd b_;
 
     public:
         typedef typename MeasureModel<SE2<Eigen::Dynamic>>::MatrixS MatrixS;
@@ -16,11 +14,23 @@ class LandmarkSensor : public MeasureModel<SE2<Eigen::Dynamic>> {
         typedef typename MeasureModel<SE2<Eigen::Dynamic>>::VectorV VectorV;
         typedef typename MeasureModel<SE2<Eigen::Dynamic>>::VectorB VectorB;
 
-        LandmarkSensor(double std=1);
+    private:
+        Eigen::VectorXd b_;
+        MatrixS M_rb;
+        Eigen::Matrix<double,2,4> HSmall;
+        int lmIdx;
+        
+    public:
+        LandmarkSensor(double std_r, double std_b);
         ~LandmarkSensor(){ }
         // Used to prep H
         void sawLandmark(int idx, const SE2<Eigen::Dynamic>& state);
+        // used for data assocation, to reduce calls to C++
+        double calcMahDist(const Eigen::VectorXd& z, const SE2<Eigen::Dynamic>& state);
+
         VectorB processZ(const Eigen::VectorXd& z, const SE2<Eigen::Dynamic>& state) override;
+        MatrixS calcSInverse(const SE2<Eigen::Dynamic>& state) override;
+
 };
 
 }

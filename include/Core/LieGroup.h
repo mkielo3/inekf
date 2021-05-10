@@ -59,14 +59,14 @@ class LieGroup{
 
         // Getters
         bool Uncertain() const { return isUncertain; }
-        MatrixCov Cov() const { return Cov_; }
-        VectorAug Aug() const { return Aug_; }
-        MatrixState operator()() const { return State_; }
+        const MatrixCov& Cov() const { return Cov_; }
+        const VectorAug& Aug() const { return Aug_; }
+        const MatrixState& operator()() const { return State_; }
         
         // Setters
-        void setCov(MatrixCov Cov) { Cov_ = Cov; };
-        void setAug(VectorAug Aug) { Aug_ = Aug; };
-        void setState(MatrixState State) { State_ = State; }
+        void setCov(const MatrixCov& Cov) { Cov_ = Cov; };
+        void setAug(const VectorAug& Aug) { Aug_ = Aug; };
+        void setState(const MatrixState& State) { State_ = State; }
 
         // helper to automatically cast things
         const Class & derived() const{

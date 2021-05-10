@@ -16,16 +16,10 @@ def data_association(state, zs, laser_mm):
     A = np.ones((n_mm, n_mm))*alpha
     Q = np.diag([0.5, 0.5*np.pi/180])
     M = np.zeros((n_mm, n_lm))
-
     for i in range(0,n_lm):
         laser_mm.sawLandmark(i, state)
         for j, z in enumerate(zs):
-            laser_mm.makeHError(state, ERROR.RIGHT)
-            z_ = laser_mm.processZ(z, state)
-            V  = laser_mm.calcV(z_, state)
-            Sinv = laser_mm.calcSInverse(state)
-
-            M[j,i] = V.T@Sinv@V
+            M[j,i] = laser_mm.calcMahDist(z, state)
 
     M_new = np.hstack((M,A))
     pairs = solve_cost_matrix_heuristic(M_new)

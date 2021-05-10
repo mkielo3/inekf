@@ -13,10 +13,7 @@ GPSSensor::VectorB GPSSensor::processZ(const Eigen::VectorXd& z, const SE2<Eigen
     H_ = MatrixH::Zero(2, curr_dim);
     H_.block<2,2>(0,1) = Eigen::Matrix2d::Identity();
 
-    // convert range and bearing into x and y
     if(z.rows() == 2){
-        double r = z(0);
-        double b = z(1);
         VectorB z_ = Eigen::VectorXd::Zero(state().cols());
         z_(0) = z(0);
         z_(1) = z(1);
