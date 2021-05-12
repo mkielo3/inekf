@@ -3,22 +3,15 @@ type: docker
 name: default
 
 steps:
-- name: Build Dependencies & Library
-  image: rikorose/gcc-cmake
+- name: Build
+  image: contagon/inekf-deps
   commands:
-  - git clone https://gitlab.com/libeigen/eigen.git
-  - cd eigen
   - mkdir build
   - cd build
-  - cmake .. > log.log
-  - make install > log.log
-  - cd ../..
-  - mkdir build
-  - cd build
-  - cmake .. -DPYTHON=OFF -DEXAMPLES=OFF
-  - make
+  - cmake .. -DEXAMPLES=OFF
+  - make -j2
 - name: Test
-  image: rikorose/gcc-cmake
+  image: contagon/inekf-deps
   commands:
   - cd build
   - make test
