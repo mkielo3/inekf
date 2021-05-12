@@ -15,7 +15,6 @@ steps:
   - cd ../..
   - mkdir build
   - cd build
-  - echo $(ls)
-  - cmake .. -DPYTHON=OFF
+  - cmake .. -DPYTHON=OFF -DEXAMPLES=OFF
   - make
   - make test
