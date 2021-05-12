@@ -11,11 +11,12 @@ steps:
   - cd eigen
   - mkdir build
   - cd build
-  - cmake ..
-  - make install
+  - cmake .. > log.log
+  - make install > log.log
   - cd ../..
   - mkdir build
   - cd build
+  - ls
   - cmake .. -DPYTHON=OFF
   - make
   - make test
