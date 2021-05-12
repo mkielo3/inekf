@@ -20,4 +20,5 @@ steps:
 - name: Test
   image: rikorose/gcc-cmake
   commands:
+  - cd build
   - make test
