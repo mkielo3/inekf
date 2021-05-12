@@ -6,9 +6,16 @@ steps:
 - name: Install Eigen
   image: rikorose/gcc-cmake
   commands:
+  - cd /
   - git clone https://gitlab.com/libeigen/eigen.git
   - cd eigen
   - mkdir build
   - cd build
   - cmake ..
-  - sudo make install
+  - make install
+  - cd ..
+  - mkdir build
+  - cd build
+  - cmake .. -DPYTHON=OFF
+  - make
+  - make test
