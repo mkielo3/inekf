@@ -3,7 +3,7 @@ type: docker
 name: default
 
 steps:
-- name: Install Eigen
+- name: Build Dependencies & Library
   image: rikorose/gcc-cmake
   commands:
   - git clone https://gitlab.com/libeigen/eigen.git
@@ -17,4 +17,7 @@ steps:
   - cd build
   - cmake .. -DPYTHON=OFF -DEXAMPLES=OFF
   - make
+- name: Test
+  image: rikorose/gcc-cmake
+  commands:
   - make test
