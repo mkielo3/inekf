@@ -6,9 +6,9 @@
 #include <vector>
 #include <cmath>
 
-#include <InEKF/Plot>
 #include <InEKF/Core>
 #include <InEKF/Inertial>
+#include <InEKF/Utils>
 
 namespace plt = matplotlibcpp;
 

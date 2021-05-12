@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.11)
 
-set(SRCS UnderwaterInertial.cpp)
+set(SRCS 
+        UnderwaterInertial.cpp
+        VictoriaPark.cpp
+)
 
 set(LIBS Eigen3::Eigen Core SE2Models Inertial
-        Python3::Python Python3::NumPy)
+        Python3::Python Python3::NumPy matplot)
 
 # Iterate through all examples
 foreach(source_file ${SRCS})
