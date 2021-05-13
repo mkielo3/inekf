@@ -3,15 +3,29 @@ type: docker
 name: default
 
 steps:
+- name: Build Docker Image
+    image: docker:latest
+    volumes:
+      - name: docker_sock
+        path: /var/run/docker.sock
+    commands:
+      - docker build -t ${DRONE_REPO}:${DRONE_COMMIT} .
+
 - name: Build
-  image: contagon/inekf-deps
+  image: ${DRONE_REPO}:${DRONE_COMMIT}
   commands:
   - mkdir build
   - cd build
   - cmake .. -DEXAMPLES=OFF
   - make -j2
 - name: Test
-  image: contagon/inekf-deps
+  image: ${DRONE_REPO}:${DRONE_COMMIT}
   commands:
   - cd build
-  - make test
+  - ctest --verbose
+
+
+volumes:
+  - name: docker_sock
+    host:
+      path: /var/run/docker.sock
