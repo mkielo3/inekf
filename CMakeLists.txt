@@ -26,7 +26,7 @@ find_package(Eigen3 CONFIG REQUIRED)
 
 # Python for plotting and/or wrapper
 if(PYTHON OR EXAMPLES)
-  find_package(Python3 COMPONENTS Interpreter Development NumPy)
+  find_package(Python COMPONENTS Interpreter Development NumPy)
 endif()
 
 #################### ADD TARGETS ####################
@@ -60,7 +60,7 @@ endif()
 if(PYTHON)
   add_subdirectory(python)
   add_test(NAME test-python
-    COMMAND ${PYTHON_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python
+    COMMAND ${Python_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/python
   )
 endif()

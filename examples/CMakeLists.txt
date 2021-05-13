@@ -6,7 +6,7 @@ set(SRCS
 )
 
 set(LIBS Eigen3::Eigen Core SE2Models Inertial
-        Python3::Python Python3::NumPy matplot)
+        Python::Python Python::NumPy matplot)
 
 # Iterate through all examples
 foreach(source_file ${SRCS})
