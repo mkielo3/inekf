@@ -4,28 +4,27 @@ name: default
 
 steps:
 - name: Build Docker Image
-    image: docker:latest
-    volumes:
-      - name: docker_sock
-        path: /var/run/docker.sock
-    commands:
-      - docker build -t ${DRONE_REPO}:${DRONE_COMMIT} .
-
+  image: docker:latest
+  volumes:
+  - name: docker_sock
+    path: /var/run/docker.sock
+  commands:
+  - docker build -t "inekf:${DRONE_COMMIT}" .
 - name: Build
-  image: ${DRONE_REPO}:${DRONE_COMMIT}
+  image: inekf:*DRONE_COMMIT
   commands:
   - mkdir build
   - cd build
   - cmake .. -DEXAMPLES=OFF
   - make -j2
 - name: Test
-  image: ${DRONE_REPO}:${DRONE_COMMIT}
+  image: inekf:*DRONE_COMMIT
   commands:
   - cd build
   - ctest --verbose
 
 
 volumes:
-  - name: docker_sock
-    host:
-      path: /var/run/docker.sock
+- name: docker_sock
+  host:
+    path: /var/run/docker.sock
