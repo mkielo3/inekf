@@ -11,14 +11,14 @@ steps:
   commands:
   - docker build -t "inekf:${DRONE_COMMIT}" .
 - name: Build
-  image: inekf:*DRONE_COMMIT
+  image: "inekf:${DRONE_COMMIT}"
   commands:
   - mkdir build
   - cd build
   - cmake .. -DEXAMPLES=OFF
   - make -j2
 - name: Test
-  image: inekf:*DRONE_COMMIT
+  image: "inekf:${DRONE_COMMIT}"
   commands:
   - cd build
   - ctest --verbose
