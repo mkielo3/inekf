@@ -67,9 +67,7 @@ Eigen::VectorXi dataAssocation(SE2_D state, Eigen::VectorXd zs, InEKF::LandmarkS
         }
     }
 
-    std::cout << M << std::endl;
     Eigen::VectorXi assoc = solveCostMatrix(M);
-    std::cout << assoc << std::endl;
     
     for(int i=0;i<n_mm;i++){
         // Check if it wants a new landmark
@@ -103,10 +101,7 @@ void addLandmark(Eigen::Vector2d z, SE2_D& state){
     state.addCol(lm, Eigen::Matrix2d::Identity()*10000);
 }
 
-InEKF::SE2<> makeOdometry(Eigen::Vector2d u, double dt, SE2_D state){
-    double x = state[0][0];
-    double y = state[0][1];
-    double phi = atan2(state()(1,0), state()(0,0));
+InEKF::SE2<> makeOdometry(Eigen::Vector2d u, double dt){
     double Ve = u(0);
     double alpha = u(1);
 
@@ -116,9 +111,9 @@ InEKF::SE2<> makeOdometry(Eigen::Vector2d u, double dt, SE2_D state){
     double H = 0.76;
 
     double Vc = Ve / (1 - tan(alpha)*H/L);
-    double motion_x = Vc/L*tan(alpha);
-    double motion_y = Vc - Vc/L*tan(alpha)*b;
-    double motion_t = Vc/L*tan(alpha)*a;
+    double motion_t = Vc/L*tan(alpha);
+    double motion_x = Vc - Vc/L*tan(alpha)*b;
+    double motion_y = Vc/L*tan(alpha)*a;
 
     return InEKF::SE2<>(dt*motion_t, dt*motion_x, dt*motion_y);
 }
@@ -193,14 +188,13 @@ int main() {
     tqdm bar;
     int n=0, N=events.size();
     time_t last_plot = time(0);
-    std::vector<std::tuple<std::string,double,Eigen::VectorXd>> some(events.begin(), events.begin()+10000);
     for(auto const& [e, t, data] : events){
         // Odometry
         if(e == "odo"){
             dt = t - last_t;
             last_t = t;
 
-            InEKF::SE2 u = makeOdometry(data, dt, iekf.state_);
+            InEKF::SE2 u = makeOdometry(data, dt);
             s = iekf.Predict(u, dt);
             s_x.push_back( s[0][0] );
             s_y.push_back( s[0][1] );

@@ -73,10 +73,7 @@ def x(l):
 def y(l):
     return np.array([i[0][1] for i in l])
 
-def makeOdometry(u, dt, state):
-    x, y = state[0]
-    phi = np.arctan2(state.State[1,0],state.State[0,0])
-
+def makeOdometry(u, dt):
     a = 3.78
     b = 0.50
     L = 2.83
@@ -145,7 +142,7 @@ for i, (e, t, data) in tqdm(enumerate(events), total=len(events)):
         dt = t - last_t
         last_t = t
 
-        u = makeOdometry(data, dt, iekf.state)
+        u = makeOdometry(data, dt)
         s = iekf.Predict(u, dt)
         states.append(s)
 
