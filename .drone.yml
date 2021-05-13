@@ -9,16 +9,17 @@ steps:
   - name: docker_sock
     path: /var/run/docker.sock
   commands:
-  - docker build -t "inekf:${DRONE_COMMIT}" .
+  - docker build -t "${DRONE_REPO}:${DRONE_COMMIT:0:8}" .
+  
 - name: Build
-  image: "inekf:${DRONE_COMMIT}"
+  image: "${DRONE_REPO}:${DRONE_COMMIT:0:8}"
   commands:
   - mkdir build
   - cd build
   - cmake .. -DEXAMPLES=OFF
   - make -j2
 - name: Test
-  image: "inekf:${DRONE_COMMIT}"
+  image: "${DRONE_REPO}:${DRONE_COMMIT:0:8}"
   commands:
   - cd build
   - ctest --verbose
