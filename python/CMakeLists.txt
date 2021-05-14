@@ -10,7 +10,7 @@ configure_file(${PROJECT_SOURCE_DIR}/python/include/globals.h.in
                 ${PROJECT_SOURCE_DIR}/python/include/globals.h)
 
 # Find python
-find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+find_package(Python COMPONENTS Interpreter Development REQUIRED)
 
 # Get pybind, if not local, pull from git
 find_package(pybind11 QUIET)
