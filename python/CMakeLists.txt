@@ -74,3 +74,9 @@ add_custom_target(python-install
     COMMAND ${PYTHON_EXECUTABLE} ${PYTHON_BUILD_DIRECTORY}/setup.py install
     WORKING_DIRECTORY ${PYTHON_BUILD_DIRECTORY})
 create_symlinks("${CMAKE_CURRENT_SOURCE_DIR}/inekf" "${PYTHON_BUILD_DIRECTORY}/inekf")
+
+# test
+add_test(NAME test-python
+    COMMAND ${Python_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/python
+  )

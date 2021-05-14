@@ -33,10 +33,6 @@ endif()
 
 if(PYTHON)
   add_subdirectory(python)
-  add_test(NAME test-python
-    COMMAND ${Python_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python
-    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/python
-  )
 endif()
 
 #################### ADD TESTS ####################

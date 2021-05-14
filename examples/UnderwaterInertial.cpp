@@ -92,7 +92,7 @@ int main(){
 
         // PREDICTION STEP
         if (type == "IMU"){
-            assert((measurement.size()-1) == 6);
+            assert((data.size()-1) == 6);
             dt = data[0];
             imu_data = data.tail(6);
             state = iekf.Predict(imu_data, dt);
@@ -100,13 +100,13 @@ int main(){
 
         // UPDATE STEP
         else if (type == "DVL"){
-            assert((measurement.size()-2) == 3);
+            assert((data.size()-2) == 3);
             dvl_data << data[1], data[2], data[3],
                         imu_data[0], imu_data[1], imu_data[2];
             state = iekf.Update(dvl_data, "DVL");            
         }
         else if (type == "DEPTH"){
-            assert((measurement.size()-1) == 1);
+            assert((data.size()-1) == 1);
             depth_data = data.tail(1);
             state = iekf.Update(depth_data, "Depth");
 
@@ -120,11 +120,11 @@ int main(){
 
         // GROUND TRUTH TO COMPARE TO
         else if (type == "P"){
-            assert((measurement.size()-1) == 3);
+            assert((data.size()-1) == 3);
             p.row(i) = data.tail(3);
         }
         else if (type == "V"){
-            assert((measurement.size()-1) == 3);
+            assert((data.size()-1) == 3);
             v.row(i) = data.tail(3);
             // put v into local frame
             v.row(i) = ( R.block<3,3>(3*i,0).transpose() * v.row(i).transpose() ).transpose().eval();

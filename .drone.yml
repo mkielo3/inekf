@@ -16,7 +16,7 @@ steps:
   commands:
   - mkdir build
   - cd build
-  - cmake .. -DEXAMPLES=OFF
+  - cmake ..
   - make -j2
 - name: Test
   image: "${DRONE_REPO}:${DRONE_COMMIT:0:8}"
