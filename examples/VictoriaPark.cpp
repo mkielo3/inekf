@@ -10,32 +10,16 @@
 
 #include <InEKF/Core>
 #include <InEKF/SE2Models>
-#include <InEKF/Utils>
+#include <tqdm.h>
 #include <matplot/matplot.h>
 namespace plt = matplot;
 
 typedef InEKF::SE2<Eigen::Dynamic> SE2_D;
 
-// TODO Cost Matrix
 typedef std::pair<int, double> sort_pair;
 Eigen::VectorXi solveCostMatrix(Eigen::MatrixXd M){
     int n_mm = M.rows();
     Eigen::VectorXi result(n_mm);
-
-    // // find minvals of row, and argsort that
-    // Eigen::VectorXd minVals = M.rowwise().minCoeff();
-    // std::vector<sort_pair> data(n_mm);
-    // for(int i=0;i<n_mm;i++){
-    //     data[i] = std::make_pair(i, minVals[i]);
-    // }
-    // sort(data.begin(), data.end(), [](const auto& lhs, const auto& rhs){
-    //     return lhs.first < lhs.second;
-    // });
-
-    // // now go assigning values
-    // for(const auto& [idx, val] : data){
-
-    // }
 
     for(int i=0;i<n_mm;i++){
         Eigen::MatrixXd::Index minMM, minLM;
@@ -141,13 +125,13 @@ void loadEvents(std::vector<std::tuple<std::string,double,Eigen::VectorXd>> &eve
 }
 
 int main() {
-    // SETUP INITIAL STATE
+    /***** SETUP INITIAL STATE *****/
     Eigen::Matrix3d sig = Eigen::Matrix3d::Identity()*.1;
     Eigen::VectorXd init(3);
     init << 45*pi()/180, 0, 0;
     SE2_D x0(init, sig);
 
-    // SETUP InEKF
+    /***** SETUP InEKF *****/
     InEKF::GPSSensor gps(3);
     InEKF::LandmarkSensor laser(0.5, 0.5*pi()/180);
 
@@ -158,7 +142,7 @@ int main() {
     Q << 0.5*pi()/180, 0.05, 0.05;
     iekf.pModel->setQ(Q);
 
-    // LOAD IN DATA
+    /***** LOAD IN DATA *****/
     std::vector<std::tuple<std::string,double,Eigen::VectorXd>> events;
     loadEvents(events, "../data/victoria_park_ascii/DRS.txt", "odo");
     loadEvents(events, "../data/victoria_park_ascii/GPS.txt", "gps");
@@ -170,7 +154,7 @@ int main() {
     double last_t = 0;
     SE2_D s;
 
-    // SETUP PLOT
+    /***** SETUP PLOT *****/
     auto f = plt::figure(false);
     auto ax = plt::gca();
 
@@ -184,7 +168,7 @@ int main() {
     std::vector<double> s_x = {0}, s_y = {0};
     std::vector<double> gps_x = {0}, gps_y = {0};
 
-    // ITERATE THROUGH DATA
+    /***** ITERATE THROUGH DATA *****/
     tqdm bar;
     int n=0, N=events.size();
     time_t last_plot = time(0);

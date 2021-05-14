@@ -1,3 +1,10 @@
+/******************
+
+Gotten from: https://github.com/aminnj/cpptqdm
+
+Licensed under MIT, see above repo.
+
+*****************/
 #ifndef TQDM_H
 #define TQDM_H
 #include <unistd.h>
