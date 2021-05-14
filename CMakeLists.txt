@@ -24,16 +24,19 @@ option(TESTS    "Build Tests"           ON)
 # Eigen 
 find_package(Eigen3 CONFIG REQUIRED)
 
-# Python for plotting and/or wrapper
-if(PYTHON OR EXAMPLES)
-  find_package(Python3 COMPONENTS Interpreter Development NumPy)
-endif()
-
 #################### ADD TARGETS ####################
 add_subdirectory(src)
 
 if(EXAMPLES)
   add_subdirectory(examples)
+endif()
+
+if(PYTHON)
+  add_subdirectory(python)
+  add_test(NAME test-python
+    COMMAND ${PYTHON_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/python
+  )
 endif()
 
 #################### ADD TESTS ####################
@@ -48,17 +51,7 @@ if(TESTS)
     
   enable_testing()
   add_subdirectory(tests)
-endif()
-  
-#################### ADD PYTHON WRAPPER ####################
-if(PYTHON)
-  add_subdirectory(python)
-  add_test(NAME test-python
-    COMMAND ${PYTHON_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python
-    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/python
-  )
-endif()
-  
+endif()  
 
 #################### INSTALL AS LIBRARY ####################
 # set(INSTALL_LIBS Core SE2Models Inertial)

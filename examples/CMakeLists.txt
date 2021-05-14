@@ -16,8 +16,7 @@ set(SRCS
         VictoriaPark.cpp
 )
 
-set(LIBS Eigen3::Eigen Core SE2Models Inertial
-        Python3::Python Python3::NumPy matplot)
+set(LIBS Eigen3::Eigen Core SE2Models Inertial matplot)
 
 #################### MAKE TARGETS ####################
 foreach(source_file ${SRCS})
@@ -37,6 +36,3 @@ foreach(source_file ${SRCS})
     # use 17 to remove need for <>
     target_compile_features(${EXE_NAME} PUBLIC cxx_std_17)
 endforeach(source_file)
-
-# Create Executable
-

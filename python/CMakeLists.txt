@@ -9,6 +9,9 @@ set(VEC "4" CACHE STRING "Number of vectors controls to template")
 configure_file(${PROJECT_SOURCE_DIR}/python/include/globals.h.in
                 ${PROJECT_SOURCE_DIR}/python/include/globals.h)
 
+# Find python
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+
 # Get pybind, if not local, pull from git
 find_package(pybind11 QUIET)
 if(NOT pybind11_FOUND)

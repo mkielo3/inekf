@@ -159,14 +159,15 @@ int main() {
     auto ax = plt::gca();
 
     std::vector<double> empty = {0};
+    std::vector<double> s_x = {0}, s_y = {0};
+    std::vector<double> gps_x = {0}, gps_y = {0};
+
     auto lm_pts  = ax->scatter({-1,1}, {-1,1});
     plt::hold(true);
     auto traj = ax->plot(empty, empty);
     auto gps_pts = ax->scatter(empty, empty);
+    plt::legend({lm_pts, traj, gps_pts}, {"Landmarks", "Vehicle", "GPS"});
     f->draw();
-
-    std::vector<double> s_x = {0}, s_y = {0};
-    std::vector<double> gps_x = {0}, gps_y = {0};
 
     /***** ITERATE THROUGH DATA *****/
     tqdm bar;
