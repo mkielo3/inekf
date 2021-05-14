@@ -44,6 +44,21 @@ class MeasureModel {
             this->error_ = error;
         };
 
+        virtual MatrixH makeHError(const Group& state, ERROR iekfERROR){
+            if( iekfERROR != error_ ){
+                if(iekfERROR == ERROR::RIGHT){
+                    H_error_ = H_*Group::Ad( state.inverse()() );
+                }
+                else{
+                    H_error_ = H_*Group::Ad( state() );
+                }
+            }
+            else{
+                H_error_ = H_;
+            }
+            return H_error_;
+        }
+
         virtual VectorB processZ(const Eigen::VectorXd& z, const Group& state) { 
             if(z.rows() == Group::M){
                 return z;
@@ -55,22 +70,24 @@ class MeasureModel {
 
         virtual VectorV calcV(const VectorB& z, const Group& state){
             // calculate V
+            VectorV V;
             if(error_ == ERROR::RIGHT){
-                return ( state() * z ).head(Group::rotSize);
+                V.noalias() = state().block(0,0,Group::rotSize,state().cols()) * z;
             }
             else{
-                return ( state.inverse()() * z ).head(Group::rotSize);
+                V.noalias() = state.inverse()().block(0,0,Group::rotSize,state().cols()) * z;
             }
+            return V;
         }
 
         virtual MatrixS calcSInverse(const Group& state){
             MatrixS Sinv;
             MatrixS R = state.R()();
             if(error_ == ERROR::RIGHT){
-                Sinv = ( H_error_*state.Cov()*H_error_.transpose() + R*M_*R.transpose() ).inverse();
+                Sinv.noalias() = ( H_error_*state.Cov()*H_error_.transpose() + R*M_*R.transpose() ).inverse();
             }
             else{
-                Sinv = ( H_error_*state.Cov()*H_error_.transpose() + R.transpose()*M_*R ).inverse();
+                Sinv.noalias() = ( H_error_*state.Cov()*H_error_.transpose() + R.transpose()*M_*R ).inverse();
             }
             return Sinv;
         }
@@ -79,7 +96,6 @@ class MeasureModel {
         ERROR getError() { return error_; }
 
         void setH(MatrixH H) { H_ = H; }
-        void setHError(MatrixH H) { H_error_ = H; }
 };
 
 }

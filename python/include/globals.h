@@ -3,8 +3,8 @@
 
 /*********************** GLOBAL VARIABLES ***********************/
 /********** USE TO DEFINE HOW MANY TEMPLATES ARE MADE **********/
-constexpr int AUG = 6;
-constexpr int COL = 3;
-constexpr int VEC = 6;
+constexpr int AUG = 2;
+constexpr int COL = 2;
+constexpr int VEC = 4;
 
 #endif // GLOBALS

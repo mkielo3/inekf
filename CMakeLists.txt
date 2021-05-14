@@ -24,16 +24,15 @@ option(TESTS    "Build Tests"           ON)
 # Eigen 
 find_package(Eigen3 CONFIG REQUIRED)
 
-# Python for plotting and/or wrapper
-if(PYTHON OR EXAMPLES)
-  find_package(Python3 COMPONENTS Interpreter Development NumPy)
-endif()
-
 #################### ADD TARGETS ####################
 add_subdirectory(src)
 
 if(EXAMPLES)
   add_subdirectory(examples)
+endif()
+
+if(PYTHON)
+  add_subdirectory(python)
 endif()
 
 #################### ADD TESTS ####################
@@ -42,26 +41,16 @@ if(TESTS)
   FetchContent_Declare(
     googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG        release-1.10.0
+    GIT_TAG        origin/master
   )
   FetchContent_MakeAvailable(googletest)
     
   enable_testing()
   add_subdirectory(tests)
-endif()
-  
-#################### ADD PYTHON WRAPPER ####################
-if(PYTHON)
-  add_subdirectory(python)
-  add_test(NAME test-python
-    COMMAND ${PYTHON_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python
-    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/python
-  )
-endif()
-  
+endif()  
 
 #################### INSTALL AS LIBRARY ####################
-# set(INSTALL_LIBS Core SE2_SLAM Inertial)
+# set(INSTALL_LIBS Core SE2Models Inertial)
 # install(TARGETS ${INSTALL_LIBS} EXPORT ${PROJECT_NAME}Config
 #         ARCHIVE DESTINATION lib
 #         LIBRARY DESTINATION lib

@@ -30,13 +30,13 @@ class InEKF {
         typedef Eigen::Matrix<double,Group::N,Group::rotSize> MatrixK;
         typedef typename Group::TangentVector TangentVector;
         
-        Group state_;
         ERROR error_;
         std::map<std::string, MeasureModel<Group>*> mModels;
 
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
+        
+        Group state_;
         std::shared_ptr<pM> pModel = std::make_shared<pM>();
 
         InEKF(Group state, ERROR error=ERROR::RIGHT) : state_(state), error_(error) {

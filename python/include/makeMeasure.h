@@ -23,12 +23,21 @@ class PyMeasureModel : public InEKF::MeasureModel<Group> {
         typedef typename InEKF::MeasureModel<Group>::VectorV VectorV;
         typedef typename InEKF::MeasureModel<Group>::VectorB VectorB;
 
+        MatrixH makeHError(const Group& state, InEKF::ERROR iekfERROR) override {
+            PYBIND11_OVERRIDE(
+                MatrixH,                    /* Return type */
+                InEKF::MeasureModel<Group>, /* Parent class */
+                makeHError,                 /* Name of function in C++ (must match Python name) */
+                state, iekfERROR            /* Argument(s) */
+            );
+        }
+
         VectorB processZ(const Eigen::VectorXd& z, const Group& state) override {
             PYBIND11_OVERRIDE(
-                VectorB,                    /* Return type */
-                InEKF::MeasureModel<Group>, /* Parent class */
-                processZ,                   /* Name of function in C++ (must match Python name) */
-                z, state                    /* Argument(s) */
+                VectorB,
+                InEKF::MeasureModel<Group>,
+                processZ,
+                z, state
             );
         }
 
@@ -53,6 +62,7 @@ class PyMeasureModel : public InEKF::MeasureModel<Group> {
         // Make a few protected things available
         using InEKF::MeasureModel<Group>::H_error_;
         using InEKF::MeasureModel<Group>::M_;
+        using InEKF::MeasureModel<Group>::H_;
         using InEKF::MeasureModel<Group>::error_;
 
 };
@@ -74,6 +84,8 @@ void makeMeasure(py::module &m, std::string name){
         .def(py::init<MatrixS, InEKF::ERROR>())
 
         // Overrideable methods
+        .def("makeHError", &K::makeHError,
+            "state"_a, "iekfERROR"_a)
         .def("processZ", &K::processZ,
             "z"_a, "state"_a)
         .def("calcV", &K::calcV,
@@ -82,8 +94,8 @@ void makeMeasure(py::module &m, std::string name){
             "state"_a)
 
         // Properties
-        .def_property("H", &K::getH, &K::setH)
         .def_readonly("H_error", &PyMeasureModel<T>::H_error_)
+        .def_readwrite("H", &PyMeasureModel<T>::H_)
         .def_readwrite("M", &PyMeasureModel<T>::M_)
         .def_readwrite("error", &PyMeasureModel<T>::error_);
 }
