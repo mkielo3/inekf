@@ -72,6 +72,23 @@ steps:
   depends_on:
   - docker
 
+- name: pypi_publish
+  image: plugins/pypi
+  settings:
+    username:
+      from_secret: pypi_username
+    password:
+      from_secret: pypi_password
+    distributions:
+    - bdist_wheel
+    repository: https://test.pypi.org/legacy/
+    skip_build: true
+  depends_on:
+  - py36
+  - py37
+  - py38
+  - py39
+
 volumes:
 - name: docker_sock
   host:
