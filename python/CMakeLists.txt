@@ -6,11 +6,12 @@ include(CMake_Macros.txt)
 set(COL "2" CACHE STRING "Number of columns to template")
 set(AUG "2" CACHE STRING "Number of augmented states to template")
 set(VEC "4" CACHE STRING "Number of vectors controls to template")
+# set(PYTHON_VERSION "" CACHE STRING "Python Version to build")
 configure_file(${PROJECT_SOURCE_DIR}/python/include/globals.h.in
                 ${PROJECT_SOURCE_DIR}/python/include/globals.h)
 
 # Find python
-find_package(Python COMPONENTS Interpreter Development REQUIRED)
+# find_package(Python ${PYTHON_VERSION} EXACT COMPONENTS Interpreter Development REQUIRED)
 
 # Get pybind, if not local, pull from git
 find_package(pybind11 QUIET)

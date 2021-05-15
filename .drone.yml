@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: default
+name: test
 
 steps:
 - name: Build Docker Image
@@ -9,7 +9,7 @@ steps:
   - name: docker_sock
     path: /var/run/docker.sock
   commands:
-  - docker build -t "${DRONE_REPO}:${DRONE_COMMIT:0:8}" .
+  - docker build -t "${DRONE_REPO}:${DRONE_COMMIT:0:8}" tests/
   
 - name: Build
   image: "${DRONE_REPO}:${DRONE_COMMIT:0:8}"
@@ -24,6 +24,53 @@ steps:
   - cd build
   - ctest --verbose
 
+volumes:
+- name: docker_sock
+  host:
+    path: /var/run/docker.sock
+
+---
+
+kind: pipeline
+type: docker
+name: python
+
+steps:
+- name: docker
+  image: docker:latest
+  volumes:
+  - name: docker_sock
+    path: /var/run/docker.sock
+  commands:
+  - docker build -t "${DRONE_REPO}-python:${DRONE_COMMIT:0:8}" python/
+  
+- name: py36
+  image: "${DRONE_REPO}-python:${DRONE_COMMIT:0:8}"
+  commands:
+  - PYTHON_VERSION=cp36-cp36m PLAT=manylinux2014_x86_64 bash python/build-wheels.sh
+  depends_on:
+  - docker
+
+- name: py37
+  image: "${DRONE_REPO}-python:${DRONE_COMMIT:0:8}"
+  commands:
+  - PYTHON_VERSION=cp37-cp37m PLAT=manylinux2014_x86_64 bash python/build-wheels.sh
+  depends_on:
+  - docker
+
+- name: py38
+  image: "${DRONE_REPO}-python:${DRONE_COMMIT:0:8}"
+  commands:
+  - PYTHON_VERSION=cp38-cp38 PLAT=manylinux2014_x86_64 bash python/build-wheels.sh
+  depends_on:
+  - docker
+
+- name: py39
+  image: "${DRONE_REPO}-python:${DRONE_COMMIT:0:8}"
+  commands:
+  - PYTHON_VERSION=cp39-cp39 PLAT=manylinux2014_x86_64 bash python/build-wheels.sh
+  depends_on:
+  - docker
 
 volumes:
 - name: docker_sock
