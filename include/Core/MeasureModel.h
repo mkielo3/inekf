@@ -44,6 +44,15 @@ class MeasureModel {
             this->error_ = error;
         };
 
+        virtual VectorB processZ(const Eigen::VectorXd& z, const Group& state) { 
+            if(z.rows() == Group::M){
+                return z;
+            }
+            else{
+                throw std::range_error("Wrong sized z");
+            }
+        }
+
         virtual MatrixH makeHError(const Group& state, ERROR iekfERROR){
             if( iekfERROR != error_ ){
                 if(iekfERROR == ERROR::RIGHT){
@@ -57,15 +66,6 @@ class MeasureModel {
                 H_error_ = H_;
             }
             return H_error_;
-        }
-
-        virtual VectorB processZ(const Eigen::VectorXd& z, const Group& state) { 
-            if(z.rows() == Group::M){
-                return z;
-            }
-            else{
-                throw std::range_error("Wrong sized z");
-            }
         }
 
         virtual VectorV calcV(const VectorB& z, const Group& state){

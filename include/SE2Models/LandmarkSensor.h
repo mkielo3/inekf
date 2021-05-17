@@ -19,6 +19,7 @@ class LandmarkSensor : public MeasureModel<SE2<Eigen::Dynamic>> {
         MatrixS M_rb;
         Eigen::Matrix<double,2,4> HSmall;
         int lmIdx;
+        ERROR filterError;
         
     public:
         LandmarkSensor(double std_r, double std_b);
@@ -30,6 +31,10 @@ class LandmarkSensor : public MeasureModel<SE2<Eigen::Dynamic>> {
 
         VectorB processZ(const Eigen::VectorXd& z, const SE2<Eigen::Dynamic>& state) override;
         MatrixS calcSInverse(const SE2<Eigen::Dynamic>& state) override;
+        MatrixH makeHError(const SE2<Eigen::Dynamic>& state, ERROR iekfERROR) override {
+            filterError = iekfERROR;
+            return MeasureModel<SE2<Eigen::Dynamic>>::makeHError(state, iekfERROR);
+        }
 
 };
 
