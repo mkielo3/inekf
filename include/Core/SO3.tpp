@@ -105,7 +105,9 @@ typename SO3<A>::TangentVector SO3<A>::Log(const SO3& g){
     xi(0) = g()(2,1) - g()(1,2);
     xi(1) = g()(0,2) - g()(2,0);
     xi(2) = g()(1,0) - g()(0,1);
-    xi.head(3) *= theta / (2*sin(theta));
+    if(theta != 0){
+        xi.head(3) *= theta / (2*sin(theta));
+    }
 
     xi.tail(xi.rows()-3) = g.Aug();
     return xi;

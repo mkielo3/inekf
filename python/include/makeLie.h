@@ -48,6 +48,8 @@ py::class_<T> make_group(py::module &m, std::string name, int num1, int num2=-10
 
         // Misc
         .def("addAug", &T::addAug, "x"_a, "sigma"_a=1)
+        .def("__matmul__", &T::operator*, py::is_operator())
+        .def("__invert__", &T::inverse)
         .def("__str__", &T::toString)
         .def("__repr__", &T::toString);
 
