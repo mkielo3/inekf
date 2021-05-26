@@ -7,7 +7,6 @@ InertialProcess::InertialProcess() {
 }
 
 SE3<2,6> InertialProcess::f(Eigen::Vector6d u, double dt, SE3<2,6> state){
-    // TODO: Clean this up
     // Get everything we need
     Eigen::Vector6d u_shifted = u - state.Aug();
     Eigen::Vector3d omega = u_shifted.head(3);

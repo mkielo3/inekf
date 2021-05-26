@@ -12,8 +12,6 @@
 
 namespace InEKF {
 
-// TODO: Make process model not a template?? Make Group a template instead?
-// the benefit of letting U be anything is probably worth it staying a template.
 template <class pM>
 class InEKF {
 

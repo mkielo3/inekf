@@ -31,12 +31,14 @@ def data_association(state, zs, laser_mm):
     pairs = solve_cost_matrix_heuristic(M_new)
     pairs.sort()
 
-    # TODO Review this better
-    pairs = list(map(lambda x:(x[0],-1) if x[1]>=n_lm else (x[0],x[1]),pairs))
-    assoc = list(map(lambda x:x[1],pairs))
+    assoc = [x[1] for x in pairs]
 
     for i in range(len(assoc)):
-        if assoc[i] == -1:
+        # Check if it wants a new landmark
+        if assoc[i] >= n_lm:
+            assoc[i] = -1
+            # Also check if there was any other landmarks semi-close to it
+            # if so, don't make a new one
             for j in range(M.shape[1]):
                 if M[i, j] < beta:
                     assoc[i] = -2
@@ -82,7 +84,6 @@ def makeOdometry(u, dt):
     Ve, alpha = u
     Vc = Ve / (1 - np.tan(alpha)*H/L)
 
-    # TODO Double check these
     motion = np.zeros(3)
     motion[0] = Vc/L*np.tan(alpha)
     motion[1] = Vc - Vc/L*np.tan(alpha)*b
@@ -99,7 +100,7 @@ x0 = SE2["D"](x0, sig)
 gps = GPSSensor(3)
 laser = LandmarkSensor(0.5, 0.5*np.pi/180)
 
-iekf = InEKF[OdometryProcessDynamic](x0, ERROR.LEFT)
+iekf = InEKF[OdometryProcessDynamic](x0, ERROR.RIGHT)
 iekf.addMeasureModel("GPS", gps)
 iekf.addMeasureModel("Laser", laser)
 Q = np.diag([0.5*np.pi/180, 0.05, 0.05])
@@ -118,7 +119,7 @@ laser_data = read_data("../../data/victoria_park_ascii/LASER_TREE.txt")
 events =      [('gps',   x[0], x[1:]) for x in gps_data]
 events.extend([('odo',   x[0], x[1:]) for x in odo_data])
 events.extend([('laser', x[0], np.array(x[1:]).reshape(-1,2)) for x in laser_data])
-events = sorted(events, key=lambda x: x[1])[:1000]
+events = sorted(events, key=lambda x: x[1])
 
 #### GET PLOT READY
 fig, ax = plt.subplots(figsize=(8,6))
@@ -153,20 +154,20 @@ for i, (e, t, data) in tqdm(enumerate(events), total=len(events)):
         gps_data.append(data)
 
     # Laser Measurement
-    # if e == 'laser':
-    #     # identify landmarks
-    #     assoc = data_association(iekf.state, data, laser)
-    #     # iterate through them (note data here is still r/b)
-    #     for idx, data in zip(assoc, data):
-    #         if idx == -1:
-    #             addLandmark(data, iekf.state)
-    #             laser.sawLandmark(iekf.state.State.shape[0]-2-1-1, iekf.state)
-    #             iekf.Update(data, "Laser")
-    #         elif idx == -2:
-    #             continue
-    #         else:
-    #             laser.sawLandmark(idx, iekf.state)
-    #             iekf.Update(data, "Laser")
+    if e == 'laser':
+        # identify landmarks
+        assoc = data_association(iekf.state, data, laser)
+        # iterate through them (note data here is still r/b)
+        for idx, data in zip(assoc, data):
+            if idx == -1:
+                addLandmark(data, iekf.state)
+                laser.sawLandmark(iekf.state.State.shape[0]-2-1-1, iekf.state)
+                iekf.Update(data, "Laser")
+            elif idx == -2:
+                continue
+            else:
+                laser.sawLandmark(idx, iekf.state)
+                iekf.Update(data, "Laser")
 
     if time() - last_plot > 1 or i == len(events)-1:
         # plot car

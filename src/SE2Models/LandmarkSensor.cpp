@@ -54,7 +54,9 @@ LandmarkSensor::VectorB LandmarkSensor::processZ(const Eigen::VectorXd& z, const
 LandmarkSensor::MatrixS LandmarkSensor::calcSInverse(const SE2<Eigen::Dynamic>& state){
     MatrixS Sinv;
     MatrixS R = state.R()();
-    if(error_ == ERROR::RIGHT){
+    // if we're using a right filter, H_error_ will be identities
+    // So take out the parts that will be 0 so we can speed things up
+    if(filterError == ERROR::RIGHT){
         Eigen::Matrix4d CovSliced;
         CovSliced.block<2,2>(0,0) = state.Cov().block<2,2>(1,1);
         CovSliced.block<2,2>(2,2) = state.Cov().block<2,2>(lmIdx*2+3,lmIdx*2+3);
@@ -64,12 +66,14 @@ LandmarkSensor::MatrixS LandmarkSensor::calcSInverse(const SE2<Eigen::Dynamic>& 
         Sinv.noalias() = ( HSmall*CovSliced*HSmall.transpose() + R*M_*R.transpose() ).inverse();
     }
     else{
-        Sinv.noalias() = ( H_error_*state.Cov()*H_error_.transpose() + R.transpose()*M_*R ).inverse();
+        Sinv.noalias() = ( H_error_*state.Cov()*H_error_.transpose() + R*M_*R.transpose() ).inverse();
     }
+
     return Sinv;
 }
 
 double LandmarkSensor::calcMahDist(const Eigen::VectorXd& z, const SE2<Eigen::Dynamic>& state){
+    makeHError(state, filterError);
     VectorB z_ = processZ(z, state);
     VectorV V  = calcV(z_, state);
     MatrixS Sinv = calcSInverse(state);

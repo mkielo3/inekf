@@ -260,7 +260,6 @@ typename SE3<C,A>::MatrixState SE3<C,A>::Wedge(const TangentVector& xi){
     return X;
 }
 
-// TODO: Implement this properly
 template <int C, int A>
 typename SE3<C,A>::TangentVector SE3<C,A>::Log(const SE3& g){
     // figure out state size for dynamic purposes
