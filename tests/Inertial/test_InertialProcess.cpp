@@ -9,7 +9,7 @@
 
 TEST(InertialProcess, f){
     InEKF::SE3<2,6> state;
-    Eigen::Vector<double,6> u;
+    Eigen::Matrix<double,6,1> u;
     u << 1,1,1,1,1,1+9.81;
 
     InEKF::InertialProcess ip;

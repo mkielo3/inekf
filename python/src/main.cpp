@@ -63,5 +63,5 @@ PYBIND11_MODULE(_inekf, m) {
     // makeMeasure<InEKF::SO2<1>>(m, "SO2_1");
     // makeGenericMeasure<InEKF::SO2<1>>(m, "SO2_1");
     // makeProcess<InEKF::SO2<1>,Eigen::Vector5d>(m, "SO2_Vec5");
-    // makeInEKF<InEKF::SE3<2,6>,Eigen::Vector<double,6>>(m, "SE3_2_6_Vec6");
+    // makeInEKF<InEKF::SE3<2,6>,Eigen::Matrix<double,6,1>>(m, "SE3_2_6_Vec6");
 }

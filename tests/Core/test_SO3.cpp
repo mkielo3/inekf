@@ -96,7 +96,7 @@ TEST(SO3, Log){
     x << .1, .2, .3, 5, 6;
     InEKF::SO3<Eigen::Dynamic> state(x);
 
-    Eigen::Vector<double,5> xi = state.log();
+    Eigen::Matrix<double,5,1> xi = state.log();
     EXPECT_MATRICES_EQ(xi, x);
 }
 

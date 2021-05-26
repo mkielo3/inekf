@@ -16,6 +16,8 @@ if(${CMAKE_VERSION} VERSION_LESS 3.14)
   endmacro() 
 endif()
 
+
+
 #################### IMPORT DEPENDENCIES ####################
 option(EXAMPLES "Build Examples"        ON)
 option(PYTHON   "Build Python Wrapper"  ON)
@@ -23,17 +25,6 @@ option(TESTS    "Build Tests"           ON)
 
 # Eigen 
 find_package(Eigen3 CONFIG REQUIRED)
-
-#################### ADD TARGETS ####################
-add_subdirectory(src)
-
-if(EXAMPLES)
-  add_subdirectory(examples)
-endif()
-
-if(PYTHON)
-  add_subdirectory(python)
-endif()
 
 #################### ADD TESTS ####################
 if(TESTS)
@@ -48,6 +39,18 @@ if(TESTS)
   enable_testing()
   add_subdirectory(tests)
 endif()  
+
+#################### ADD TARGETS ####################
+add_subdirectory(src)
+
+if(EXAMPLES)
+  add_subdirectory(examples)
+endif()
+
+if(PYTHON)
+  add_subdirectory(python)
+endif()
+
 
 #################### INSTALL AS LIBRARY ####################
 # set(INSTALL_LIBS Core SE2Models Inertial)

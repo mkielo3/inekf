@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.11)
 FetchContent_Declare(
   matplotplusplus
   GIT_REPOSITORY https://github.com/alandefreitas/matplotplusplus
-  GIT_TAG origin/master
+  GIT_TAG v1.1.0
 )
 FetchContent_MakeAvailable(matplotplusplus)
 

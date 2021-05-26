@@ -12,8 +12,8 @@
 #include <matplot/matplot.h>
 namespace plt = matplot;
 
-Eigen::VectorXd get_col(int index, Eigen::MatrixXd& v){
-    return v.col(0);
+std::vector<double> to_std_vec(Eigen::MatrixXd v){
+    return std::vector<double>(v.data(), v.data()+v.size());
 }
 
 Eigen::VectorXd strToVec(std::string in){
@@ -35,11 +35,11 @@ int main(){
          -0.99452, 0.00547, 0.10439,
           0.10453, 0.05205, 0.99316;
     InEKF::SO3 Rot(R0);
-    Eigen::Vector<double,12> xi;
+    Eigen::Matrix<double,12,1> xi;
     xi << 0, 0, -4.66134,       // velocity
         -0.077, -0.02, -2.2082, // position
         0,0,0,0,0,0;            // bias
-    Eigen::Vector<double,15> s;
+    Eigen::Matrix<double,15,1> s;
     s << 0.274156, 0.274156, 0.274156, 1.0, 1.0, 1.0, 0.01, 0.01, 0.01, 0.000025, 0.000025, 0.000025, 0.0025, 0.0025, 0.0025;
     InEKF::SE3<2,6> state(Rot, xi, s.asDiagonal());
 
@@ -131,7 +131,8 @@ int main(){
         }
         else if (type == "R"){
             assert((data.size()-1) == 9);
-            R.block<3,3>(3*i,0) = data.tail(9).reshaped(3,3).transpose();
+            R.block<3,3>(3*i,0) << data.segment<3>(1), data.segment<3>(4), data.segment<3>(7);
+            R.block<3,3>(3*i,0).transposeInPlace();
         }
 
         if(i >= n){
@@ -144,7 +145,8 @@ int main(){
     
 
     // Plot everything
-    Eigen::VectorXd t = Eigen::VectorXd::LinSpaced(n, 0, n*dt);
+    Eigen::VectorXd t1 = Eigen::VectorXd::LinSpaced(n, 0, n*dt);
+    std::vector<double> t(t1.data(), t1.data()+n);
     plt::figure(true)->size(1000,1000);
 
     // Global position
@@ -152,36 +154,36 @@ int main(){
     plt::hold(true);
     plt::ylabel("Position");
     plt::title("X (global)");
-    plt::plot(t, get_col(0, p))->display_name("Actual");
-    plt::plot(t, get_col(0, p_result))->display_name("Result");
+    plt::plot(t, to_std_vec(p.col(0)))->display_name("Actual");
+    plt::plot(t, to_std_vec(p_result.col(0)))->display_name("Result");
     plt::subplot(3, 3, 1);
     plt::hold(true);
     plt::title("Y (global)");
-    plt::plot(t, get_col(1, p));
-    plt::plot(t, get_col(1, p_result));
+    plt::plot(t, to_std_vec(p.col(1)));
+    plt::plot(t, to_std_vec(p_result.col(1)));
     plt::subplot(3, 3, 2);
     plt::hold(true);
     plt::title("Z (global)");
-    plt::plot(t, get_col(2, p));
-    plt::plot(t, get_col(2, p_result));
+    plt::plot(t, to_std_vec(p.col(2)));
+    plt::plot(t, to_std_vec(p_result.col(2)));
 
     // Local Velocity
     plt::subplot(3, 3, 3);
     plt::hold(true);
     plt::ylabel("Velocity");
     plt::title("X (local)");
-    plt::plot(t, get_col(0, v));
-    plt::plot(t, get_col(0, v_result));
+    plt::plot(t, to_std_vec(v.col(0)));
+    plt::plot(t, to_std_vec(v_result.col(0)));
     plt::subplot(3, 3, 4);
     plt::hold(true);
     plt::title("Y (local)");
-    plt::plot(t, get_col(1, v));
-    plt::plot(t, get_col(1, v_result));
+    plt::plot(t, to_std_vec(v.col(1)));
+    plt::plot(t, to_std_vec(v_result.col(1)));
     plt::subplot(3, 3, 5);
     plt::hold(true);
     plt::title("Z (local)");
-    plt::plot(t, get_col(2, v));
-    plt::plot(t, get_col(2, v_result));
+    plt::plot(t, to_std_vec(v.col(2)));
+    plt::plot(t, to_std_vec(v_result.col(2)));
 
     // All the angles
     plt::subplot(3,3,6);
@@ -194,8 +196,8 @@ int main(){
         angle[j] = -std::asin(R(3*j+2,0));
         angle_result[j] = -std::asin(R_result(3*j+2,0));
     }
-    plt::plot(t, angle);
-    plt::plot(t, angle_result);
+    plt::plot(t, to_std_vec(angle));
+    plt::plot(t, to_std_vec(angle_result));
 
     plt::subplot(3,3,7);
     plt::hold(true);
@@ -204,8 +206,8 @@ int main(){
         angle[j] = std::atan2(R(3*j+2,1), R(3*j+2,2));
         angle_result[j] = std::atan2(R_result(3*j+2,1), R_result(3*j+2,2));
     }
-    plt::plot(t, angle);
-    plt::plot(t, angle_result);
+    plt::plot(t, to_std_vec(angle));
+    plt::plot(t, to_std_vec(angle_result));
 
     plt::subplot(3,3,8);
     plt::hold(true);
@@ -214,8 +216,8 @@ int main(){
         angle[j] = std::atan2(R(3*j+1,0), R(3*j,0));
         angle_result[j] = std::atan2(R_result(3*j+1,0), R_result(3*j,0));
     }
-    plt::plot(t, angle);
-    plt::plot(t, angle_result);
+    plt::plot(t, to_std_vec(angle));
+    plt::plot(t, to_std_vec(angle_result));
 
     plt::show();
 

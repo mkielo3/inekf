@@ -23,7 +23,7 @@ TEST(SE2, BaseConstructor1){
 TEST(SE2, BaseConstructor2){
     Eigen::MatrixXd state = Eigen::Matrix4d::Identity();
     Eigen::Matrix<double,6,6> sigma = Eigen::Matrix<double,6,6>::Identity();
-    Eigen::Vector<double,1> aug = Eigen::Vector<double,1>::Ones();
+    Eigen::Matrix<double,1,1> aug = Eigen::Matrix<double,1,1>::Ones();
 
     // make sure it gets mad if we pass the wrong sigma
     EXPECT_THROW(InEKF::SE2<Eigen::Dynamic> x(state, sigma);, std::range_error);
@@ -35,7 +35,7 @@ TEST(SE2, BaseConstructor2){
 }
 
 TEST(SE2, TangentConstructor1){
-    Eigen::Vector<double,6> x;
+    Eigen::Matrix<double,6,1> x;
     x << 0, 1, 2, 3, 4, 5;
 
     InEKF::SE2<2,1> state(x);
@@ -113,7 +113,7 @@ TEST(SE2, Inverse){
 }
 
 TEST(SE2, Exp){
-    Eigen::Vector<double,6> x;
+    Eigen::Matrix<double,6,1> x;
     x << 0, 1, 2, 3, 4, 5;
     
     InEKF::SE2<2,1> ours = InEKF::SE2<2,1>::Exp(x);
@@ -133,7 +133,7 @@ TEST(SE2, Log){
 }
 
 TEST(SE2, Wedge){
-    Eigen::Vector<double,6> x;
+    Eigen::Matrix<double,6,1> x;
     x << 1, 2, 3, 4, 5, 6;
 
     Eigen::Matrix4d ours = InEKF::SE2<2,1>::Wedge(x); 

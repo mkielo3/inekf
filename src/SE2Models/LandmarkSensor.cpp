@@ -55,7 +55,12 @@ LandmarkSensor::MatrixS LandmarkSensor::calcSInverse(const SE2<Eigen::Dynamic>& 
     MatrixS Sinv;
     MatrixS R = state.R()();
     if(error_ == ERROR::RIGHT){
-        Eigen::Matrix4d CovSliced = state.Cov()({1,2,lmIdx*2+3,lmIdx*2+4},{1,2,lmIdx*2+3,lmIdx*2+4});
+        Eigen::Matrix4d CovSliced;
+        CovSliced.block<2,2>(0,0) = state.Cov().block<2,2>(1,1);
+        CovSliced.block<2,2>(2,2) = state.Cov().block<2,2>(lmIdx*2+3,lmIdx*2+3);
+        CovSliced.block<2,2>(0,2) = state.Cov().block<2,2>(1,lmIdx*2+3);
+        CovSliced.block<2,2>(2,0) = state.Cov().block<2,2>(lmIdx*2+3,1);
+        // Eigen::Matrix4d CovSliced = state.Cov()({1,2,lmIdx*2+3,lmIdx*2+4},{1,2,lmIdx*2+3,lmIdx*2+4});
         Sinv.noalias() = ( HSmall*CovSliced*HSmall.transpose() + R*M_*R.transpose() ).inverse();
     }
     else{
