@@ -19,7 +19,7 @@ void DepthSensor::setNoise(double std){
 }
 
 DepthSensor::VectorB DepthSensor::processZ(const Eigen::VectorXd& z, const SE3<2,6>& state) {
-    Eigen::Vector<double, 5> z_full;
+    Eigen::Matrix<double,5,1> z_full;
     Eigen::Vector3d p = state[1];
     z_full << p[0], p[1], z[0], 0, 1;
     return z_full;

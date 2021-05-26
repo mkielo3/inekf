@@ -19,14 +19,14 @@ using namespace pybind11::literals;
 
 void makeInertial(py::module &m){
     if constexpr(COL < 2 || AUG < 6 || VEC < 6){
-        makeProcess<InEKF::SE3<2,6>, Eigen::Vector<double,6>>(m, "SE3_2_6_Vec6");
-        makeInEKF<InEKF::SE3<2,6>, Eigen::Vector<double,6>>(m, "SE3_2_6_Vec6");
+        makeProcess<InEKF::SE3<2,6>, Eigen::Matrix<double,6,1>>(m, "SE3_2_6_Vec6");
+        makeInEKF<InEKF::SE3<2,6>, Eigen::Matrix<double,6,1>>(m, "SE3_2_6_Vec6");
     }
     if constexpr(COL < 2 || AUG < 6){
         makeSE3<2,6>(m);
         makeMeasure<InEKF::SE3<2,6>>(m, "SE3_2_6");
     }
-    using BaseProcess = InEKF::ProcessModel<InEKF::SE3<2,6>, Eigen::Vector<double,6>>;
+    using BaseProcess = InEKF::ProcessModel<InEKF::SE3<2,6>, Eigen::Matrix<double,6,1>>;
     using BaseMeasure = InEKF::MeasureModel<InEKF::SE3<2,6>>;
     // NOTE: Don't have to put in overriden functions if include base classes
     // Just have to put in new classes

@@ -31,7 +31,7 @@ void DVLSensor::setNoise(double std_dvl, double std_imu){
 
 DVLSensor::VectorB DVLSensor::processZ(const Eigen::VectorXd& z, const SE3<2,6>& state){
     // Fill up Z
-    Eigen::Vector<double, 5> z_full;
+    Eigen::Matrix<double,5,1> z_full;
     z_full << z[0], z[1], z[2], -1, 0;
 
     // Convert to IMU frame

@@ -26,7 +26,7 @@ TEST(SE3, BaseConstructor1){
 TEST(SE3, BaseConstructor2){
     Eigen::MatrixXd state = Eigen::Matrix5d::Identity();
     Eigen::Matrix<double,10,10> sigma = Eigen::Matrix<double,10,10>::Identity();
-    Eigen::Vector<double,1> aug = Eigen::Vector<double,1>::Ones();
+    Eigen::Matrix<double,1,1> aug = Eigen::Matrix<double,1,1>::Ones();
 
     // make sure it gets mad if we pass the wrong sigma
     EXPECT_THROW(InEKF::SE3<Eigen::Dynamic> x(state, sigma);, std::range_error);
@@ -38,7 +38,7 @@ TEST(SE3, BaseConstructor2){
 }
 
 TEST(SE3, TangentConstructor1){
-    Eigen::Vector<double,10> x = Eigen::Vector<double,10>::LinSpaced(10,0,10);
+    Eigen::Matrix<double,10,1> x = Eigen::Matrix<double,10,1>::LinSpaced(10,0,10);
 
     InEKF::SE3<2,1> state(x);
     EXPECT_MATRICES_EQ(state.R()(), InEKF::SO3<>::Exp(x.head(3))() );
@@ -48,7 +48,7 @@ TEST(SE3, TangentConstructor1){
 }
 
 TEST(SE3, TangentConstructor2){
-    Eigen::VectorXd x = Eigen::Vector<double,10>::LinSpaced(10,0,10);
+    Eigen::VectorXd x = Eigen::Matrix<double,10,1>::LinSpaced(10,0,10);
 
 
     InEKF::SE3<Eigen::Dynamic,1> state(x);
@@ -110,7 +110,7 @@ TEST(SE3, Inverse){
 }
 
 TEST(SE3, Exp){
-    Eigen::Vector<double,10> x = Eigen::Vector<double,10>::LinSpaced(10,0,10);
+    Eigen::Matrix<double,10,1> x = Eigen::Matrix<double,10,1>::LinSpaced(10,0,10);
     
     InEKF::SE3<2,1> ours = InEKF::SE3<2,1>::Exp(x);
     Eigen::Matrix5d theirs = InEKF::SE3<2,1>::Wedge(x).exp(); 
@@ -121,7 +121,7 @@ TEST(SE3, Exp){
 }
 
 TEST(SE3, Log){
-    Eigen::Vector<double,6> xi;
+    Eigen::Matrix<double,6,1> xi;
     xi << .1, .2, .3, 4, 5, 6;
     InEKF::SE3<> x = InEKF::SE3<>::Exp(xi);
 
@@ -129,7 +129,7 @@ TEST(SE3, Log){
 }
 
 TEST(SE3, Wedge){
-    Eigen::Vector<double,10> x = Eigen::Vector<double,10>::LinSpaced(10,1,10);
+    Eigen::Matrix<double,10,1> x = Eigen::Matrix<double,10,1>::LinSpaced(10,1,10);
 
     Eigen::Matrix5d ours = InEKF::SE3<2,1>::Wedge(x); 
     Eigen::Matrix5d theirs;
@@ -144,7 +144,7 @@ TEST(SE3, Wedge){
 }
 
 TEST(SE3, Adjoint){
-    Eigen::Vector<double,10> y = Eigen::Vector<double,10>::LinSpaced(10,1,10);
+    Eigen::Matrix<double,10,1> y = Eigen::Matrix<double,10,1>::LinSpaced(10,1,10);
     InEKF::SE3<2,1> x(y);
     Eigen::Matrix<double,10,10> ad = x.Ad();
 

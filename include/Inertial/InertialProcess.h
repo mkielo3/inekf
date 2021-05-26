@@ -11,7 +11,7 @@ namespace Eigen{
 
 namespace InEKF {
 
-class InertialProcess : public ProcessModel<SE3<2,6>, Eigen::Vector<double,6>> {
+class InertialProcess : public ProcessModel<SE3<2,6>, Eigen::Matrix<double,6,1>> {
 
     private:
         const Eigen::Vector3d g_ = (Eigen::Vector3d() << 0,0,-9.81).finished();
