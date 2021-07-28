@@ -1,5 +1,6 @@
 .vscode
-build
-build_test
+build*
+dist*
+secrets*
 release
 __pycache__
