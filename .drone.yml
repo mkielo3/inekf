@@ -74,6 +74,9 @@ steps:
 
 - name: pypi_publish
   image: plugins/pypi
+  when:
+    event:
+    - tag 
   settings:
     username:
       from_secret: pypi_username
@@ -81,7 +84,6 @@ steps:
       from_secret: pypi_password
     distributions:
     - bdist_wheel
-    repository: https://test.pypi.org/legacy/
     skip_build: true
   depends_on:
   - py36
