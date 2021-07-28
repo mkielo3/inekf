@@ -9,7 +9,7 @@ steps:
   - name: docker_sock
     path: /var/run/docker.sock
   commands:
-  - docker build -t "${DRONE_REPO}:${DRONE_COMMIT:0:8}" tests/
+  - docker build --no-cache -t "${DRONE_REPO}:${DRONE_COMMIT:0:8}" tests/
   
 - name: Build
   image: "${DRONE_REPO}:${DRONE_COMMIT:0:8}"
