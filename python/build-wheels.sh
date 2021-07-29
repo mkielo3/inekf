@@ -21,9 +21,9 @@ cmake ${SRCDIR} -DCMAKE_BUILD_TYPE=Release \
     -DPYTHON=ON \
     -DTESTS=OFF \
     -DEXAMPLES=OFF \
-    -DCOL=1 \
-    -DAUG=1 \
-    -DVEC=1 \
+    -DCOL=2 \
+    -DAUG=6 \
+    -DVEC=6 \
     -DPYBIND11_PYTHON_VERSION=$PYVER_NUM; ec=$?
 make -j2
 
