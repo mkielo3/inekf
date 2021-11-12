@@ -22,6 +22,8 @@ class InEKF(metaclass=_meta_InEKF):
         # save for later
         self.base = base
         self.pModel = pModel
+        # save measurement models so they don't go out of scope
+        self.mModels = {}
 
     # This is secretly used as our init function
     def __call__(self, *args, **kwargs):
@@ -38,8 +40,9 @@ class InEKF(metaclass=_meta_InEKF):
     def Update(self, *args, **kwargs):
         return self.base.Update(*args, **kwargs)
 
-    def addMeasureModel(self, *args, **kwargs):
-        return self.base.addMeasureModel(*args, **kwargs)
+    def addMeasureModel(self, name, model):
+        self.mModels[name] = model
+        return self.base.addMeasureModel(name, model)
 
     @property
     def state(self):
