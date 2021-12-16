@@ -7,9 +7,9 @@ template <class pM>
 typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){    
     // Predict Sigma
     MatrixCov Sigma = state_.Cov();
-    MatrixCov Phi = pModel->MakePhi(u, dt, state_, error_);
+    MatrixCov Phi = pModel_->MakePhi(u, dt, state_, error_);
 
-    MatrixCov Q = pModel->getQ();
+    MatrixCov Q = pModel_->getQ();
     if(error_ == ERROR::RIGHT){
         MatrixCov Adj_X = Group::Ad( state_ );
         Q = Adj_X*Q*Adj_X.transpose();
@@ -21,7 +21,7 @@ typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){
     state_.setCov( Sigma );
 
     // Predict mu
-    state_ = pModel->f(u, dt, state_);
+    state_ = pModel_->f(u, dt, state_);
 
     return state_;
 }

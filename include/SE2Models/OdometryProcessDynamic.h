@@ -15,6 +15,13 @@ class OdometryProcessDynamic : public ProcessModel<SE2<Eigen::Dynamic>, SE2<>> {
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         OdometryProcessDynamic(){}
+        OdometryProcessDynamic(float theta_cov, float x_cov, float y_cov){
+            Eigen::Vector3d q;
+            q << theta_cov, x_cov, y_cov;
+            setQ(q);
+        }
+        OdometryProcessDynamic(Eigen::Vector3d q){ setQ(q); }
+        OdometryProcessDynamic(Eigen::Matrix3d q){ setQ(q); }
         ~OdometryProcessDynamic(){}
         
         SE2<Eigen::Dynamic> f(SE2<> u, double dt, SE2<Eigen::Dynamic> state) override;

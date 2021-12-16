@@ -99,12 +99,11 @@ x0 = SE2["D"](x0, sig)
 #### SETUP InEKF
 gps = GPSSensor(3)
 laser = LandmarkSensor(0.5, 0.5*np.pi/180)
+pModel = OdometryProcessDynamic(0.5*np.pi/180, 0.05, 0.05)
 
-iekf = InEKF[OdometryProcessDynamic](x0, ERROR.RIGHT)
+iekf = InEKF(pModel, x0, ERROR.RIGHT)
 iekf.addMeasureModel("GPS", gps)
 iekf.addMeasureModel("Laser", laser)
-Q = np.diag([0.5*np.pi/180, 0.05, 0.05])
-iekf.pModel.setQ(Q)
 
 #### LOAD IN DATA
 def read_data(filename):

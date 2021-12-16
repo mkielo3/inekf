@@ -1,38 +1,18 @@
 from . import _inekf
-import inspect
 
-########################### Measurement Model ##############################
-# figure this one out
-class _meta_InEKF(type):
-    def __getitem__(cls,key):
-        # make instance if it's not one
-        if inspect.isclass(key):
-            key = key()
-
+########################### InEKF Filter Class ##############################
+class InEKF:
+    def __init__(self, pModel, x0, error):
         # Parse name
-        group_name = key.__class__.__mro__[-3].__name__
+        group_name = pModel.__class__.__mro__[-3].__name__
         name = "InEKF_" + group_name.split('_',1)[1]
 
-        return InEKF(getattr(_inekf, name), key)
-
-# Wrapper class since we need to set process model manually 
-# (isn't templated for custom classes)
-class InEKF(metaclass=_meta_InEKF):
-    def __init__(self, base, pModel):
         # save for later
-        self.base = base
         self.pModel = pModel
+        self.base = getattr(_inekf, name)(pModel, x0, error)
+
         # save measurement models so they don't go out of scope
         self.mModels = {}
-
-    # This is secretly used as our init function
-    def __call__(self, *args, **kwargs):
-        # initialize base
-        self.base = self.base(*args, **kwargs)
-        # initialize process model
-        self.base.pModel = self.pModel
-
-        return self
 
     def Predict(self, *args, **kwargs):
         return self.base.Predict(*args, **kwargs)

@@ -15,14 +15,15 @@ using namespace pybind11::literals;
 
 template<class G, class U>
 void makeInEKF(py::module &m, std::string name){
-    using T = InEKF::InEKF<InEKF::ProcessModel<G,U>>;
+    using P = InEKF::ProcessModel<G,U>;
+    using T = InEKF::InEKF<P>;
     typedef Eigen::Matrix<double,G::rotSize,G::N> MatrixH;
 
     name = "InEKF_" + name;
     py::class_<T> myClass(m, name.c_str());
     myClass
-        .def(py::init<G, InEKF::ERROR>(),
-            "state"_a, "error"_a=InEKF::RIGHT)
+        .def(py::init<P*, G, InEKF::ERROR>(),
+            "pModel"_a, "state"_a, "error"_a=InEKF::RIGHT)
         
         .def("Predict", &T::Predict,
             "u"_a, "dt"_a=1)
@@ -33,8 +34,7 @@ void makeInEKF(py::module &m, std::string name){
         .def("addMeasureModel", &T::addMeasureModel,
             "name"_a, "m"_a)
 
-        .def_readwrite("state", &T::state_)
-        .def_readwrite("pModel", &T::pModel);
+        .def_readwrite("state", &T::state_);
 
 }
 

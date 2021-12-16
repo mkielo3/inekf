@@ -15,6 +15,13 @@ class OdometryProcess : public ProcessModel<SE2<>, SE2<>> {
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         OdometryProcess(){}
+        OdometryProcess(float theta_std, float x_std, float y_std){
+            Eigen::Vector3d q;
+            q << theta_std, x_std, y_std;
+            setQ(q);
+        }
+        OdometryProcess(Eigen::Vector3d q){ setQ(q); }
+        OdometryProcess(Eigen::Matrix3d q){ setQ(q); }
         ~OdometryProcess(){}
         
         SE2<> f(SE2<> u, double dt, SE2<> state) override;
