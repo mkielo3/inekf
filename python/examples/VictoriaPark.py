@@ -121,6 +121,7 @@ events.extend([('laser', x[0], np.array(x[1:]).reshape(-1,2)) for x in laser_dat
 events = sorted(events, key=lambda x: x[1])
 
 #### GET PLOT READY
+plt.ion()
 fig, ax = plt.subplots(figsize=(8,6))
 
 traj, = ax.plot([])
@@ -128,7 +129,6 @@ veh = ax.scatter([],[], label="Vehicle", marker=">")
 gps_pts = ax.scatter([], [], label="GPS", c='g', s=3)
 lm_pts  = ax.scatter([], [], label="Landmarks", c='r', s=3)
 plt.legend()
-plt.show(block=False)
 
 #### ITERATE
 states = [x0]
@@ -161,12 +161,12 @@ for i, (e, t, data) in tqdm(enumerate(events), total=len(events)):
             if idx == -1:
                 addLandmark(data, iekf.state)
                 laser.sawLandmark(iekf.state.State.shape[0]-2-1-1, iekf.state)
-                iekf.Update("GPS", data)
+                iekf.Update("Laser", data)
             elif idx == -2:
                 continue
             else:
                 laser.sawLandmark(idx, iekf.state)
-                iekf.Update("GPS", data)
+                iekf.Update("Laser", data)
 
     if time() - last_plot > 1 or i == len(events)-1:
         # plot car
@@ -203,8 +203,8 @@ for i, (e, t, data) in tqdm(enumerate(events), total=len(events)):
 
         ax.set_xlim(min_x*1.1-1, max_x*1.1+1)
         ax.set_ylim(min_y*1.1-1, max_y*1.1+1)
-        plt.draw()
-        plt.pause(.001)
+        fig.canvas.draw()
+        fig.canvas.flush_events()
         last_plot = time()
 
 plt.show()
