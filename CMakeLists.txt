@@ -32,6 +32,10 @@ if(NOT Eigen3_FOUND)
       GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
       GIT_TAG        3.4.0
   )
+  option(EIGEN_BUILD_DOC OFF)
+  option(BUILD_TESTING OFF)
+  option(EIGEN_LEAVE_TEST_IN_ALL_TARGET OFF)
+  option(EIGEN_BUILD_PKGCONFIG OFF)
   FetchContent_MakeAvailable(Eigen3)
 endif()
 
