@@ -64,7 +64,7 @@ int main(){
     pModel.setAccelBiasNoise(0.001);
 
     // Set up IEKF
-    InEKF::InEKF<InEKF::ProcessModel<InEKF::SE3<2,6>, Eigen::Matrix<double,6,1>>> iekf(&pModel, state, InEKF::RIGHT);
+    InEKF::InEKF iekf(&pModel, state, InEKF::RIGHT);
     iekf.addMeasureModel("DVL", &dvl);
     iekf.addMeasureModel("Depth", &depth);
 
