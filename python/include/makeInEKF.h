@@ -27,10 +27,10 @@ void makeInEKF(py::module &m, std::string name){
         
         .def("Predict", &T::Predict,
             "u"_a, "dt"_a=1)
-        .def("Update", py::overload_cast<const Eigen::VectorXd&,std::string>(&T::Update),
-            "z"_a, "type"_a)
-        .def("Update", py::overload_cast<const Eigen::VectorXd&,std::string,MatrixH>(&T::Update),
-            "z"_a, "type"_a, "H"_a)
+        .def("Update", py::overload_cast<std::string, const Eigen::VectorXd&>(&T::Update),
+            "type"_a, "z"_a)
+        .def("Update", py::overload_cast<std::string, const Eigen::VectorXd&,MatrixH>(&T::Update),
+            "type"_a, "z"_a, "H"_a)
         .def("addMeasureModel", &T::addMeasureModel,
             "name"_a, "m"_a)
 

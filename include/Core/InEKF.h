@@ -43,8 +43,8 @@ class InEKF {
 
         Group Predict(const U& u, double dt=1);
         
-        Group Update(const Eigen::VectorXd& z, std::string type);
-        Group Update(const Eigen::VectorXd& z, std::string type, MatrixH H);
+        Group Update(std::string type, const Eigen::VectorXd& z);
+        Group Update(std::string type, const Eigen::VectorXd& z, MatrixH H);
 
         void addMeasureModel(std::string name, MeasureModel<Group>* m);
         void addMeasureModels(std::map<std::string, MeasureModel<Group>*> m);

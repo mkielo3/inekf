@@ -203,10 +203,10 @@ for i in range(num*4):
     if name == "DVL":
         # print("Recieved DVL")
         data = np.append(data, imu_data[0:3])
-        state = iekf.Update(data, "DVL")
+        state = iekf.Update("DVL", data)
     if name == "DEPTH":
         # print("Recieved Depth")
-        state = iekf.Update(data, "Depth")
+        state = iekf.Update("Depth", data)
         mine.append(state.State)
     
     if name == "R":

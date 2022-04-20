@@ -185,7 +185,7 @@ int main() {
 
         // GPS
         if(e == "gps"){
-            s = iekf.Update(data, "GPS");
+            s = iekf.Update("GPS", data);
             gps_x.push_back(data[0]);
             gps_y.push_back(data[1]);
             s_x.back() = s[0][0];
@@ -203,11 +203,11 @@ int main() {
                 if(assoc[i] == -1){
                     addLandmark(data.segment<2>(i*2), iekf.state_);
                     laser.sawLandmark(iekf.state_().cols()-2-1-1, iekf.state_);
-                    iekf.Update(data.segment<2>(i*2),"Laser");
+                    iekf.Update("Laser", data.segment<2>(i*2));
                 }
                 else if(assoc[i] != -2){
                     laser.sawLandmark(assoc[i], iekf.state_);
-                    iekf.Update(data.segment<2>(i*2), "Laser");
+                    iekf.Update("Laser", data.segment<2>(i*2));
                 }
 
             }
