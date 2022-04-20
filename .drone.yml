@@ -33,7 +33,7 @@ volumes:
 
 kind: pipeline
 type: docker
-name: python
+name: python-packaging
 
 steps:
 - name: docker
@@ -44,13 +44,6 @@ steps:
   commands:
   - docker build -t "${DRONE_REPO}-python:${DRONE_COMMIT:0:8}" python/
   
-- name: py36
-  image: "${DRONE_REPO}-python:${DRONE_COMMIT:0:8}"
-  commands:
-  - PYTHON_VERSION=cp36-cp36m PLAT=manylinux2014_x86_64 bash python/build-wheels.sh
-  depends_on:
-  - docker
-
 - name: py37
   image: "${DRONE_REPO}-python:${DRONE_COMMIT:0:8}"
   commands:
@@ -72,6 +65,13 @@ steps:
   depends_on:
   - docker
 
+- name: py310
+  image: "${DRONE_REPO}-python:${DRONE_COMMIT:0:8}"
+  commands:
+  - PYTHON_VERSION=cp310-cp310 PLAT=manylinux2014_x86_64 bash python/build-wheels.sh
+  depends_on:
+  - docker
+
 - name: pypi_publish
   image: plugins/pypi
   when:
@@ -86,10 +86,10 @@ steps:
     - bdist_wheel
     skip_build: true
   depends_on:
-  - py36
   - py37
   - py38
   - py39
+  - py310
 
 volumes:
 - name: docker_sock
