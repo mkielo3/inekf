@@ -29,22 +29,22 @@ class InEKF {
         typedef typename Group::TangentVector TangentVector;
         
         ERROR error_;
+        pM* pModel_;
         std::map<std::string, MeasureModel<Group>*> mModels;
 
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         
         Group state_;
-        std::shared_ptr<pM> pModel = std::make_shared<pM>();
 
-        InEKF(Group state, ERROR error=ERROR::RIGHT) : state_(state), error_(error) {
+        InEKF(pM* pModel, Group state, ERROR error=ERROR::RIGHT) : pModel_(pModel), state_(state), error_(error) {
             assert(state.Uncertain() == true);
         };
 
         Group Predict(const U& u, double dt=1);
         
-        Group Update(const Eigen::VectorXd& z, std::string type);
-        Group Update(const Eigen::VectorXd& z, std::string type, MatrixH H);
+        Group Update(std::string type, const Eigen::VectorXd& z);
+        Group Update(std::string type, const Eigen::VectorXd& z, MatrixH H);
 
         void addMeasureModel(std::string name, MeasureModel<Group>* m);
         void addMeasureModels(std::map<std::string, MeasureModel<Group>*> m);

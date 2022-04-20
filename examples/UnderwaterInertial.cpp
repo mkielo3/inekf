@@ -56,17 +56,17 @@ int main(){
     // Set up Depth sensor
     InEKF::DepthSensor depth(51.0 * (1.0/100) * (1.0/2));
 
+    // Set up Inertial noise
+    InEKF::InertialProcess pModel;
+    pModel.setGyroNoise( .005 *  (3.14/180)  * sqrt(200.0) );
+    pModel.setAccelNoise( 20.0 * (pow(10, -6)/9.81) * sqrt(200.0) );
+    pModel.setGyroBiasNoise(0.001);
+    pModel.setAccelBiasNoise(0.001);
+
     // Set up IEKF
-    InEKF::InEKF<InEKF::InertialProcess> iekf(state, InEKF::RIGHT);
+    InEKF::InEKF iekf(&pModel, state, InEKF::RIGHT);
     iekf.addMeasureModel("DVL", &dvl);
     iekf.addMeasureModel("Depth", &depth);
-
-    // Set up Inertial noise
-    iekf.pModel->setGyroNoise( .005 *  (3.14/180)  * sqrt(200.0) );
-    iekf.pModel->setAccelNoise( 20.0 * (pow(10, -6)/9.81) * sqrt(200.0) );
-    iekf.pModel->setGyroBiasNoise(0.001);
-    iekf.pModel->setAccelBiasNoise(0.001);
-
 
     // Iterate through all of data!
     int n = 3000; // underwater_data goes to about ~3900
@@ -100,15 +100,15 @@ int main(){
 
         // UPDATE STEP
         else if (type == "DVL"){
-            assert((data.size()-2) == 3);
+            assert((data.size()-1) == 3);
             dvl_data << data[1], data[2], data[3],
                         imu_data[0], imu_data[1], imu_data[2];
-            state = iekf.Update(dvl_data, "DVL");            
+            state = iekf.Update("DVL", dvl_data);            
         }
         else if (type == "DEPTH"){
             assert((data.size()-1) == 1);
             depth_data = data.tail(1);
-            state = iekf.Update(depth_data, "Depth");
+            state = iekf.Update("Depth", depth_data);
 
             // DVL is last in list of data saved, so we save our state here
             R_result.block<3,3>(3*i,0) = state.R()();

@@ -134,13 +134,11 @@ int main() {
     /***** SETUP InEKF *****/
     InEKF::GPSSensor gps(3);
     InEKF::LandmarkSensor laser(0.5, 0.5*pi()/180);
+    InEKF::OdometryProcessDynamic pModel(0.5*pi()/180, 0.05, 0.05);
 
-    InEKF::InEKF<InEKF::OdometryProcessDynamic> iekf(x0, InEKF::RIGHT);
+    InEKF::InEKF iekf(&pModel, x0, InEKF::RIGHT);
     iekf.addMeasureModel("GPS", &gps);
     iekf.addMeasureModel("Laser", &laser);
-    Eigen::Vector3d Q;
-    Q << 0.5*pi()/180, 0.05, 0.05;
-    iekf.pModel->setQ(Q);
 
     /***** LOAD IN DATA *****/
     std::vector<std::tuple<std::string,double,Eigen::VectorXd>> events;
@@ -187,7 +185,7 @@ int main() {
 
         // GPS
         if(e == "gps"){
-            s = iekf.Update(data, "GPS");
+            s = iekf.Update("GPS", data);
             gps_x.push_back(data[0]);
             gps_y.push_back(data[1]);
             s_x.back() = s[0][0];
@@ -205,11 +203,11 @@ int main() {
                 if(assoc[i] == -1){
                     addLandmark(data.segment<2>(i*2), iekf.state_);
                     laser.sawLandmark(iekf.state_().cols()-2-1-1, iekf.state_);
-                    iekf.Update(data.segment<2>(i*2),"Laser");
+                    iekf.Update("Laser", data.segment<2>(i*2));
                 }
                 else if(assoc[i] != -2){
                     laser.sawLandmark(assoc[i], iekf.state_);
-                    iekf.Update(data.segment<2>(i*2), "Laser");
+                    iekf.Update("Laser", data.segment<2>(i*2));
                 }
 
             }

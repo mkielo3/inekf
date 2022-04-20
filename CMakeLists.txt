@@ -24,7 +24,20 @@ option(PYTHON   "Build Python Wrapper"  ON)
 option(TESTS    "Build Tests"           ON)
 
 # Eigen 
-find_package(Eigen3 CONFIG REQUIRED)
+find_package(Eigen3 CONFIG QUIET)
+if(NOT Eigen3_FOUND)
+  message(STATUS "Pulling Eigen3 from git...")
+  FetchContent_Declare(
+      Eigen3
+      GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+      GIT_TAG        3.4.0
+  )
+  option(EIGEN_BUILD_DOC OFF)
+  option(BUILD_TESTING OFF)
+  option(EIGEN_LEAVE_TEST_IN_ALL_TARGET OFF)
+  option(EIGEN_BUILD_PKGCONFIG OFF)
+  FetchContent_MakeAvailable(Eigen3)
+endif()
 
 #################### ADD TESTS ####################
 if(TESTS)
@@ -32,7 +45,7 @@ if(TESTS)
   FetchContent_Declare(
     googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG        origin/master
+    GIT_TAG        origin/main
   )
   FetchContent_MakeAvailable(googletest)
     

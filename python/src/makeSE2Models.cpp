@@ -19,6 +19,12 @@ void makeSE2Models(py::module &m){
     // OdometryProcess
     py::class_<InEKF::OdometryProcess, InEKF::ProcessModel<InEKF::SE2<>, InEKF::SE2<>>, std::shared_ptr<InEKF::OdometryProcess>>(m, "OdometryProcess")
         .def(py::init<>())
+        .def(py::init<float, float, float>(),
+            "theta_cov"_a, "x_cov"_a, "y_cov"_a)
+        .def(py::init<Eigen::Vector3d>(),
+            "q"_a)
+        .def(py::init<Eigen::Matrix3d>(),
+            "q"_a)
         .def("setQ", py::overload_cast<double>(&InEKF::OdometryProcess::setQ),
             "q"_a)
         .def("setQ", py::overload_cast<Eigen::Vector3d>(&InEKF::OdometryProcess::setQ),
@@ -38,6 +44,12 @@ void makeSE2Models(py::module &m){
     // OdometryProcessDynamic
     py::class_<InEKF::OdometryProcessDynamic, BaseProcess, std::shared_ptr<InEKF::OdometryProcessDynamic>>(m, "OdometryProcessDynamic")
         .def(py::init<>())
+        .def(py::init<float, float, float>(),
+            "theta_cov"_a, "x_cov"_a, "y_cov"_a)
+        .def(py::init<Eigen::Vector3d>(),
+            "q"_a)
+        .def(py::init<Eigen::Matrix3d>(),
+            "q"_a)
         .def("setQ", py::overload_cast<double>(&InEKF::OdometryProcessDynamic::setQ),
             "q"_a)
         .def("setQ", py::overload_cast<Eigen::Vector3d>(&InEKF::OdometryProcessDynamic::setQ),

@@ -164,16 +164,17 @@ dvl.setNoise(.0101*2.6, .005*(3.14/180)*np.sqrt(200.0))
 # set up depth sensor
 depth = DepthSensor(51.0 * (1.0/100) * (1.0/2))
 
+# set up process model
+pModel = InertialProcess()
+pModel.setGyroNoise( .005 *  (3.14/180)  * np.sqrt(200.0) )
+pModel.setAccelNoise( 20.0 * (10**-6/9.81) * np.sqrt(200.0) )
+pModel.setGyroBiasNoise(0.001)
+pModel.setAccelBiasNoise(0.001)
+
 # setup iekf
-iekf = InEKF[InertialProcess](x0, ERROR.RIGHT)
+iekf = InEKF(pModel, x0, ERROR.RIGHT)
 iekf.addMeasureModel('DVL', dvl)
 iekf.addMeasureModel('Depth', depth)
-
-# set process model noise
-iekf.pModel.setGyroNoise( .005 *  (3.14/180)  * np.sqrt(200.0) )
-iekf.pModel.setAccelNoise( 20.0 * (10**-6/9.81) * np.sqrt(200.0) )
-iekf.pModel.setGyroBiasNoise(0.001)
-iekf.pModel.setAccelBiasNoise(0.001)
 
 # iterate through all of data
 num = 3000
@@ -202,10 +203,10 @@ for i in range(num*4):
     if name == "DVL":
         # print("Recieved DVL")
         data = np.append(data, imu_data[0:3])
-        state = iekf.Update(data, "DVL")
+        state = iekf.Update("DVL", data)
     if name == "DEPTH":
         # print("Recieved Depth")
-        state = iekf.Update(data, "Depth")
+        state = iekf.Update("Depth", data)
         mine.append(state.State)
     
     if name == "R":

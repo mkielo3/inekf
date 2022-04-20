@@ -7,9 +7,9 @@ template <class pM>
 typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){    
     // Predict Sigma
     MatrixCov Sigma = state_.Cov();
-    MatrixCov Phi = pModel->MakePhi(u, dt, state_, error_);
+    MatrixCov Phi = pModel_->MakePhi(u, dt, state_, error_);
 
-    MatrixCov Q = pModel->getQ();
+    MatrixCov Q = pModel_->getQ();
     if(error_ == ERROR::RIGHT){
         MatrixCov Adj_X = Group::Ad( state_ );
         Q = Adj_X*Q*Adj_X.transpose();
@@ -21,20 +21,20 @@ typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){
     state_.setCov( Sigma );
 
     // Predict mu
-    state_ = pModel->f(u, dt, state_);
+    state_ = pModel_->f(u, dt, state_);
 
     return state_;
 }
 
 
 template <class pM>
-typename InEKF<pM>::Group InEKF<pM>::Update(const Eigen::VectorXd& z, std::string type, MatrixH H){
+typename InEKF<pM>::Group InEKF<pM>::Update(std::string type, const Eigen::VectorXd& z, MatrixH H){
     mModels[type]->setH(H);
-    return Update(z, type);
+    return Update(type, z);
 }
 
 template <class pM>
-typename InEKF<pM>::Group InEKF<pM>::Update(const Eigen::VectorXd& z, std::string type){
+typename InEKF<pM>::Group InEKF<pM>::Update(std::string type, const Eigen::VectorXd& z){
     MeasureModel<Group> * m_model = mModels[type]; 
 
     // Do any preprocessing on z (fill it up, frame changes, etc)
