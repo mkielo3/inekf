@@ -41,7 +41,7 @@ extensions = [
     "breathe"
 ]
 
-breathe_projects = { "InEKF": "./_build/doxy/xml" }
+breathe_projects = { "InEKF": "./build/xml" }
 breathe_default_project = "InEKF"
 
 # Add any paths that contain templates here, relative to this directory.
