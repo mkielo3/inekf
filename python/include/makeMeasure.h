@@ -80,8 +80,7 @@ void makeMeasure(py::module &m, std::string name){
     py::class_<K, PyMeasureModel<T>> myClass(m, nameMM.c_str());
     myClass
         .def(py::init<>())
-        .def(py::init<MatrixH, MatrixS, InEKF::ERROR>())
-        .def(py::init<MatrixS, InEKF::ERROR>())
+        .def(py::init<VectorB, MatrixS, InEKF::ERROR>())
 
         // Overrideable methods
         .def("makeHError", &K::makeHError,
@@ -98,23 +97,6 @@ void makeMeasure(py::module &m, std::string name){
         .def_readwrite("H", &PyMeasureModel<T>::H_)
         .def_readwrite("M", &PyMeasureModel<T>::M_)
         .def_readwrite("error", &PyMeasureModel<T>::error_);
-}
-
-template <class T>
-void makeGenericMeasure(py::module &m, std::string name){
-    using G = InEKF::GenericMeasureModel<T>;
-
-    // For use in defining constructors
-    typedef typename G::MatrixH MatrixH;
-    typedef typename G::MatrixS MatrixS;
-    typedef typename G::VectorB VectorB;
-
-    std::string nameGM = "GenericMeasureModel_" + name;
-    py::class_<G, InEKF::MeasureModel<T>> myGenericClass(m, nameGM.c_str());
-    myGenericClass
-        .def(py::init<VectorB, MatrixS, InEKF::ERROR>())
-        .def("processZ", &G::processZ,
-            "z"_a, "state"_a);
 }
 
 #endif // PYTHON_MEASUREMODEL

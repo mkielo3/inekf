@@ -18,11 +18,12 @@ class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
         using typename LieGroup<SO2<A>,N,M,A>::MatrixState;
         using typename LieGroup<SO2<A>,N,M,A>::VectorAug;
 
-    private:
         // dummies to help with dynamic initialization
         static constexpr int a = A == Eigen::Dynamic ? 0 : A;
         static constexpr int c = A == Eigen::Dynamic ? 1 : N;
+        static constexpr int m = M;
 
+    private:
         using LieGroup<SO2<A>,N,M,A>::Cov_;
         using LieGroup<SO2<A>,N,M,A>::State_;
         using LieGroup<SO2<A>,N,M,A>::Aug_;

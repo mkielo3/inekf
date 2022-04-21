@@ -19,11 +19,12 @@ class MeasureModel {
     protected:
         // These are all constant and should be set once
         ERROR error_;
-        MatrixS M_;
+        MatrixS M_ = MatrixS::Identity(Group::rotSize, Group::rotSize);
 
         // This one can be changed each iteration in InEKF.Update, 
         // or should be set once in constructor
-        MatrixH H_;
+        VectorB b_ = VectorB::Zero(Group::m, 1);
+        MatrixH H_ = MatrixH::Zero(Group::rotSize, Group::c);
 
         // This is changed by InEKF based on if it's a RIGHT/LEFT filter
         // Use this in calcSInverse if you override it
@@ -34,19 +35,48 @@ class MeasureModel {
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
                
         MeasureModel() {};
-        MeasureModel(MatrixH H, MatrixS M, ERROR error) {
-            this->H_ = H;
-            this->M_ = M;
-            this->error_ = error;
-        };
-        MeasureModel(MatrixS M, ERROR error) {
-            this->M_ = M;
-            this->error_ = error;
-        };
+        MeasureModel(VectorB b, const MatrixS& M, ERROR error) : b_(b) {
+            if(Group::N == Eigen::Dynamic){
+                throw std::range_error("Can't use Base MeasureModel on group with dynamic columns");
+            }
 
-        virtual VectorB processZ(const Eigen::VectorXd& z, const Group& state) { 
+            // Plug in constants
+            this->M_ = M;
+            this->error_ = error;
+
+            this->H_ = MatrixH::Zero(Group::rotSize, Group::N);
+
+            // Get rotation dimension
+            int rDim = Group::rotSize*(Group::rotSize - 1) / 2;
+
+            // Fill out rotation portion of H
+            // SO(2) / SE(2)
+            if(rDim == 1){
+                this->H_(0,0) = -b_(1);
+                this->H_(1,0) = b_(0);
+            }
+            // SO(3) / SE(3)
+            else if(rDim == 3){
+                this->H_.block(0, 0, Group::rotSize, Group::rotSize) = -1*SO3<>::Wedge(b_.head(3));
+            }
+
+            // Fill out column portion of H
+            for(int i=0; i<Group::M-Group::rotSize; i++){
+                this->H_.block(0, Group::rotSize*i+rDim, Group::rotSize, Group::rotSize) = b_(i+Group::rotSize)*MatrixS::Identity();
+            }
+            if(error == ERROR::RIGHT){
+                this->H_ *= -1;
+            }
+        }
+
+        virtual VectorB processZ(const Eigen::VectorXd& z, const Group& state) {
             if(z.rows() == Group::M){
                 return z;
+            }
+            else if(z.rows() == Group::rotSize){
+                VectorB temp = b_;
+                temp.head(Group::rotSize) = z;
+                return temp;
             }
             else{
                 throw std::range_error("Wrong sized z");
@@ -72,10 +102,10 @@ class MeasureModel {
             // calculate V
             VectorV V;
             if(error_ == ERROR::RIGHT){
-                V.noalias() = state().block(0,0,Group::rotSize,state().cols()) * z;
+                V.noalias() = state().block(0,0,Group::rotSize,state().cols()) * z - b_.head(Group::rotSize);
             }
             else{
-                V.noalias() = state.inverse()().block(0,0,Group::rotSize,state().cols()) * z;
+                V.noalias() = state.inverse()().block(0,0,Group::rotSize,state().cols()) * z - b_.head(Group::rotSize);
             }
             return V;
         }

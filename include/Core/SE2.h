@@ -19,12 +19,12 @@ class SE2 : public LieGroup<SE2<C,A>,calcStateDim(2,C,A),calcStateMtxSize(2,C),A
         typedef typename LieGroup<SE2<C,A>,N,M,A>::MatrixState MatrixState;
         typedef typename LieGroup<SE2<C,A>,N,M,A>::VectorAug VectorAug;
 
-    private:
         // dummies to help with dynamic initialization
         static constexpr int a = A == Eigen::Dynamic ? 0 : A;
         static constexpr int c = N == Eigen::Dynamic ? 3 : N;
         static constexpr int m = M == Eigen::Dynamic ? 3 : M;
-
+        
+    private:
         using LieGroup<SE2<C,A>,N,M,A>::Cov_;
         using LieGroup<SE2<C,A>,N,M,A>::State_;
         using LieGroup<SE2<C,A>,N,M,A>::Aug_;
