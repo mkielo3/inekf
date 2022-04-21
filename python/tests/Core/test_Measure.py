@@ -1,9 +1,10 @@
 import numpy as np
 from numpy.testing import assert_allclose
-from inekf import SE2, GenericMeasureModel, ERROR
+from inekf import SE2, SO3, MeasureModel, ERROR
 import pytest
 
 Group = SE2[2,1]
+
 
 def test_bConstructor():
     b = np.array([0,0,0,1])
@@ -11,21 +12,29 @@ def test_bConstructor():
     H = np.zeros((2,6))
     H[0:2,3:5] = np.eye(2)
 
-    l = GenericMeasureModel[Group](b, M, ERROR.LEFT)
+    l = MeasureModel[Group](b, M, ERROR.LEFT)
     assert_allclose(H, l.H)
 
-    r = GenericMeasureModel[Group](b, M, ERROR.RIGHT)
+    r = MeasureModel[Group](b, M, ERROR.RIGHT)
     assert_allclose(-H, r.H)
 
     b[0] = 1
-    with pytest.raises(Exception):
-        l = GenericMeasureModel[Group](b, M, ERROR.LEFT)
+    b[1] = 2
+    H[0,0] = -2;
+    H[1,0] = 1
+    l = MeasureModel[Group](b, M, ERROR.LEFT)
+    assert_allclose(H, l.H)
+
+    b = np.array([1,2,3])
+    H = -SO3.Wedge(b)
+    l = MeasureModel[SO3](b, np.eye(3), ERROR.LEFT)
+    assert_allclose(H, l.H)
 
 def test_processZ():
     b = np.array([0,0,0,1])
     M = np.eye(2) 
     state = Group()
-    S = GenericMeasureModel[Group](b, M, ERROR.LEFT)
+    S = MeasureModel[Group](b, M, ERROR.LEFT)
 
     z = np.array([2,2])
     expected = np.array([2,2,0,1])

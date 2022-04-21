@@ -18,11 +18,12 @@ class SO3 : public LieGroup<SO3<A>,calcStateDim(3,0,A),3,A>{
         using typename LieGroup<SO3<A>,N,M,A>::MatrixState;
         using typename LieGroup<SO3<A>,N,M,A>::VectorAug;
 
-    private:
         // dummies to help with dynamic initialization
         static constexpr int a = A == Eigen::Dynamic ? 0 : A;
         static constexpr int c = A == Eigen::Dynamic ? 3 : N;
-
+        static constexpr int m = M;
+        
+    private:
         using LieGroup<SO3<A>,N,M,A>::Cov_;
         using LieGroup<SO3<A>,N,M,A>::State_;
         using LieGroup<SO3<A>,N,M,A>::Aug_;

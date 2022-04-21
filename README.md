@@ -37,7 +37,7 @@ A python wrapper is also [available](python/README.md).
 InEKF is split into a couple different libraries
 
 ### Core
-This library includes all the Lie Groups, `InEKF`, and `GenericMeasureModel` classes along with the base classes `MeasureModel`, `ProcessModel`.
+This library includes all the Lie Groups and `InEKF` classes along with the base classes `MeasureModel` and `ProcessModel`.
 
 
 ### Inertial
@@ -51,7 +51,9 @@ Exactly what it sounds like, is used for SLAM in SE2.
 InEKF is set up so your process/measure models will be an easy extension and continue to function with `InEKF` and `LieGroups` if defined properly. Note this can be done in python or C++. The following is what must be defined/done to successfully do this. The following methods/variables for each base class must be implemented/set
 
 ### MeasureModel
-All methods are already implemented in the `MeasureModel` class, so overriding them can be decided on a case by case basis. There is a few constants that must be set though.
+All methods are already implemented in the `MeasureModel` class, so overriding them can be decided on a case by case basis, although in most scenarios the built in versions should be sufficient. The `MeasureModel` constructor takes in the vector `b`, covariance `M`, and type of error and from these makes `H` accordingly. 
+
+If you decide to override, make sure you call the base class constructor, or at least set the first 3 values of the following.
 
 |        Method         | Use                                                                                                                                      |
 | :-------------------: | :--------------------------------------------------------------------------------------------------------------------------------------- |
