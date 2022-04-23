@@ -26,19 +26,24 @@ constexpr int calcStateMtxSize(int rotMtxSize, int C){
     }
 }
 
-// N = Group dimension
-// M = Lie Group matrix size
-// A = Augmented Euclidean state size
+
+/**
+ * @brief Base Lie Group Class
+ * 
+ * @tparam Class Class that is inheriting from it. Allows for better polymorphism
+ * @tparam N Group dimension
+ * @tparam M Lie Group matrix size
+ * @tparam A Augmented Euclidean state size
+ */
 template  <class Class, int N, int M, int A>
 class LieGroup{
 
     public:
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
         typedef Eigen::Matrix<double, N, 1> TangentVector;
         typedef Eigen::Matrix<double, N, N> MatrixCov;
         typedef Eigen::Matrix<double, M, M> MatrixState;
         typedef Eigen::Matrix<double, A, 1> VectorAug;
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     protected:
         MatrixState State_;
@@ -77,6 +82,11 @@ class LieGroup{
         Class inverse() const {
             return derived().inverse();
         }
+        
+        /**
+         * @brief Move this element from group -> algebra -> R^n
+         * 
+         */
         TangentVector log() const {
             return Class::Log(derived());
         }

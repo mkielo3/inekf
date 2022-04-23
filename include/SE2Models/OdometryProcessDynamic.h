@@ -13,7 +13,6 @@ class OdometryProcessDynamic : public ProcessModel<SE2<Eigen::Dynamic>, SE2<>> {
         const Eigen::Vector3d g_;
 
     public:
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         OdometryProcessDynamic(){}
         OdometryProcessDynamic(float theta_cov, float x_cov, float y_cov){
             Eigen::Vector3d q;
@@ -30,6 +29,7 @@ class OdometryProcessDynamic : public ProcessModel<SE2<Eigen::Dynamic>, SE2<>> {
         void setQ(Eigen::Vector3d q) { this->Q_ = q.asDiagonal(); }
         void setQ(Eigen::Matrix3d q) { this->Q_ = q; }
         void setQ(double q) { this->Q_ = q*Eigen::Matrix3d::Identity(); }
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 

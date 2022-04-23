@@ -33,8 +33,6 @@ class InEKF {
         std::map<std::string, MeasureModel<Group>*> mModels;
 
     public:
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-        
         Group state_;
 
         InEKF(pM* pModel, Group state, ERROR error=ERROR::RIGHT) : pModel_(pModel), state_(state), error_(error) {
@@ -48,6 +46,7 @@ class InEKF {
 
         void addMeasureModel(std::string name, MeasureModel<Group>* m);
         void addMeasureModels(std::map<std::string, MeasureModel<Group>*> m);
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 }

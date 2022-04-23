@@ -22,6 +22,7 @@ class SO3 : public LieGroup<SO3<A>,calcStateDim(3,0,A),3,A>{
         static constexpr int a = A == Eigen::Dynamic ? 0 : A;
         static constexpr int c = A == Eigen::Dynamic ? 3 : N;
         static constexpr int m = M;
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         
     private:
         using LieGroup<SO3<A>,N,M,A>::Cov_;
@@ -32,8 +33,6 @@ class SO3 : public LieGroup<SO3<A>,calcStateDim(3,0,A),3,A>{
         void verifySize();
 
     public:
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
         // Constructors
         SO3(const MatrixState& State=MatrixState::Identity(), 
             const MatrixCov& Cov=MatrixCov::Zero(c,c),

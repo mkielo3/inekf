@@ -8,15 +8,28 @@ Welcome to InEKF's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Getting Started
 
-.. doxygenclass:: InEKF::LieGroup
-   :members:
-   :undoc-members:
+   usage/api
 
-.. doxygenclass:: InEKF::InEKF
-   :members:
-   :undoc-members:
+.. toctree::
+   :maxdepth: 2
+   :caption: C++ API
+
+   cpp/core
+   cpp/groups
+   cpp/inertial
+   cpp/se2models
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Python API
+
+   python/core
+   python/groups
+   python/inertial
+   python/se2models
+
 
 Indices and tables
 ==================

@@ -9,13 +9,12 @@ namespace InEKF {
 template <class Group, class U>
 class ProcessModel {
 
-    public:
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-        
+    public:        
         typedef typename Group::MatrixCov MatrixCov;
         typedef typename Group::MatrixState MatrixState;
         typedef Group myGroup;
         typedef U myU;
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     protected:
         MatrixCov Q_;

@@ -23,7 +23,8 @@ class SE3 : public LieGroup<SE3<C,A>,calcStateDim(3,C,A),calcStateMtxSize(3,C),A
         static constexpr int a = A == Eigen::Dynamic ? 0 : A;
         static constexpr int c = N == Eigen::Dynamic ? 6 : N;
         static constexpr int m = M == Eigen::Dynamic ? 4 : M;
-        
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+ 
     private:
         static constexpr int small_xi = N == Eigen::Dynamic ? Eigen::Dynamic : N-3;
 
@@ -36,8 +37,6 @@ class SE3 : public LieGroup<SE3<C,A>,calcStateDim(3,C,A),calcStateMtxSize(3,C),A
         static void verifyTangentVector(const TangentVector& xi);
 
     public:
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
         // Constructors
         SE3(const MatrixState& State=MatrixState::Identity(m,m), 
             const MatrixCov& Cov=MatrixCov::Zero(c,c),

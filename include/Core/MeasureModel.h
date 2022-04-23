@@ -15,6 +15,7 @@ class MeasureModel {
         typedef Eigen::Matrix<double,Group::rotSize,Group::N> MatrixH;
         typedef Eigen::Matrix<double,Group::rotSize,1> VectorV;
         typedef Eigen::Matrix<double,Group::M,1> VectorB;
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     protected:
         // These are all constant and should be set once
@@ -31,9 +32,7 @@ class MeasureModel {
         MatrixH H_error_;
 
 
-    public: 
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-               
+    public:                
         MeasureModel() {};
         MeasureModel(VectorB b, const MatrixS& M, ERROR error) : b_(b) {
             if(Group::N == Eigen::Dynamic){
