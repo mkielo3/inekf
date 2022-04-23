@@ -6,6 +6,11 @@
 
 namespace InEKF {
 
+/**
+ * @brief 2D rotational states, also known as the 2x2 special orthogonal group, SO(2).
+ * 
+ * @tparam A Number of augmented Euclidean states. Can be Eigen::Dynamic if desired. Defaults to 0.
+ */
 template<int A=0>
 class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
     public:
@@ -53,8 +58,8 @@ class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
         /**
          * @brief Construct SO2 object with all available options.
          * 
-         * @param State An element of SO2. Defaults to the identity.
-         * @param Cov Covariance of state. Defaults to no uncertainty.
+         * @param State A 2x2 Eigen matrix. Defaults to the identity.
+         * @param Cov Covariance of state. If not input, state is set as "certain" and covariance is not tracked.
          * @param Aug Additional euclidean states if A != 0. Defaults to 0s. 
          */
         SO2(const MatrixState& State=MatrixState::Identity(), 
@@ -65,7 +70,7 @@ class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
         /**
          * @brief Copy constructor. Initialize with another SO2 object.
          * 
-         * @param State Element of SO2. The matrix, covariance and augmented state will all be copied from it.
+         * @param State SO2 object. The matrix, covariance and augmented state will all be copied from it.
          */
         SO2(const SO2& State) : SO2(State(), State.Cov(), State.Aug()) {}
 
@@ -73,7 +78,7 @@ class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
          * @brief Construct a new SO2 object using an angle.
          * 
          * @param theta Angle of rotation matrix in degrees.
-         * @param Cov Covariance of state. Defaults to no uncertainty.
+         * @param Cov Covariance of state. If not input, state is set as "certain" and covariance is not tracked.
          * @param Aug Additional euclidean states if A != 0. Defaults to 0s. 
          */
         SO2(double theta, 
@@ -88,8 +93,8 @@ class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
         /**
          * @brief Construct a new SO2 object from a tangent vector using the exponential operator.
          * 
-         * @param xi Tangent vector of size 1 + Augmented state size.
-         * @param Cov Covariance of state. Defaults to no uncertainty.
+         * @param xi Tangent vector of size (1 + Augmented state size).
+         * @param Cov Covariance of state. If not input, state is set as "certain" and covariance is not tracked.
          */
         SO2(const TangentVector& xi, const MatrixCov& Cov=MatrixCov::Zero(c,c)) : SO2(xi(0), Cov, xi.tail(xi.size()-1)) {}
 
