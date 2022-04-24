@@ -14,8 +14,20 @@ namespace InEKF {
 template<int A=0>
 class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
     public:
+        /**
+        * @brief Size of rotational component of group
+        * 
+        */
         static constexpr int rotSize = 2;
+        /**
+         * @brief Dimension of group
+         * 
+         */
         static constexpr int N = calcStateDim(rotSize,0,A);
+        /**
+         * @brief State will have matrix of size M x M
+         * 
+         */
         static constexpr int M = calcStateMtxSize(rotSize,0);
 
         using typename LieGroup<SO2<A>,N,M,A>::TangentVector;
@@ -77,7 +89,7 @@ class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
         /**
          * @brief Construct a new SO2 object using an angle.
          * 
-         * @param theta Angle of rotation matrix in degrees.
+         * @param theta Angle of rotation matrix in radians.
          * @param Cov Covariance of state. If not input, state is set as "certain" and covariance is not tracked.
          * @param Aug Additional euclidean states if A != 0. Defaults to 0s. 
          */
@@ -98,6 +110,10 @@ class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
          */
         SO2(const TangentVector& xi, const MatrixCov& Cov=MatrixCov::Zero(c,c)) : SO2(xi(0), Cov, xi.tail(xi.size()-1)) {}
 
+        /**
+         * @brief Destroy the SO2 object
+         * 
+         */
         ~SO2() {}
 
         //------------ Getters
@@ -120,10 +136,9 @@ class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
         /**
          * @brief Invert state.
          * 
-         * @return Inverted matrix (transpose). Augmented portion is left alone.
+         * @return Inverted matrix (transpose). Augmented portion and covariance is dropped.
          */
         SO2<A> inverse() const;
-
         using LieGroup<SO2<A>,N,M,A>::Ad;
         using LieGroup<SO2<A>,N,M,A>::log;
 
