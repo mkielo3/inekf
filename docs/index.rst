@@ -8,9 +8,12 @@ Welcome to InEKF's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Getting Started
+   :caption: InEKF Documentation
 
-   usage/api
+   usage/install
+   usage/start
+   usage/extend
+   usage/changelog
 
 .. toctree::
    :maxdepth: 2
