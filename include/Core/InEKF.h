@@ -30,10 +30,10 @@ class InEKF {
         
         ERROR error_;
         pM* pModel_;
+        Group state_;
         std::map<std::string, MeasureModel<Group>*> mModels;
 
     public:
-        Group state_;
 
         InEKF(pM* pModel, Group state, ERROR error=ERROR::RIGHT) : pModel_(pModel), state_(state), error_(error) {
             assert(state.Uncertain() == true);
@@ -46,6 +46,9 @@ class InEKF {
 
         void addMeasureModel(std::string name, MeasureModel<Group>* m);
         void addMeasureModels(std::map<std::string, MeasureModel<Group>*> m);
+
+        const Group& getState() const { return state_; }
+        void setState(const Group& state) { state_ = state; }
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 

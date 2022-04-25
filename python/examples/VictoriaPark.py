@@ -69,6 +69,8 @@ def addLandmark(z, state):
 
     state.addCol([xl, yl], np.eye(2)*1000)
 
+    return state
+
 def x(l):
     return np.array([i[0][0] for i in l])
 
@@ -159,7 +161,7 @@ for i, (e, t, data) in tqdm(enumerate(events), total=len(events)):
         # iterate through them (note data here is still r/b)
         for idx, data in zip(assoc, data):
             if idx == -1:
-                addLandmark(data, iekf.state)
+                iekf.state = addLandmark(data, iekf.state)
                 laser.sawLandmark(iekf.state.State.shape[0]-2-1-1, iekf.state)
                 iekf.Update("Laser", data)
             elif idx == -2:

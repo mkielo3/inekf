@@ -1,2 +1,5 @@
+.. _extend:
+
+
 Custom Models
 ==============

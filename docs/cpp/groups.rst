@@ -1,3 +1,5 @@
+.. _cpp_group:
+
 Lie Groups
 =============
 

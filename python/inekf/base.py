@@ -28,6 +28,10 @@ class InEKF:
     def state(self):
         return self.base.state
 
+    @state.setter
+    def state(self, state):
+        self.base.state = state
+
 ############################ Measurement Model ##############################
 class _meta_Measure(type):
     def __getitem__(cls,key):

@@ -70,7 +70,7 @@ Eigen::VectorXi dataAssocation(SE2_D state, Eigen::VectorXd zs, InEKF::LandmarkS
 
 }
 
-void addLandmark(Eigen::Vector2d z, SE2_D& state){
+SE2_D addLandmark(Eigen::Vector2d z, SE2_D state){
     double x = state[0][0];
     double y = state[0][1];
     double phi = atan2(state()(1,0), state()(0,0));
@@ -83,6 +83,7 @@ void addLandmark(Eigen::Vector2d z, SE2_D& state){
     lm << xl, yl;
 
     state.addCol(lm, Eigen::Matrix2d::Identity()*10000);
+    return state;
 }
 
 InEKF::SE2<> makeOdometry(Eigen::Vector2d u, double dt){
@@ -197,16 +198,17 @@ int main() {
             // associate landmarks
             assert(data.size() % 2 == 0);
             int n_mm = data.size() / 2;
-            Eigen::VectorXi assoc = dataAssocation(iekf.state_, data, laser);
+            Eigen::VectorXi assoc = dataAssocation(iekf.getState(), data, laser);
             // iterate through them
             for(int i=0;i<n_mm;i++){
                 if(assoc[i] == -1){
-                    addLandmark(data.segment<2>(i*2), iekf.state_);
-                    laser.sawLandmark(iekf.state_().cols()-2-1-1, iekf.state_);
+                    SE2_D new_state = addLandmark(data.segment<2>(i*2), iekf.getState());
+                    iekf.setState(new_state);
+                    laser.sawLandmark(iekf.getState()().cols()-2-1-1, iekf.getState());
                     iekf.Update("Laser", data.segment<2>(i*2));
                 }
                 else if(assoc[i] != -2){
-                    laser.sawLandmark(assoc[i], iekf.state_);
+                    laser.sawLandmark(assoc[i], iekf.getState());
                     iekf.Update("Laser", data.segment<2>(i*2));
                 }
 
@@ -221,9 +223,9 @@ int main() {
             traj->x_data(s_x);
             traj->y_data(s_y);
 
-            int n_lm = iekf.state_().cols()-2-1;
-            Eigen::VectorXd lm_x = iekf.state_().block(0,3,1,n_lm-1).transpose();
-            Eigen::VectorXd lm_y = iekf.state_().block(1,3,1,n_lm-1).transpose();
+            int n_lm = iekf.getState()().cols()-2-1;
+            Eigen::VectorXd lm_x = iekf.getState()().block(0,3,1,n_lm-1).transpose();
+            Eigen::VectorXd lm_y = iekf.getState()().block(1,3,1,n_lm-1).transpose();
             lm_pts->x_data(std::vector<double>(lm_x.data(),n_lm+lm_x.data()));
             lm_pts->y_data(std::vector<double>(lm_y.data(),n_lm+lm_y.data()));
             last_plot = time(0);

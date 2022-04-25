@@ -1,0 +1,4 @@
+/* Shrink bottom margin on code block */
+.notranslate {
+	margin-bottom: 0 !important;
+}
