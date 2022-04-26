@@ -62,6 +62,77 @@ They each have a number of constructors, see C++ :ref:`cpp_group` and Python :re
     If you wish to have covariance tracked (necessary for use in InEKF), make sure you set this.
 
 
+Further, each group is equipped with a number of common operations, such as
+* Inverse
+* Group action (multiplication)
+* Wedge ^ operator
+* Exp/log
+* Adjoint
+
+Along with these is overloading of ```()``` to return the state matrix, and ```[]``` to
+retrieve a specific column.
+
+.. tabs::
+
+    .. code-tab:: c++
+
+        InEKF::SE2 x(0,1,2);
+        InEKF::SE2 y(3,4,5);
+        Eigen::Vector3d xi{1,2,3};
+
+        // Group methods
+        x.inverse();
+        x*y;
+        x.log();
+        x.Ad();
+
+        // Static methods
+        InEKF::SE2::Wedge(xi);
+        InEKF::SE2::Exp(xi);
+        InEKF::SE2::Log(x);
+        InEKF::SE2::Ad(x);
+
+        // Getters
+        x();
+        // SO2 object
+        x.R();
+        // Vector 1,2
+        x[0];  
+        // Covariance      
+        x.Cov();
+        // Get additional Euclidean states
+        x.Aug();
+
+    .. code-tab:: python
+
+        x = inekf.SE2(0,1,2)
+        y = inekf.SE2(3,4,5)
+        xi = np.array([1,2,3])
+
+        # Group methods
+        x.inverse()
+        x*y
+        x.log()
+        x.Ad()
+
+        # Static methods
+        inekf.SE2.Wedge(xi)
+        inekf.SE2.Exp(xi)
+        inekf.SE2.Log(x)
+        inekf.SE2.Ad(x)
+
+        # Getters
+        x.State
+        # SO2 object
+        x.R()
+        # Vector 1,2
+        x[0]
+        # Covariance
+        x.Cov
+        # Get additional Euclidean states
+        x.Aug
+
+
 Making Models
 ~~~~~~~~~~~~~~
 Next, process and measurement models must be made. You'll likely need a custom process model done via inheritance, for this see :ref:`extend`. You can also customize
