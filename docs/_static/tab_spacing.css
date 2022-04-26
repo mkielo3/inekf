@@ -1,4 +1,4 @@
 /* Shrink bottom margin on code block */
-.notranslate {
+.sphinx-tabs-panel.code-tab .notranslate {
 	margin-bottom: 0 !important;
 }

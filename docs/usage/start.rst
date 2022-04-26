@@ -27,8 +27,8 @@ The Lie groups in the library are heavily templated to allow for simple usage of
 `SO` are templated to allow tracking additional Euclidean states alongside the group (defaults to 0), and the special
 Euclidean groups `SE` are templated to allow the additional Euclidean states along with any number of positional columns (defaults to 1).
 
-We've also repurposed the bracket `[]` in python to allow for a near identical usage across APIs. If using C++17 or python, 
-these can templates can be omitted if using the defaults. We assume throughout C++17 is used, and ommit the empty `<>`.
+We've also repurposed the bracket ``[]`` in python to allow for a near identical usage across APIs. If using C++17 or python, 
+these can templates can be omitted if using the defaults. We assume throughout C++17 is used, and ommit the empty ``<>``.
 
 .. tabs::
 
@@ -69,7 +69,7 @@ Further, each group is equipped with a number of common operations, such as
 * Exp/log
 * Adjoint
 
-Along with these is overloading of ```()``` to return the state matrix, and ```[]``` to
+Along with these is overloading of ``()`` to return the state matrix, and ``[]`` to
 retrieve a specific column.
 
 .. tabs::
@@ -238,8 +238,8 @@ and whether to run a right or left InEKF.
         iekf.addMeasureModel("compass", compass)
 
 Using the predict and update steps is just as easy (we make fake data here to use). While technically an invariant measurement will have extra ones or zeros on the end,
-the `MeasureModel` class will take care of appending these when needed. This steps are generally done in a loop and are executed when data is received. After each step is ran
-it will return the corresponding state estimate which can also be accessed using `getState`  in C++ or the `state` property in python.
+the ``MeasureModel`` class will take care of appending these when needed. This steps are generally done in a loop and are executed when data is received. After each step is ran
+it will return the corresponding state estimate which can also be accessed using ``getState``  in C++ or the ``state`` property in python.
 
 .. tabs::
 
