@@ -28,14 +28,8 @@ typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){
 
 
 template <class pM>
-typename InEKF<pM>::Group InEKF<pM>::Update(std::string type, const Eigen::VectorXd& z, MatrixH H){
-    mModels[type]->setH(H);
-    return Update(type, z);
-}
-
-template <class pM>
-typename InEKF<pM>::Group InEKF<pM>::Update(std::string type, const Eigen::VectorXd& z){
-    MeasureModel<Group> * m_model = mModels[type]; 
+typename InEKF<pM>::Group InEKF<pM>::Update(std::string name, const Eigen::VectorXd& z){
+    MeasureModel<Group> * m_model = mModels[name]; 
 
     // Do any preprocessing on z (fill it up, frame changes, etc)
     VectorB z_ = m_model->processZ(z, state_);;

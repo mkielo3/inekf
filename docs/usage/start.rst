@@ -63,11 +63,12 @@ They each have a number of constructors, see C++ :ref:`cpp_group` and Python :re
 
 
 Further, each group is equipped with a number of common operations, such as
-* Inverse
-* Group action (multiplication)
-* Wedge ^ operator
-* Exp/log
-* Adjoint
+
+ - Inverse
+ - Group action (multiplication)
+ - Wedge ^ operator
+ - Exp/log
+ - Adjoint
 
 Along with these is overloading of ``()`` to return the state matrix, and ``[]`` to
 retrieve a specific column.
