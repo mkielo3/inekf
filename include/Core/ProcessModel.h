@@ -56,7 +56,7 @@ class ProcessModel {
         ProcessModel() {};
 
         /**
-         * @brief Propagates state forward one timestep
+         * @brief Propagates state forward one timestep. Must be overriden, has no implementation.
          * 
          * @param u Control
          * @param dt Delta time
@@ -66,7 +66,7 @@ class ProcessModel {
         virtual Group f(U u, double dt, Group state) { throw std::invalid_argument("f needs to be overriden."); return state; }
 
         /**
-         * @brief Make a discrete time linearized process model matrix, with \f$\Phi = \exp(A\Delta t) \f$
+         * @brief Make a discrete time linearized process model matrix, with \f$\Phi = \exp(A\Delta t) \f$. Must be overriden, has no implementation.
          * 
          * @param u Control
          * @param dt Delta time

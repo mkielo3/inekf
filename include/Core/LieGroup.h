@@ -62,9 +62,28 @@ class LieGroup{
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     protected:
+        /**
+        * @brief Holds the actual group matrix.
+        * 
+        */
         MatrixState State_;
+
+        /**
+         * @brief Covariance of state. Defaults to 0s/certain if not set.
+         * 
+         */
         MatrixCov Cov_;
+
+        /**
+         * @brief Augmented Euclidean state that can be tracked.
+         * 
+         */
         VectorAug Aug_;
+
+        /**
+         * @brief Whether uncertainty (covariance) is being tracked.
+         * 
+         */
         bool isUncertain;
 
     public:
