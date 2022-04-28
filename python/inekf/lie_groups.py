@@ -22,7 +22,6 @@ def _get_class(group, param1, param2=None):
 ############################ SE3 ##############################
 class _meta_SE3(type):
     # if we used both default arguments
-    __name__ = "SE3_1_0"
     def __call__(self, *args, **kwargs):
         return _inekf.SE3_1_0(*args, **kwargs)
 
@@ -39,26 +38,25 @@ class _meta_SE3(type):
 
 class SE3(metaclass=_meta_SE3):
     @staticmethod
-    def wedge(*args, **kwargs):
-        return _inekf.SE3_1_0.wedge(*args, **kwargs)
+    def wedge(xi):
+        return _inekf.SE3_1_0.wedge(xi)
 
     @staticmethod
-    def exp(*args, **kwargs):
-        return _inekf.SE3_1_0.exp(*args, **kwargs)
+    def exp(xi):
+        return _inekf.SE3_1_0.exp(xi)
 
     @staticmethod
-    def log(*args, **kwargs):
-        return _inekf.SE3_1_0.log(*args, **kwargs)
+    def log(g):
+        return _inekf.SE3_1_0.log_(g)
 
     @staticmethod
-    def Ad(*args, **kwargs):
-        return _inekf.SE3_1_0.Ad(*args, **kwargs)
+    def Ad(g):
+        return _inekf.SE3_1_0.Ad_(g)
 
 
 ############################ SE2 ##############################
 class _meta_SE2(type):
     # if we used both default arguments
-    __name__ = "SE2_1_0"
     def __call__(self, *args, **kwargs):
         return _inekf.SE2_1_0(*args, **kwargs)
 
@@ -75,26 +73,25 @@ class _meta_SE2(type):
 
 class SE2(metaclass=_meta_SE2):
     @staticmethod
-    def wedge(*args, **kwargs):
-        return _inekf.SE2_1_0.wedge(*args, **kwargs)
+    def wedge(xi):
+        return _inekf.SE2_1_0.wedge(xi)
 
     @staticmethod
-    def exp(*args, **kwargs):
-        return _inekf.SE2_1_0.exp(*args, **kwargs)
+    def exp(xi):
+        return _inekf.SE2_1_0.exp(xi)
 
     @staticmethod
-    def log(*args, **kwargs):
-        return _inekf.SE2_1_0.log(*args, **kwargs)
+    def log(g):
+        return _inekf.SE2_1_0.log_(g)
 
     @staticmethod
-    def Ad(*args, **kwargs):
-        return _inekf.SE2_1_0.Ad(*args, **kwargs)
+    def Ad(g):
+        return _inekf.SE2_1_0.Ad_(g)
 
 
 ############################ SO3 ##############################
 class _meta_SO3(type):
     # if we used default argument
-    __name__ = "SO3_0"
     def __call__(self, *args, **kwargs):
         return _inekf.SO3_0(*args, **kwargs)
 
@@ -107,26 +104,25 @@ class _meta_SO3(type):
 
 class SO3(metaclass=_meta_SO3):
     @staticmethod
-    def wedge(*args, **kwargs):
-        return _inekf.SO3_0.wedge(*args, **kwargs)
+    def wedge(xi):
+        return _inekf.SO3_0.wedge(xi)
 
     @staticmethod
-    def exp(*args, **kwargs):
-        return _inekf.SO3_0.exp(*args, **kwargs)
+    def exp(xi):
+        return _inekf.SO3_0.exp(xi)
 
     @staticmethod
-    def log(*args, **kwargs):
-        return _inekf.SO3_0.log(*args, **kwargs)
+    def log(g):
+        return _inekf.SO3_0.log_(g)
 
     @staticmethod
-    def Ad(*args, **kwargs):
-        return _inekf.SO3_0.Ad(*args, **kwargs)
+    def Ad(g):
+        return _inekf.SO3_0.Ad_(g)
 
 
 ############################ SO2 ##############################
 class _meta_SO2(type):
     # if we used default argument
-    __name__ = "SO2_0"
     def __call__(self, *args, **kwargs):
         return _inekf.SO2_0(*args, **kwargs)
 
@@ -138,18 +134,38 @@ class _meta_SO2(type):
         raise TypeError("Invalid Options")
 
 class SO2(metaclass=_meta_SO2):
+    """Proxy for communicating with a HoloOcean world
+
+    Instantiate this object using :meth:`holoocean.holoocean.make`.
+
+    Args:
+        agent_definitions (:obj:`list` of :class:`AgentDefinition`):
+            Which agents are already in the environment
+
+        binary_path (:obj:`str`, optional):
+            The path to the binary to load the world from. Defaults to None.
+
+    """
     @staticmethod
-    def wedge(*args, **kwargs):
-        return _inekf.SO2_0.wedge(*args, **kwargs)
+    def wedge(xi):
+        """Maps from R^n -> algebgra
+
+        Args:
+            xi (np.ndarray): Tangent vector
+
+        Returns:
+            np.ndarray: Element in Lie Algebra
+        """
+        return _inekf.SO2_0.wedge(xi)
 
     @staticmethod
-    def exp(*args, **kwargs):
-        return _inekf.SO2_0.exp(*args, **kwargs)
+    def exp(xi):
+        return _inekf.SO2_0.exp(xi)
 
     @staticmethod
-    def log(*args, **kwargs):
-        return _inekf.SO2_0.log(*args, **kwargs)
+    def log(g):
+        return _inekf.SO2_0.log_(g)
 
     @staticmethod
-    def Ad(*args, **kwargs):
-        return _inekf.SO2_0.Ad(*args, **kwargs)
+    def Ad(g):
+        return _inekf.SO2_0.Ad_(g)

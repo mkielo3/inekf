@@ -1,5 +1,37 @@
 from . import _inekf
 
+################# HELPER CLASSES FOR GETTING GROUP NAMES ###################
+def _parse_group(key):
+    name = key.__name__
+
+    # If we got one of the C++ classes
+    if "_" in name:
+        return name
+    # If we got one of our wrapper classes
+    elif name[0:2] == "SO":
+        return name + "_0"
+    elif name[0:2] == "SE":
+        return name + "_1_0"
+    else:
+        raise TypeError("Inheriting from that class not allowed")
+
+def _parse_control(key):
+    # If something like "Vec3" was passed in
+    if isinstance(key, str):
+        return key
+    # If an integer was passed in
+    elif isinstance(key, int):
+        # If it's a dynamic integer
+        if key == -1:
+            return "Vec" + "D"
+        # Otherwise assume it's that long
+        else:
+            return "Vec" + str(key)
+
+    # Otherwise it must've actually been one of our Lie Groups
+    else:
+        return _parse_group(key)
+
 ########################### InEKF Filter Class ##############################
 class InEKF:
     def __init__(self, pModel, x0, error):
@@ -36,8 +68,7 @@ class InEKF:
 class _meta_Measure(type):
     def __getitem__(cls,key):
         # Parse name
-        group_name = key.__name__
-        name = "MeasureModel_" + group_name
+        name = "MeasureModel_" + _parse_group(key)
 
         return getattr(_inekf, name)
 
@@ -53,17 +84,7 @@ class _meta_Process(type):
 
         # Parse name
         if isinstance(key, tuple) and len(key) == 2:
-            name = "ProcessModel_" + key[0].__name__ + "_"
-            if isinstance(key[1], str):
-                name += key[1]
-            elif isinstance(key[1], int):
-                if key[1] == -1:
-                    name += "Vec" + "D"
-                else:
-                    name += "Vec" + str(key[1])
-            else:
-                name += key[1].__name__
-
+            name = "ProcessModel_" + _parse_group(key[0]) + "_" + _parse_control(key[1])
 
             return getattr(_inekf, name)
 
