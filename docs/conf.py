@@ -10,9 +10,9 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../python'))
 
 
 # -- Running doxygen first -----------------------------------------------------
@@ -40,11 +40,21 @@ release = '0.1.0'
 extensions = [
     "breathe",
     "sphinx_tabs.tabs",
-    "sphinx_copybutton"
+    "sphinx_copybutton",
+    'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
+    'autodocsumm',
 ]
 
+# Setup breathe - imports doxygen xml
 breathe_projects = { "InEKF": "./_build/xml" }
 breathe_default_project = "InEKF"
+
+# Setup autodoc
+autodoc_mock_imports = ["inekf._inekf"]
+autodoc_default_options = {
+    'autosummary': True,
+}
 
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = ['_templates']
