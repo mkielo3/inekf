@@ -32,7 +32,7 @@ def test_TangentConstructor1():
 
     state = SE2[2,1](x)
 
-    assert_allclose(state.R().mat, np.eye(2))
+    assert_allclose(state.R.mat, np.eye(2))
     assert state.mat[0,2] == 1
     assert state.mat[1,2] == 2
     assert state.mat[0,3] == 3
@@ -43,7 +43,7 @@ def test_TangentConstructor2():
     x = np.arange(6)
 
     state = SE2["D", 1](x)
-    assert_allclose(state.R().mat, np.eye(2))
+    assert_allclose(state.R.mat, np.eye(2))
     assert state.mat[0,2] == 1
     assert state.mat[1,2] == 2
     assert state.mat[0,3] == 3
@@ -52,7 +52,7 @@ def test_TangentConstructor2():
 
 def test_PlainConstructor():
     x = SE2(0,1,2)
-    assert_allclose(x.R().mat, np.eye(2))
+    assert_allclose(x.R.mat, np.eye(2))
     assert x.mat[0,2] == 1
     assert x.mat[1,2] == 2
 
@@ -67,16 +67,16 @@ def test_AddCol():
 def test_Addaug():
     x = SE2[1,"D"]()
 
-    x.addaug(2)
+    x.addAug(2)
     assert x.aug[-1] == 2
 
     with pytest.raises(Exception):
         y = SE2()
-        y.addaug(2)
+        y.addAug(2)
 
 def test_Inverse():
     x = SE2()
-    assert_allclose(inv(x.mat), x.inverse().mat)
+    assert_allclose(inv(x.mat), x.inverse.mat)
 
 def test_exp():
     x = np.arange(6)
@@ -93,7 +93,7 @@ def test_log():
     xi = np.array([.1, 2, 3])
     x = SE2.exp(xi)
 
-    assert_allclose(x.log(), xi)
+    assert_allclose(x.log, xi)
 
 def test_wedge():
     x = np.arange(1,7)
@@ -110,9 +110,9 @@ def test_wedge():
 
 def test_Adjoint():
     x = SE2(1, 2, 3)
-    ad = x.Ad()
+    ad = x.Ad
 
-    assert_allclose(ad[-2:,-2:], x.R().mat)
+    assert_allclose(ad[-2:,-2:], x.R.mat)
     assert ad[0,0] == 1
     assert ad[1,0] == 3
     assert ad[2,0] == -2

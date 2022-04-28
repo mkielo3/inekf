@@ -95,6 +95,7 @@ retrieve a specific column.
 
         // Getters
         x();
+        x.mat();
         // SO2 object
         x.R();
         // Vector 1,2
@@ -111,10 +112,10 @@ retrieve a specific column.
         xi = np.array([1,2,3])
 
         # Group methods
-        x.inverse()
+        x.inverse
         x*y
-        x.log()
-        x.Ad()
+        x.log
+        x.Ad
 
         # Static methods
         inekf.SE2.wedge(xi)
@@ -123,9 +124,9 @@ retrieve a specific column.
         inekf.SE2.Ad(x)
 
         # Getters
-        x.State
+        x.mat
         # SO2 object
-        x.R()
+        x.R
         # Vector 1,2
         x[0]
         # Covariance

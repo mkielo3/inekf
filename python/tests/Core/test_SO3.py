@@ -47,16 +47,16 @@ def test_TangentConstructor():
 def test_Addaug():
     x = SO3["D"]()
 
-    x.addaug(2)
+    x.addAug(2)
     assert x.aug[-1] == 2
 
     with pytest.raises(Exception):
         y = SO3()
-        y.addaug(2)
+        y.addAug(2)
 
 def test_Inverse():
     x = SO3(np.pi/4, np.pi/4, np.pi/4)
-    assert_allclose(inv(x.mat), x.inverse().mat)
+    assert_allclose(inv(x.mat), x.inverse.mat)
 
 def test_exp():
     x = np.arange(1,6)
@@ -73,7 +73,7 @@ def test_log():
     xi = np.array([.1, .2, .3, 5, 6])
     x = SO3["D"](xi)
 
-    assert_allclose(xi, x.log())
+    assert_allclose(xi, x.log)
 
 def test_wedge():
     x = np.arange(1,4)
@@ -91,5 +91,5 @@ def test_Adjoint():
     x = SO3[1](1,1,1)
     expected = np.eye(4)
     expected[0:3,0:3] = x.mat
-    assert_allclose(expected, x.Ad())
-    assert_allclose(expected, SO3[1].Adjoint(x))
+    assert_allclose(expected, x.Ad)
+    assert_allclose(expected, SO3[1].Ad_(x))

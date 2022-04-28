@@ -21,4 +21,4 @@ def test_MakePhi():
     assert_allclose(phi, np.eye(3))
 
     phi = op.MakePhi(u, 1, state, ERROR.LEFT)
-    assert_allclose(phi, u.inverse().Ad())
+    assert_allclose(phi, u.inverse.Ad)
