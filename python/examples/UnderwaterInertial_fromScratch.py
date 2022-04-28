@@ -22,7 +22,7 @@ class InertialProcess(ProcessModel[SE3[2,6], "Vec6"]):
         u_shifted = u - state.aug
         omega = u_shifted[:3]
         a = u_shifted[3:]
-        R = state.R().mat
+        R = state.R.mat
         v = state[0]
         p = state[1]
 
@@ -39,7 +39,7 @@ class InertialProcess(ProcessModel[SE3[2,6], "Vec6"]):
         A = np.zeros((15,15))
 
         if error == ERROR.RIGHT:
-            R = state.R().mat
+            R = state.R.mat
             v_cross = SO3.wedge( state[0] )
             p_cross = SO3.wedge( state[1] )
 
@@ -135,7 +135,7 @@ class DepthSensor(MeasureModel[SE3[2,6]]):
         return z_full
 
     def calcSInverse(self, state):
-        R = state.R().mat
+        R = state.R.mat
         Sig = inv(self.H_error@state.cov@self.H_error.T)
         return (Sig - Sig@inv(R.T@self.M@R + Sig)@Sig)
 
