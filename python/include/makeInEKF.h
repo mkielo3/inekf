@@ -20,7 +20,7 @@ void makeInEKF(py::module &m, std::string name){
     typedef Eigen::Matrix<double,G::rotSize,G::N> MatrixH;
 
     name = "InEKF_" + name;
-    py::class_<T> myClass(m, name.c_str());
+    py::class_<T> myClass(m, name.c_str(), py::dynamic_attr());
     myClass
         .def(py::init<P*, G, InEKF::ERROR>(),
             "pModel"_a, "state"_a, "error"_a=InEKF::RIGHT)

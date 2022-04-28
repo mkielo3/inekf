@@ -33,9 +33,9 @@ py::class_<T> make_group(py::module &m, std::string name, int num1, int num2=-10
         .def_property("aug", &T::aug, &T::setAug)
 
         // self operators
-        .def("inverse", &T::inverse)
-        .def("Ad", py::overload_cast<>(&T::Ad, py::const_))
-        .def("log", py::overload_cast<>(&T::log, py::const_))
+        .def_property_readonly("inverse", &T::inverse)
+        .def_property_readonly("Ad", py::overload_cast<>(&T::Ad, py::const_))
+        .def_property_readonly("log", py::overload_cast<>(&T::log, py::const_))
 
         // Group action
         .def(py::self * py::self)
@@ -43,9 +43,9 @@ py::class_<T> make_group(py::module &m, std::string name, int num1, int num2=-10
         // Static Operators
         .def_static("wedge", &T::wedge, "xi"_a)
         .def_static("exp", &T::exp, "xi"_a)
-        .def_static("log", py::overload_cast<const T&>(&T::log), "g"_a)
+        .def_static("log_", py::overload_cast<const T&>(&T::log), "g"_a)
         // Can't overload combination of static/instance methods
-        .def_static("Ad", py::overload_cast<const T&>(&T::Ad), "g"_a)
+        .def_static("Ad_", py::overload_cast<const T&>(&T::Ad), "g"_a)
 
         // Misc
         .def("addAug", &T::addAug, "x"_a, "sigma"_a=1)
