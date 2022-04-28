@@ -63,7 +63,7 @@ SE3<C,A>::SE3(const TangentVector& xi, const MatrixCov& Cov)
 
     // fill it up!
     State_ = MatrixState::Identity(curr_M, curr_M);
-    State_.block(0,0,3,3) = SO3<>::Exp(xi.head(3))();
+    State_.block(0,0,3,3) = SO3<>::exp(xi.head(3))();
     for(int i=0;i<curr_cols;i++){
         State_.block(0,3+i,3,1) = xi.segment(3*i+3,3);
     }
@@ -151,13 +151,13 @@ void SE3<C,A>::addAug(double x, double sigma){
 }
 
 template <int C, int A>
-SE3<C,A> SE3<C, A>::Exp(const TangentVector& xi){
+SE3<C,A> SE3<C, A>::exp(const TangentVector& xi){
     verifyTangentVector(xi);
     double theta = xi.head(3).norm();
 
     // Find V
     Eigen::Matrix3d V;
-    Eigen::Matrix3d wx = SO3<>::Wedge(xi.head(3));
+    Eigen::Matrix3d wx = SO3<>::wedge(xi.head(3));
     if(abs(theta) < .0001){
         V = Eigen::Matrix3d::Identity() + wx/2 + wx*wx/6 + wx*wx*wx/24;
     }
@@ -181,7 +181,7 @@ SE3<C,A> SE3<C, A>::Exp(const TangentVector& xi){
 
 
     MatrixState X = MatrixState::Identity(curr_M,curr_M);
-    X.block(0,0,3,3) = SO3<>::Exp(xi.head(3))();
+    X.block(0,0,3,3) = SO3<>::exp(xi.head(3))();
     for(int i=0;i<curr_cols;i++){
         X.block(0,3+i,3,1) = V*xi.segment(3*i+3,3);
     }
@@ -208,20 +208,20 @@ SE3<C,A> SE3<C,A>::operator*(const SE3& rhs) const{
     if (C == Eigen::Dynamic && (*this)().cols() != rhs().cols()){
         throw std::range_error("Dynamic SE3 elements have different C");
     }
-    if(A == Eigen::Dynamic && (*this).Aug().rows() != rhs.Aug().rows()){
+    if(A == Eigen::Dynamic && (*this).aug().rows() != rhs.aug().rows()){
         throw std::range_error("Dynamic SE3 elements have different Aug");
     }
 
     // Skirt around composing covariances
     MatrixCov Cov = MatrixCov::Zero(c,c);
-    if(this->Uncertain() && rhs.Uncertain()){
+    if(this->uncertain() && rhs.uncertain()){
         throw "Can't compose uncertain LieGroups";
     }
-    if(this->Uncertain()) Cov = this->Cov();
-    if(rhs.Uncertain()) Cov = rhs.Cov();
+    if(this->uncertain()) Cov = this->cov();
+    if(rhs.uncertain()) Cov = rhs.cov();
 
     // Compose Augment
-    VectorAug Aug = this->Aug() + rhs.Aug();
+    VectorAug Aug = this->aug() + rhs.aug();
 
     // Smart multiply state matrix
     int curr_cols = (*this)().cols() - rotSize;
@@ -237,7 +237,7 @@ SE3<C,A> SE3<C,A>::operator*(const SE3& rhs) const{
 }
 
 template <int C, int A>
-typename SE3<C,A>::MatrixState SE3<C,A>::Wedge(const TangentVector& xi){
+typename SE3<C,A>::MatrixState SE3<C,A>::wedge(const TangentVector& xi){
     verifyTangentVector(xi);
 
     // figure out state size for dynamic purposes
@@ -253,7 +253,7 @@ typename SE3<C,A>::MatrixState SE3<C,A>::Wedge(const TangentVector& xi){
 
     // Fill it in
     MatrixState X = MatrixState::Zero(curr_M, curr_M);
-    X.block(0,0,3,3) = SO3<>::Wedge(xi.head(3));
+    X.block(0,0,3,3) = SO3<>::wedge(xi.head(3));
     for(int i=0;i<curr_cols;i++){
         X.block(0,3+i,3,1) = xi.segment(3*i+3,3);
     }
@@ -261,19 +261,19 @@ typename SE3<C,A>::MatrixState SE3<C,A>::Wedge(const TangentVector& xi){
 }
 
 template <int C, int A>
-typename SE3<C,A>::TangentVector SE3<C,A>::Log(const SE3& g){
+typename SE3<C,A>::TangentVector SE3<C,A>::log(const SE3& g){
     // figure out state size for dynamic purposes
     int curr_cols = g().cols() - rotSize;
-    int curr_A = g.Aug().rows();
+    int curr_A = g.aug().rows();
     int curr_dim = calcStateDim(rotSize, curr_cols, curr_A);
 
     // Find angles
     double theta = acos( (g.R()().trace()-1)/2 );
-    Eigen::Vector3d w = SO3<>::Log(g.R());
+    Eigen::Vector3d w = SO3<>::log(g.R());
 
     // Find V inverse
     Eigen::Matrix3d V;
-    Eigen::Matrix3d wx = SO3<>::Wedge(w);
+    Eigen::Matrix3d wx = SO3<>::wedge(w);
     if(abs(theta) < .0001){
         V = Eigen::Matrix3d::Identity() + wx/2 + wx*wx/6 + wx*wx*wx/24;
     }
@@ -291,7 +291,7 @@ typename SE3<C,A>::TangentVector SE3<C,A>::Log(const SE3& g){
     for(int i=0;i<curr_cols;i++){
         xi.segment(3+3*i,3) = V_inv*g[i];
     }
-    xi.tail(curr_A) = g.Aug();
+    xi.tail(curr_A) = g.aug();
 
     return xi;
 }
@@ -300,14 +300,14 @@ template <int C, int A>
 typename SE3<C,A>::MatrixCov SE3<C,A>::Ad(const SE3& g){
     // figure out state size for dynamic purposes
     int curr_cols = g().cols() - rotSize;
-    int curr_A = g.Aug().rows();
+    int curr_A = g.aug().rows();
     int curr_dim = calcStateDim(rotSize, curr_cols, curr_A);
 
     MatrixCov Ad_X = MatrixCov::Identity(curr_dim, curr_dim);
     Ad_X.block(0,0,3,3) = g.R()();
     for(int i=0;i<curr_cols;i++){
         Ad_X.block(3+3*i, 3+3*i, 3, 3) = g.R()();
-        Ad_X.block(3+3*i,     0, 3, 3) = SO3<>::Wedge(g[i])*g.R()();
+        Ad_X.block(3+3*i,     0, 3, 3) = SO3<>::wedge(g[i])*g.R()();
     }
     return Ad_X;
 }

@@ -9,7 +9,7 @@ def test_f():
 
     op = OdometryProcess()
 
-    assert_allclose(op.f(u, 1, state).State, u.State)
+    assert_allclose(op.f(u, 1, state).mat, u.mat)
 
 def test_MakePhi():
     state = SE2()

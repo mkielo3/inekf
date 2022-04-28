@@ -28,7 +28,7 @@ DepthSensor::VectorB DepthSensor::processZ(const Eigen::VectorXd& z, const SE3<2
 DepthSensor::MatrixS DepthSensor::calcSInverse(const SE3<2,6>& state){
     // Calculate Sinv
     Eigen::Matrix3d R = state.R()();
-    Eigen::Matrix3d Sig = (H_error_ * state.Cov() * H_error_.transpose()).inverse();
+    Eigen::Matrix3d Sig = (H_error_ * state.cov() * H_error_.transpose()).inverse();
     return Sig - Sig*( R.transpose()*M_*R + Sig ).inverse()*Sig;
 }
 

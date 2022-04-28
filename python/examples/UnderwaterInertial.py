@@ -72,7 +72,7 @@ for i in range(num*4):
     if name == "DEPTH":
         # print("Recieved Depth")
         state = iekf.Update("Depth", data)
-        mine.append(state.State)
+        mine.append(state.mat)
     
     if name == "R":
         # print("Recieved Actual")

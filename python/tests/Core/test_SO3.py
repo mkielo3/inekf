@@ -12,9 +12,9 @@ def test_BaseConstructor1():
 
     x = SO3[2](mtx, sigma, A)
 
-    assert_allclose(mtx, x.State)
-    assert_allclose(sigma, x.Cov)
-    assert_allclose(A, x.Aug)
+    assert_allclose(mtx, x.mat)
+    assert_allclose(sigma, x.cov)
+    assert_allclose(A, x.aug)
 
 def test_BaseConstructor2():
     mtx = np.eye(3)
@@ -34,50 +34,50 @@ def test_ThetaConstructor():
                 [0, v, -v],
                 [0, v, v]])
 
-    assert_allclose(r, x.State)
+    assert_allclose(r, x.mat)
 
 def test_TangentConstructor():
     x = np.array([0,0,0,4,5])
 
     state = SO3["D"](x)
 
-    assert_allclose(x[-2:], state.Aug)
-    assert_allclose(state.State, np.eye(3))
+    assert_allclose(x[-2:], state.aug)
+    assert_allclose(state.mat, np.eye(3))
 
-def test_AddAug():
+def test_Addaug():
     x = SO3["D"]()
 
-    x.addAug(2)
-    assert x.Aug[-1] == 2
+    x.addaug(2)
+    assert x.aug[-1] == 2
 
     with pytest.raises(Exception):
         y = SO3()
-        y.addAug(2)
+        y.addaug(2)
 
 def test_Inverse():
     x = SO3(np.pi/4, np.pi/4, np.pi/4)
-    assert_allclose(inv(x.State), x.inverse().State)
+    assert_allclose(inv(x.mat), x.inverse().mat)
 
-def test_Exp():
+def test_exp():
     x = np.arange(1,6)
 
-    ours = SO3["D"].Exp(x)
-    theirs = expm( SO3["D"].Wedge(x) )
+    ours = SO3["D"].exp(x)
+    theirs = expm( SO3["D"].wedge(x) )
 
-    assert_allclose(theirs, ours.State)
-    assert_allclose(x[-2:], ours.Aug)
+    assert_allclose(theirs, ours.mat)
+    assert_allclose(x[-2:], ours.aug)
     with pytest.raises(Exception):
-        SO3[3].Exp(x)
+        SO3[3].exp(x)
 
-def test_Log():
+def test_log():
     xi = np.array([.1, .2, .3, 5, 6])
     x = SO3["D"](xi)
 
     assert_allclose(xi, x.log())
 
-def test_Wedge():
+def test_wedge():
     x = np.arange(1,4)
-    ours = SO3["D"].Wedge(x)
+    ours = SO3["D"].wedge(x)
     theirs =  np.array([[0, -3,  2],
                         [3,  0, -1],
                         [-2, 1,  0]])
@@ -85,11 +85,11 @@ def test_Wedge():
     assert_allclose(theirs, ours)
 
     with pytest.raises(Exception):
-        SO3[3].Wedge(x)
+        SO3[3].wedge(x)
 
 def test_Adjoint():
     x = SO3[1](1,1,1)
     expected = np.eye(4)
-    expected[0:3,0:3] = x.State
+    expected[0:3,0:3] = x.mat
     assert_allclose(expected, x.Ad())
     assert_allclose(expected, SO3[1].Adjoint(x))

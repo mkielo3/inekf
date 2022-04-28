@@ -15,7 +15,7 @@ TEST(InertialProcess, f){
     InEKF::InertialProcess ip;
     InEKF::SE3<2,6> result = ip.f(u, 1, state);
 
-    EXPECT_MATRICES_EQ(result.R()(), InEKF::SO3<>::Exp(u.head(3))());
+    EXPECT_MATRICES_EQ(result.R()(), InEKF::SO3<>::exp(u.head(3))());
     EXPECT_MATRICES_EQ(result[0], Eigen::Vector3d::Ones());
     EXPECT_MATRICES_EQ(result[1], Eigen::Vector3d::Ones()/2);
 }

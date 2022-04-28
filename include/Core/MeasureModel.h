@@ -176,10 +176,10 @@ class MeasureModel {
             MatrixS Sinv;
             MatrixS R = state.R()();
             if(error_ == ERROR::RIGHT){
-                Sinv.noalias() = ( H_error_*state.Cov()*H_error_.transpose() + R*M_*R.transpose() ).inverse();
+                Sinv.noalias() = ( H_error_*state.cov()*H_error_.transpose() + R*M_*R.transpose() ).inverse();
             }
             else{
-                Sinv.noalias() = ( H_error_*state.Cov()*H_error_.transpose() + R.transpose()*M_*R ).inverse();
+                Sinv.noalias() = ( H_error_*state.cov()*H_error_.transpose() + R.transpose()*M_*R ).inverse();
             }
             return Sinv;
         }
@@ -219,7 +219,7 @@ class MeasureModel {
             }
             // SO(3) / SE(3)
             else if(rDim == 3){
-                this->H_.block(0, 0, Group::rotSize, Group::rotSize) = -1*SO3<>::Wedge(b_.head(3));
+                this->H_.block(0, 0, Group::rotSize, Group::rotSize) = -1*SO3<>::wedge(b_.head(3));
             }
 
             // Fill out column portion of H

@@ -26,7 +26,7 @@ def test_bConstructor():
     assert_allclose(H, l.H)
 
     b = np.array([1,2,3])
-    H = -SO3.Wedge(b)
+    H = -SO3.wedge(b)
     l = MeasureModel[SO3](b, np.eye(3), ERROR.LEFT)
     assert_allclose(H, l.H)
 

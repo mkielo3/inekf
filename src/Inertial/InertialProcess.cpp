@@ -8,7 +8,7 @@ InertialProcess::InertialProcess() {
 
 SE3<2,6> InertialProcess::f(Eigen::Vector6d u, double dt, SE3<2,6> state){
     // Get everything we need
-    Eigen::Vector6d u_shifted = u - state.Aug();
+    Eigen::Vector6d u_shifted = u - state.aug();
     Eigen::Vector3d omega = u_shifted.head(3);
     Eigen::Vector3d a = u_shifted.tail(3);
     Eigen::Matrix3d R = state.R()();
@@ -17,11 +17,11 @@ SE3<2,6> InertialProcess::f(Eigen::Vector6d u, double dt, SE3<2,6> state){
 
     // Calculate
     MatrixState S = MatrixState::Identity();
-    S.block(0,0,3,3) = R * SO3<>::Exp(omega*dt)();
+    S.block(0,0,3,3) = R * SO3<>::exp(omega*dt)();
     S.block(0,3,3,1) = v + (R*a + g_)*dt;
     S.block(0,4,3,1) = p + v*dt + (R*a + g_)*dt*dt/2;
 
-    state.setState(S);
+    state.setMat(S);
 
     return state;
 }
@@ -33,10 +33,10 @@ MatrixCov InertialProcess::MakePhi(const Eigen::Vector6d& u, double dt, const SE
     if(error == ERROR::RIGHT){
         // Get everything we need
         Eigen::Matrix3d R = state.R()();
-        Eigen::Matrix3d v_cross = SO3<>::Wedge( state[0] );
-        Eigen::Matrix3d p_cross = SO3<>::Wedge( state[1] );
+        Eigen::Matrix3d v_cross = SO3<>::wedge( state[0] );
+        Eigen::Matrix3d p_cross = SO3<>::wedge( state[1] );
 
-        A.block<3,3>(3,0) = SO3<>::Wedge(g_);
+        A.block<3,3>(3,0) = SO3<>::wedge(g_);
         A.block<3,3>(6,3) = Eigen::Matrix3d::Identity();
         
         A.block<3,3>(0,9) = -R;
@@ -47,9 +47,9 @@ MatrixCov InertialProcess::MakePhi(const Eigen::Vector6d& u, double dt, const SE
         return MatrixCov::Identity() + A*dt + A*A*dt*dt/2 + A*A*A*dt*dt*dt/6;
     }
     else{
-        Eigen::Vector6d u_shifted = u - state.Aug();
-        Eigen::Matrix3d w_cross = SO3<>::Wedge( u_shifted.head(3) );
-        Eigen::Matrix3d a_cross = SO3<>::Wedge( u_shifted.tail(3) );
+        Eigen::Vector6d u_shifted = u - state.aug();
+        Eigen::Matrix3d w_cross = SO3<>::wedge( u_shifted.head(3) );
+        Eigen::Matrix3d a_cross = SO3<>::wedge( u_shifted.tail(3) );
 
         A.block<3,3>(0,0) = -w_cross;
         A.block<3,3>(3,3) = -w_cross;

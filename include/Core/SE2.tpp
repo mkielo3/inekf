@@ -120,14 +120,14 @@ void SE2<C,A>::addAug(double x, double sigma){
 }
 
 template <int C, int A>
-SE2<C,A> SE2<C, A>::Exp(const TangentVector& xi){
+SE2<C,A> SE2<C, A>::exp(const TangentVector& xi){
     verifyTangentVector(xi);
     double theta = xi(0);
 
     // Find V
     Eigen::Matrix2d V;
     if(abs(theta) < .0001){
-        Eigen::Matrix2d wx = SO2<>::Wedge(xi.segment(0,1));
+        Eigen::Matrix2d wx = SO2<>::wedge(xi.segment(0,1));
         V = Eigen::Matrix2d::Identity() + wx/2 + wx*wx/6 + wx*wx*wx/24;
     }
     else{
@@ -150,7 +150,7 @@ SE2<C,A> SE2<C, A>::Exp(const TangentVector& xi){
     int curr_M = calcStateMtxSize(rotSize, curr_cols);
 
     MatrixState X = MatrixState::Identity(curr_M,curr_M);
-    X.block(0,0,2,2) = SO2<>::Exp(xi.segment(0,1))();
+    X.block(0,0,2,2) = SO2<>::exp(xi.segment(0,1))();
     for(int i=0;i<curr_cols;i++){
         X.block(0,2+i,2,1) = V*xi.segment(2*i+1,2);
     }
@@ -177,20 +177,20 @@ SE2<C,A> SE2<C,A>::operator*(const SE2& rhs) const{
     if (C == Eigen::Dynamic && (*this)().cols() != rhs().cols()){
         throw std::range_error("Dynamic SE2 elements have different C");
     }
-    if(A == Eigen::Dynamic && (*this).Aug().rows() != rhs.Aug().rows()){
+    if(A == Eigen::Dynamic && (*this).aug().rows() != rhs.aug().rows()){
         throw std::range_error("Dynamic SE2 elements have different Aug");
     }
 
     // Skirt around composing covariances
     MatrixCov Cov = MatrixCov::Zero(c,c);
-    if(this->Uncertain() && rhs.Uncertain()){
+    if(this->uncertain() && rhs.uncertain()){
         throw "Can't compose uncertain LieGroups";
     }
-    if(this->Uncertain()) Cov = this->Cov();
-    if(rhs.Uncertain()) Cov = rhs.Cov();
+    if(this->uncertain()) Cov = this->cov();
+    if(rhs.uncertain()) Cov = rhs.cov();
 
     // Compose Augment
-    VectorAug Aug = this->Aug() + rhs.Aug();
+    VectorAug Aug = this->aug() + rhs.aug();
 
     // Smart multiply state matrix
     int curr_cols = (*this)().cols() - rotSize;
@@ -205,7 +205,7 @@ SE2<C,A> SE2<C,A>::operator*(const SE2& rhs) const{
 }
 
 template <int C, int A>
-typename SE2<C,A>::MatrixState SE2<C,A>::Wedge(const TangentVector& xi){
+typename SE2<C,A>::MatrixState SE2<C,A>::wedge(const TangentVector& xi){
     verifyTangentVector(xi);
 
     // figure out state size for dynamic purposes
@@ -221,7 +221,7 @@ typename SE2<C,A>::MatrixState SE2<C,A>::Wedge(const TangentVector& xi){
 
     // Fill it in
     MatrixState X = MatrixState::Zero(curr_M, curr_M);
-    X.block(0,0,2,2) = SO2<>::Wedge(xi.segment(0,1));
+    X.block(0,0,2,2) = SO2<>::wedge(xi.segment(0,1));
     for(int i=0;i<curr_cols;i++){
         X.block(0,2+i,2,1) = xi.segment(2*i+1,2);
     }
@@ -229,13 +229,13 @@ typename SE2<C,A>::MatrixState SE2<C,A>::Wedge(const TangentVector& xi){
 }
 
 template <int C, int A>
-typename SE2<C,A>::TangentVector SE2<C,A>::Log(const SE2& g){
+typename SE2<C,A>::TangentVector SE2<C,A>::log(const SE2& g){
     // figure out state size for dynamic purposes
     int curr_cols = g().cols() - rotSize;
-    int curr_A = g.Aug().rows();
+    int curr_A = g.aug().rows();
     int curr_dim = calcStateDim(rotSize, curr_cols, curr_A);
 
-    double theta = SO2<>::Log(g.R())(0);
+    double theta = SO2<>::log(g.R())(0);
     double a, b, scale;
     if(abs(theta) < .0001){
         a = 1;
@@ -257,7 +257,7 @@ typename SE2<C,A>::TangentVector SE2<C,A>::Log(const SE2& g){
     for(int i=0;i<curr_cols;i++){
         xi.segment(1+2*i,2) = V_inv*g[i];
     }
-    xi.tail(curr_A) = g.Aug();
+    xi.tail(curr_A) = g.aug();
     return xi;
 }
 
@@ -265,7 +265,7 @@ template <int C, int A>
 typename SE2<C,A>::MatrixCov SE2<C,A>::Ad(const SE2& g){
     // figure out state size for dynamic purposes
     int curr_cols = g().cols() - rotSize;
-    int curr_A = g.Aug().rows();
+    int curr_A = g.aug().rows();
     int curr_dim = calcStateDim(rotSize, curr_cols, curr_A);
 
     MatrixCov Ad_X = MatrixCov::Identity(curr_dim, curr_dim);

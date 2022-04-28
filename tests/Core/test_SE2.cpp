@@ -15,9 +15,9 @@ TEST(SE2, BaseConstructor1){
     InEKF::SE2<2,2> x(state, sigma, aug);
 
     EXPECT_MATRICES_EQ(state, x());
-    EXPECT_MATRICES_EQ(sigma, x.Cov());
-    EXPECT_MATRICES_EQ(aug, x.Aug());
-    EXPECT_TRUE(x.Uncertain());
+    EXPECT_MATRICES_EQ(sigma, x.cov());
+    EXPECT_MATRICES_EQ(aug, x.aug());
+    EXPECT_TRUE(x.uncertain());
 }
 
 TEST(SE2, BaseConstructor2){
@@ -44,7 +44,7 @@ TEST(SE2, TangentConstructor1){
     EXPECT_EQ(state()(1,2), 2);
     EXPECT_EQ(state()(0,3), 3);
     EXPECT_EQ(state()(1,3), 4);
-    EXPECT_EQ(state.Aug()(0), 5);
+    EXPECT_EQ(state.aug()(0), 5);
 }
 
 TEST(SE2, TangentConstructor2){
@@ -57,7 +57,7 @@ TEST(SE2, TangentConstructor2){
     EXPECT_EQ(state()(1,2), 2);
     EXPECT_EQ(state()(0,3), 3);
     EXPECT_EQ(state()(1,3), 4);
-    EXPECT_EQ(state.Aug()(0), 5);
+    EXPECT_EQ(state.aug()(0), 5);
 
     InEKF::SE2<2,Eigen::Dynamic> state2(x);
     EXPECT_MATRICES_EQ(state.R()(), Eigen::Matrix2d::Identity());
@@ -65,7 +65,7 @@ TEST(SE2, TangentConstructor2){
     EXPECT_EQ(state2()(1,2), 2);
     EXPECT_EQ(state2()(0,3), 3);
     EXPECT_EQ(state2()(1,3), 4);
-    EXPECT_EQ(state2.Aug()(0), 5);
+    EXPECT_EQ(state2.aug()(0), 5);
 
     // InEKF::SE2<Eigen::Dynamic,Eigen::Dynamic> state3(x);
     EXPECT_THROW( (InEKF::SE2<Eigen::Dynamic,Eigen::Dynamic>(x)), std::range_error);
@@ -95,11 +95,11 @@ TEST(SE2, AddCol){
 
 TEST(SE2, AddAug){
     InEKF::SE2<1,Eigen::Dynamic> x;
-    EXPECT_EQ(x.Aug().rows(), 0);
+    EXPECT_EQ(x.aug().rows(), 0);
 
     x.addAug(2);
 
-    EXPECT_EQ(x.Aug()(0), 2);
+    EXPECT_EQ(x.aug()(0), 2);
 
     // TODO: Test adding to Cov
 
@@ -112,31 +112,31 @@ TEST(SE2, Inverse){
     EXPECT_MATRICES_EQ(x().inverse(), x.inverse()());
 }
 
-TEST(SE2, Exp){
+TEST(SE2, exp){
     Eigen::Matrix<double,6,1> x;
     x << 0, 1, 2, 3, 4, 5;
     
-    InEKF::SE2<2,1> ours = InEKF::SE2<2,1>::Exp(x);
-    Eigen::Matrix4d theirs = InEKF::SE2<2,1>::Wedge(x).exp(); 
+    InEKF::SE2<2,1> ours = InEKF::SE2<2,1>::exp(x);
+    Eigen::Matrix4d theirs = InEKF::SE2<2,1>::wedge(x).exp(); 
     
     EXPECT_MATRICES_EQ(ours(), theirs);
-    EXPECT_MATRICES_EQ(ours.Aug(), x.tail(1));
-    EXPECT_THROW((InEKF::SE2<Eigen::Dynamic,2>::Exp(x)), std::range_error);
+    EXPECT_MATRICES_EQ(ours.aug(), x.tail(1));
+    EXPECT_THROW((InEKF::SE2<Eigen::Dynamic,2>::exp(x)), std::range_error);
 }
 
-TEST(SE2, Log){
+TEST(SE2, log){
     Eigen::Vector3d xi;
     xi << .1, 2, 3;
-    InEKF::SE2<> x = InEKF::SE2<>::Exp(xi);
+    InEKF::SE2<> x = InEKF::SE2<>::exp(xi);
 
     EXPECT_MATRICES_EQ(x.log(), xi);
 }
 
-TEST(SE2, Wedge){
+TEST(SE2, wedge){
     Eigen::Matrix<double,6,1> x;
     x << 1, 2, 3, 4, 5, 6;
 
-    Eigen::Matrix4d ours = InEKF::SE2<2,1>::Wedge(x); 
+    Eigen::Matrix4d ours = InEKF::SE2<2,1>::wedge(x); 
     Eigen::Matrix4d theirs;
     theirs << 0, -1, 2, 4,
                 1, 0, 3, 5,
@@ -144,7 +144,7 @@ TEST(SE2, Wedge){
                 0, 0, 0, 0;
 
     EXPECT_MATRICES_EQ(ours, theirs);
-    EXPECT_THROW((InEKF::SE2<Eigen::Dynamic,2>::Wedge(x)), std::range_error);
+    EXPECT_THROW((InEKF::SE2<Eigen::Dynamic,2>::wedge(x)), std::range_error);
 }
 
 TEST(SE2, Adjoint){

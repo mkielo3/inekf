@@ -18,9 +18,9 @@ TEST(SE3, BaseConstructor1){
     InEKF::SE3<2,2> x(state, sigma, aug);
 
     EXPECT_MATRICES_EQ(state, x());
-    EXPECT_MATRICES_EQ(sigma, x.Cov());
-    EXPECT_MATRICES_EQ(aug, x.Aug());
-    EXPECT_TRUE(x.Uncertain());
+    EXPECT_MATRICES_EQ(sigma, x.cov());
+    EXPECT_MATRICES_EQ(aug, x.aug());
+    EXPECT_TRUE(x.uncertain());
 }
 
 TEST(SE3, BaseConstructor2){
@@ -41,10 +41,10 @@ TEST(SE3, TangentConstructor1){
     Eigen::Matrix<double,10,1> x = Eigen::Matrix<double,10,1>::LinSpaced(10,0,10);
 
     InEKF::SE3<2,1> state(x);
-    EXPECT_MATRICES_EQ(state.R()(), InEKF::SO3<>::Exp(x.head(3))() );
+    EXPECT_MATRICES_EQ(state.R()(), InEKF::SO3<>::exp(x.head(3))() );
     EXPECT_MATRICES_EQ(state[0], x.segment(3,3));
     EXPECT_MATRICES_EQ(state[1], x.segment(6,3));
-    EXPECT_MATRICES_EQ(state.Aug(), x.tail(1));
+    EXPECT_MATRICES_EQ(state.aug(), x.tail(1));
 }
 
 TEST(SE3, TangentConstructor2){
@@ -52,16 +52,16 @@ TEST(SE3, TangentConstructor2){
 
 
     InEKF::SE3<Eigen::Dynamic,1> state(x);
-    EXPECT_MATRICES_EQ(state.R()(), InEKF::SO3<>::Exp(x.head(3))() );
+    EXPECT_MATRICES_EQ(state.R()(), InEKF::SO3<>::exp(x.head(3))() );
     EXPECT_MATRICES_EQ(state[0], x.segment(3,3));
     EXPECT_MATRICES_EQ(state[1], x.segment(6,3));
-    EXPECT_MATRICES_EQ(state.Aug(), x.tail(1));
+    EXPECT_MATRICES_EQ(state.aug(), x.tail(1));
 
     InEKF::SE3<2,Eigen::Dynamic> state2(x);
-    EXPECT_MATRICES_EQ(state2.R()(), InEKF::SO3<>::Exp(x.head(3))() );
+    EXPECT_MATRICES_EQ(state2.R()(), InEKF::SO3<>::exp(x.head(3))() );
     EXPECT_MATRICES_EQ(state2[0], x.segment(3,3));
     EXPECT_MATRICES_EQ(state2[1], x.segment(6,3));
-    EXPECT_MATRICES_EQ(state2.Aug(), x.tail(1));
+    EXPECT_MATRICES_EQ(state2.aug(), x.tail(1));
 
     EXPECT_THROW( (InEKF::SE3<Eigen::Dynamic,Eigen::Dynamic>(x)), std::range_error);
 }
@@ -92,11 +92,11 @@ TEST(SE3, AddCol){
 
 TEST(SE3, AddAug){
     InEKF::SE3<1,Eigen::Dynamic> x;
-    EXPECT_EQ(x.Aug().rows(), 0);
+    EXPECT_EQ(x.aug().rows(), 0);
 
     x.addAug(2);
 
-    EXPECT_EQ(x.Aug()(0), 2);
+    EXPECT_EQ(x.aug()(0), 2);
 
     // TODO: Test adding to Cov
 
@@ -109,29 +109,29 @@ TEST(SE3, Inverse){
     EXPECT_MATRICES_EQ(x.inverse()(), x().inverse());
 }
 
-TEST(SE3, Exp){
+TEST(SE3, exp){
     Eigen::Matrix<double,10,1> x = Eigen::Matrix<double,10,1>::LinSpaced(10,0,10);
     
-    InEKF::SE3<2,1> ours = InEKF::SE3<2,1>::Exp(x);
-    Eigen::Matrix5d theirs = InEKF::SE3<2,1>::Wedge(x).exp(); 
+    InEKF::SE3<2,1> ours = InEKF::SE3<2,1>::exp(x);
+    Eigen::Matrix5d theirs = InEKF::SE3<2,1>::wedge(x).exp(); 
     
     EXPECT_MATRICES_EQ(ours(), theirs);
-    EXPECT_MATRICES_EQ(ours.Aug(), x.tail(1));
-    EXPECT_THROW((InEKF::SE3<Eigen::Dynamic,2>::Exp(x)), std::range_error);
+    EXPECT_MATRICES_EQ(ours.aug(), x.tail(1));
+    EXPECT_THROW((InEKF::SE3<Eigen::Dynamic,2>::exp(x)), std::range_error);
 }
 
-TEST(SE3, Log){
+TEST(SE3, log){
     Eigen::Matrix<double,6,1> xi;
     xi << .1, .2, .3, 4, 5, 6;
-    InEKF::SE3<> x = InEKF::SE3<>::Exp(xi);
+    InEKF::SE3<> x = InEKF::SE3<>::exp(xi);
 
     EXPECT_MATRICES_EQ(x.log(), xi);
 }
 
-TEST(SE3, Wedge){
+TEST(SE3, wedge){
     Eigen::Matrix<double,10,1> x = Eigen::Matrix<double,10,1>::LinSpaced(10,1,10);
 
-    Eigen::Matrix5d ours = InEKF::SE3<2,1>::Wedge(x); 
+    Eigen::Matrix5d ours = InEKF::SE3<2,1>::wedge(x); 
     Eigen::Matrix5d theirs;
     theirs << 0, -3,  2,  4,  7,
               3,  0, -1,  5,  8,
@@ -140,7 +140,7 @@ TEST(SE3, Wedge){
               0,  0,  0,  0,  0;
 
     EXPECT_MATRICES_EQ(ours, theirs);
-    EXPECT_THROW((InEKF::SE3<Eigen::Dynamic,2>::Wedge(x)), std::range_error);
+    EXPECT_THROW((InEKF::SE3<Eigen::Dynamic,2>::wedge(x)), std::range_error);
 }
 
 TEST(SE3, Adjoint){
@@ -154,7 +154,7 @@ TEST(SE3, Adjoint){
         EXPECT_MATRICES_EQ(ad.block(3*i,3*i,3,3), x.R()());
     }
     for(int i=0;i<2;i++){
-        top = InEKF::SO3<>::Wedge(x[i])*x.R()();
+        top = InEKF::SO3<>::wedge(x[i])*x.R()();
         EXPECT_MATRICES_EQ(ad.block(3+3*i,0,3,3), top);
     }
     EXPECT_EQ(ad(9,9), 1);

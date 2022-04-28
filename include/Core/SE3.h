@@ -91,7 +91,7 @@ class SE3 : public LieGroup<SE3<C,A>,calcStateDim(3,C,A),calcStateMtxSize(3,C),A
          * 
          * @param State SE2 object. The matrix, covariance and augmented state will all be copied from it.
          */
-        SE3(const SE3& State) : SE3(State(), State.Cov(), State.Aug()) {}
+        SE3(const SE3& State) : SE3(State(), State.cov(), State.aug()) {}
         
         /**
          * @brief Construct a new SE2 object from a tangent vector using the exponential operator.
@@ -203,7 +203,7 @@ class SE3 : public LieGroup<SE3<C,A>,calcStateDim(3,C,A),calcStateMtxSize(3,C),A
          * @param xi Tangent vector
          * @return MatrixState Element of Lie algebra
          */
-        static MatrixState Wedge(const TangentVector& xi);
+        static MatrixState wedge(const TangentVector& xi);
 
         /**
          * @brief Move an element from R^n -> algebra -> group
@@ -211,7 +211,7 @@ class SE3 : public LieGroup<SE3<C,A>,calcStateDim(3,C,A),calcStateMtxSize(3,C),A
          * @param xi Tangent vector
          * @return Element of SE2
          */
-        static SE3 Exp(const TangentVector& xi);
+        static SE3 exp(const TangentVector& xi);
 
         /**
          * @brief Move an element from group -> algebra -> R^n
@@ -219,7 +219,7 @@ class SE3 : public LieGroup<SE3<C,A>,calcStateDim(3,C,A),calcStateMtxSize(3,C),A
          * @param g Group element
          * @return TangentVector 
          */
-        static TangentVector Log(const SE3& g);
+        static TangentVector log(const SE3& g);
 
         /**
          * @brief Compute the linear map Adjoint

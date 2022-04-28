@@ -67,7 +67,7 @@ Further, each group is equipped with a number of common operations, such as
  - Inverse
  - Group action (multiplication)
  - Wedge ^ operator
- - Exp/log
+ - Exp/Log
  - Adjoint
 
 Along with these is overloading of ``()`` to return the state matrix, and ``[]`` to
@@ -88,9 +88,9 @@ retrieve a specific column.
         x.Ad();
 
         // Static methods
-        InEKF::SE2::Wedge(xi);
-        InEKF::SE2::Exp(xi);
-        InEKF::SE2::Log(x);
+        InEKF::SE2::wedge(xi);
+        InEKF::SE2::exp(xi);
+        InEKF::SE2::log(x);
         InEKF::SE2::Ad(x);
 
         // Getters
@@ -100,9 +100,9 @@ retrieve a specific column.
         // Vector 1,2
         x[0];  
         // Covariance      
-        x.Cov();
+        x.cov();
         // Get additional Euclidean states
-        x.Aug();
+        x.aug();
 
     .. code-tab:: python
 
@@ -117,9 +117,9 @@ retrieve a specific column.
         x.Ad()
 
         # Static methods
-        inekf.SE2.Wedge(xi)
-        inekf.SE2.Exp(xi)
-        inekf.SE2.Log(x)
+        inekf.SE2.wedge(xi)
+        inekf.SE2.exp(xi)
+        inekf.SE2.log(x)
         inekf.SE2.Ad(x)
 
         # Getters
@@ -129,9 +129,9 @@ retrieve a specific column.
         # Vector 1,2
         x[0]
         # Covariance
-        x.Cov
+        x.cov
         # Get additional Euclidean states
-        x.Aug
+        x.aug
 
 
 Making Models

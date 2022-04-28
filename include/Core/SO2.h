@@ -84,7 +84,7 @@ class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
          * 
          * @param State SO2 object. The matrix, covariance and augmented state will all be copied from it.
          */
-        SO2(const SO2& State) : SO2(State(), State.Cov(), State.Aug()) {}
+        SO2(const SO2& State) : SO2(State(), State.cov(), State.aug()) {}
 
         /**
          * @brief Construct a new SO2 object using an angle.
@@ -158,7 +158,7 @@ class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
          * @param xi Tangent vector
          * @return MatrixState Element of Lie algebra
          */
-        static MatrixState Wedge(const TangentVector& xi);
+        static MatrixState wedge(const TangentVector& xi);
 
         /**
          * @brief Move an element from R^n -> algebra -> group
@@ -166,7 +166,7 @@ class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
          * @param xi Tangent vector
          * @return Element of SO2
          */
-        static SO2 Exp(const TangentVector& xi);
+        static SO2 exp(const TangentVector& xi);
 
         /**
          * @brief Move an element from group -> algebra -> R^n
@@ -174,7 +174,7 @@ class SO2 : public LieGroup<SO2<A>,calcStateDim(2,0,A),2,A>{
          * @param g Group element
          * @return TangentVector 
          */
-        static TangentVector Log(const SO2& g);
+        static TangentVector log(const SO2& g);
 
         /**
          * @brief Compute the linear map Adjoint

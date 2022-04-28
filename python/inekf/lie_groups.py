@@ -39,16 +39,16 @@ class _meta_SE3(type):
 
 class SE3(metaclass=_meta_SE3):
     @staticmethod
-    def Wedge(*args, **kwargs):
-        return _inekf.SE3_1_0.Wedge(*args, **kwargs)
+    def wedge(*args, **kwargs):
+        return _inekf.SE3_1_0.wedge(*args, **kwargs)
 
     @staticmethod
-    def Exp(*args, **kwargs):
-        return _inekf.SE3_1_0.Exp(*args, **kwargs)
+    def exp(*args, **kwargs):
+        return _inekf.SE3_1_0.exp(*args, **kwargs)
 
     @staticmethod
-    def Log(*args, **kwargs):
-        return _inekf.SE3_1_0.Log(*args, **kwargs)
+    def log(*args, **kwargs):
+        return _inekf.SE3_1_0.log(*args, **kwargs)
 
     @staticmethod
     def Ad(*args, **kwargs):
@@ -75,16 +75,16 @@ class _meta_SE2(type):
 
 class SE2(metaclass=_meta_SE2):
     @staticmethod
-    def Wedge(*args, **kwargs):
-        return _inekf.SE2_1_0.Wedge(*args, **kwargs)
+    def wedge(*args, **kwargs):
+        return _inekf.SE2_1_0.wedge(*args, **kwargs)
 
     @staticmethod
-    def Exp(*args, **kwargs):
-        return _inekf.SE2_1_0.Exp(*args, **kwargs)
+    def exp(*args, **kwargs):
+        return _inekf.SE2_1_0.exp(*args, **kwargs)
 
     @staticmethod
-    def Log(*args, **kwargs):
-        return _inekf.SE2_1_0.Log(*args, **kwargs)
+    def log(*args, **kwargs):
+        return _inekf.SE2_1_0.log(*args, **kwargs)
 
     @staticmethod
     def Ad(*args, **kwargs):
@@ -107,16 +107,16 @@ class _meta_SO3(type):
 
 class SO3(metaclass=_meta_SO3):
     @staticmethod
-    def Wedge(*args, **kwargs):
-        return _inekf.SO3_0.Wedge(*args, **kwargs)
+    def wedge(*args, **kwargs):
+        return _inekf.SO3_0.wedge(*args, **kwargs)
 
     @staticmethod
-    def Exp(*args, **kwargs):
-        return _inekf.SO3_0.Exp(*args, **kwargs)
+    def exp(*args, **kwargs):
+        return _inekf.SO3_0.exp(*args, **kwargs)
 
     @staticmethod
-    def Log(*args, **kwargs):
-        return _inekf.SO3_0.Log(*args, **kwargs)
+    def log(*args, **kwargs):
+        return _inekf.SO3_0.log(*args, **kwargs)
 
     @staticmethod
     def Ad(*args, **kwargs):
@@ -139,16 +139,16 @@ class _meta_SO2(type):
 
 class SO2(metaclass=_meta_SO2):
     @staticmethod
-    def Wedge(*args, **kwargs):
-        return _inekf.SO2_0.Wedge(*args, **kwargs)
+    def wedge(*args, **kwargs):
+        return _inekf.SO2_0.wedge(*args, **kwargs)
 
     @staticmethod
-    def Exp(*args, **kwargs):
-        return _inekf.SO2_0.Exp(*args, **kwargs)
+    def exp(*args, **kwargs):
+        return _inekf.SO2_0.exp(*args, **kwargs)
 
     @staticmethod
-    def Log(*args, **kwargs):
-        return _inekf.SO2_0.Log(*args, **kwargs)
+    def log(*args, **kwargs):
+        return _inekf.SO2_0.log(*args, **kwargs)
 
     @staticmethod
     def Ad(*args, **kwargs):

@@ -38,7 +38,7 @@ TEST(MeasureModel, bConstructor){
 
     // Try with SO3
     Eigen::Vector3d b2{1,2,3};
-    Eigen::Matrix3d H2 = -1*InEKF::SO3<>::Wedge(b2);
+    Eigen::Matrix3d H2 = -1*InEKF::SO3<>::wedge(b2);
     InEKF::MeasureModel<InEKF::SO3<>> with_SO3(b2, Eigen::Matrix3d::Identity(), InEKF::LEFT);
     EXPECT_MATRICES_EQ(with_SO3.getH(), H2);
 }

@@ -80,7 +80,7 @@ class SO3 : public LieGroup<SO3<A>,calcStateDim(3,0,A),3,A>{
          * 
          * @param State SO3 object. The matrix, covariance and augmented state will all be copied from it.
          */
-        SO3(const SO3& State) : SO3(State(), State.Cov(), State.Aug()) {}
+        SO3(const SO3& State) : SO3(State(), State.cov(), State.aug()) {}
 
         /**
          * @brief Construct a new SO3 object using angles and the matrix exponential.
@@ -151,7 +151,7 @@ class SO3 : public LieGroup<SO3<A>,calcStateDim(3,0,A),3,A>{
          * @param xi Tangent vector
          * @return MatrixState Element of Lie algebra
          */
-        static MatrixState Wedge(const TangentVector& xi);
+        static MatrixState wedge(const TangentVector& xi);
 
         /**
          * @brief Move an element from R^n -> algebra -> group
@@ -159,7 +159,7 @@ class SO3 : public LieGroup<SO3<A>,calcStateDim(3,0,A),3,A>{
          * @param xi Tangent vector
          * @return Element of SO3
          */
-        static SO3 Exp(const TangentVector& xi);
+        static SO3 exp(const TangentVector& xi);
 
         /**
          * @brief Move an element from group -> algebra -> R^n
@@ -167,7 +167,7 @@ class SO3 : public LieGroup<SO3<A>,calcStateDim(3,0,A),3,A>{
          * @param g Group element
          * @return TangentVector 
          */
-        static TangentVector Log(const SO3& g);
+        static TangentVector log(const SO3& g);
 
         /**
          * @brief Compute the linear map Adjoint

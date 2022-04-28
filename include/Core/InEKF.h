@@ -47,7 +47,7 @@ class InEKF {
          * @param error Right or left invariant error.
          */
         InEKF(pM* pModel, Group state, ERROR error=ERROR::RIGHT) : pModel_(pModel), state_(state), error_(error) {
-            assert(state.Uncertain() == true);
+            assert(state.uncertain() == true);
         };
 
         /**

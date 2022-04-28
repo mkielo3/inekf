@@ -6,15 +6,15 @@ namespace InEKF {
 SE2<Eigen::Dynamic> OdometryProcessDynamic::f(SE2<> u, double dt, SE2<Eigen::Dynamic> state){
     SE2<Eigen::Dynamic>::MatrixState s = state();
     s.block<3,3>(0,0) = state().block<3,3>(0,0) * u();
-    state.setState(s);
+    state.setMat(s);
     return state;
 }
 
 typedef typename SE2<Eigen::Dynamic>::MatrixCov MatrixCov;
 MatrixCov OdometryProcessDynamic::MakePhi(const SE2<>& u, double dt, const SE2<Eigen::Dynamic>& state, ERROR error){
     // For updating, we'll need Q to be full sized as well
-    if(Q_.cols() != state.Cov().cols()){
-        MatrixCov Q_temp = MatrixCov::Zero(state.Cov().cols(), state.Cov().rows());
+    if(Q_.cols() != state.cov().cols()){
+        MatrixCov Q_temp = MatrixCov::Zero(state.cov().cols(), state.cov().rows());
         Q_temp.block<3,3>(0,0) = Q_.block<3,3>(0,0);
         Q_ = Q_temp;
     }

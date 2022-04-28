@@ -133,21 +133,28 @@ class LieGroup{
          * @return true 
          * @return false 
          */
-        bool Uncertain() const { return isUncertain; }
+        bool uncertain() const { return isUncertain; }
 
         /**
          * @brief Get covariance of group element.
          * 
          * @return const MatrixCov& 
          */
-        const MatrixCov& Cov() const { return Cov_; }
+        const MatrixCov& cov() const { return Cov_; }
 
         /**
          * @brief Get additional Euclidean state of object.
          * 
          * @return const VectorAug& 
          */
-        const VectorAug& Aug() const { return Aug_; }
+        const VectorAug& aug() const { return Aug_; }
+
+        /**
+         * @brief Get actual group element.
+         * 
+         * @return const MatrixState& 
+         */
+        const MatrixState& mat() const { return State_; }
 
         /**
          * @brief Get actual group element.
@@ -176,7 +183,7 @@ class LieGroup{
          * 
          * @param State matrix Lie group element.
          */
-        void setState(const MatrixState& State) { State_ = State; }
+        void setMat(const MatrixState& State) { State_ = State; }
 
         // helper to automatically cast things
         /**
@@ -204,7 +211,7 @@ class LieGroup{
          * @return TangentVector 
          */
         TangentVector log() const {
-            return Class::Log(derived());
+            return Class::log(derived());
         }
         /**
          * @brief Get adjoint of group element.
@@ -233,8 +240,8 @@ class LieGroup{
          * @param xi Tangent vector
          * @return MatrixState Element of Lie algebra
          */        
-        static MatrixState Wedge(const TangentVector& xi){
-            return Class::Wedge(xi);
+        static MatrixState wedge(const TangentVector& xi){
+            return Class::wedge(xi);
         }
 
         /**
@@ -243,8 +250,8 @@ class LieGroup{
          * @param xi Tangent vector
          * @return Element of SO3
          */
-        static Class Exp(const TangentVector& xi){
-            return Class::Exp(xi);
+        static Class exp(const TangentVector& xi){
+            return Class::exp(xi);
         }
 
         /**
@@ -253,8 +260,8 @@ class LieGroup{
          * @param g Group element
          * @return TangentVector 
          */
-        static TangentVector Log(const Class& g){
-            return Class::Log(g);
+        static TangentVector log(const Class& g){
+            return Class::log(g);
         }
 
         /**
@@ -290,8 +297,8 @@ template <class Class, int N, int M, int A>
 std::ostream& operator<<(std::ostream& os, const InEKF::LieGroup<Class,N,M,A>& rhs)  
 {
     os << "Matrix\n" << rhs();
-    if(rhs.Uncertain()) os << "\nSigma\n" << rhs.Cov();
-    if(A != 0) os << "\nAug\n" << rhs.Aug();
+    if(rhs.uncertain()) os << "\nSigma\n" << rhs.cov();
+    if(A != 0) os << "\nAug\n" << rhs.aug();
     return os;
 }
 
