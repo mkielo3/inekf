@@ -8,7 +8,7 @@ SE2<> OdometryProcess::f(SE2<> u, double dt, SE2<> state){
 }
 
 typedef typename SE2<>::MatrixCov MatrixCov;
-MatrixCov OdometryProcess::MakePhi(const SE2<>& u, double dt, const SE2<>& state, ERROR error){
+MatrixCov OdometryProcess::makePhi(const SE2<>& u, double dt, const SE2<>& state, ERROR error){
     if(error == ERROR::RIGHT){
         return MatrixCov::Identity();
     }

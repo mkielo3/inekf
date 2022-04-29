@@ -64,14 +64,14 @@ for i in range(num*4):
     if name == "IMU":
         # print("Recieved IMU")
         imu_data = data
-        iekf.Predict(data, dt)
+        iekf.predict(data, dt)
     if name == "DVL":
         # print("Recieved DVL")
         data = np.append(data, imu_data[0:3])
-        iekf.Update("DVL", data)
+        iekf.update("DVL", data)
     if name == "DEPTH":
         # print("Recieved Depth")
-        state = iekf.Update("Depth", data)
+        state = iekf.update("Depth", data)
         mine.append(state.mat)
     
     if name == "R":

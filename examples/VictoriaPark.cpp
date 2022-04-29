@@ -179,14 +179,14 @@ int main() {
             last_t = t;
 
             InEKF::SE2 u = makeOdometry(data, dt);
-            s = iekf.Predict(u, dt);
+            s = iekf.predict(u, dt);
             s_x.push_back( s[0][0] );
             s_y.push_back( s[0][1] );
         }
 
         // GPS
         if(e == "gps"){
-            s = iekf.Update("GPS", data);
+            s = iekf.update("GPS", data);
             gps_x.push_back(data[0]);
             gps_y.push_back(data[1]);
             s_x.back() = s[0][0];
@@ -205,11 +205,11 @@ int main() {
                     SE2_D new_state = addLandmark(data.segment<2>(i*2), iekf.getState());
                     iekf.setState(new_state);
                     laser.sawLandmark(iekf.getState()().cols()-2-1-1, iekf.getState());
-                    iekf.Update("Laser", data.segment<2>(i*2));
+                    iekf.update("Laser", data.segment<2>(i*2));
                 }
                 else if(assoc[i] != -2){
                     laser.sawLandmark(assoc[i], iekf.getState());
-                    iekf.Update("Laser", data.segment<2>(i*2));
+                    iekf.update("Laser", data.segment<2>(i*2));
                 }
 
             }

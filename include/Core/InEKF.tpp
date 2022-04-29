@@ -4,10 +4,10 @@
 namespace InEKF {
 
 template <class pM>
-typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){    
+typename InEKF<pM>::Group InEKF<pM>::predict(const U& u, double dt){    
     // Predict Sigma
     MatrixCov Sigma = state_.cov();
-    MatrixCov Phi = pModel_->MakePhi(u, dt, state_, error_);
+    MatrixCov Phi = pModel_->makePhi(u, dt, state_, error_);
 
     MatrixCov Q = pModel_->getQ();
     if(error_ == ERROR::RIGHT){
@@ -28,7 +28,7 @@ typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){
 
 
 template <class pM>
-typename InEKF<pM>::Group InEKF<pM>::Update(std::string name, const Eigen::VectorXd& z){
+typename InEKF<pM>::Group InEKF<pM>::update(std::string name, const Eigen::VectorXd& z){
     MeasureModel<Group> * m_model = mModels[name]; 
 
     // Do any preprocessing on z (fill it up, frame changes, etc)

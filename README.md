@@ -70,5 +70,5 @@ In contrast, the process model implements a few things that MUST be overriden.
 |         Method          | Use                                                                                               |
 | :---------------------: | :------------------------------------------------------------------------------------------------ |
 |    `f(u, dt, state)`    | State process model. Returns the state.                                                           |
-| `MakePhi(u, dt, state)` | Creates exp(A*dt) to use. Make sure to check what type of error State is and make A accordingly   |
+| `makePhi(u, dt, state)` | Creates exp(A*dt) to use. Make sure to check what type of error State is and make A accordingly   |
 |          `Q_`           | Noise parameter. A default should be set in the constructor, and possible a method made to set it |

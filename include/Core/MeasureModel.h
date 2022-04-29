@@ -55,8 +55,6 @@ class MeasureModel {
          */
         MatrixS M_ = MatrixS::Identity(Group::rotSize, Group::rotSize);
 
-        // This one can be changed each iteration in InEKF.Update, 
-        // or should be set once in constructor
         /**
          * @brief b vector used in measure model.
          * 

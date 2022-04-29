@@ -11,7 +11,7 @@ SE2<Eigen::Dynamic> OdometryProcessDynamic::f(SE2<> u, double dt, SE2<Eigen::Dyn
 }
 
 typedef typename SE2<Eigen::Dynamic>::MatrixCov MatrixCov;
-MatrixCov OdometryProcessDynamic::MakePhi(const SE2<>& u, double dt, const SE2<Eigen::Dynamic>& state, ERROR error){
+MatrixCov OdometryProcessDynamic::makePhi(const SE2<>& u, double dt, const SE2<Eigen::Dynamic>& state, ERROR error){
     // For updating, we'll need Q to be full sized as well
     if(Q_.cols() != state.cov().cols()){
         MatrixCov Q_temp = MatrixCov::Zero(state.cov().cols(), state.cov().rows());

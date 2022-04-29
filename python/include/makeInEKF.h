@@ -25,9 +25,9 @@ void makeInEKF(py::module &m, std::string name){
         .def(py::init<P*, G, InEKF::ERROR>(),
             "pModel"_a, "state"_a, "error"_a=InEKF::RIGHT)
         
-        .def("Predict", &T::Predict,
+        .def("predict", &T::predict,
             "u"_a, "dt"_a=1)
-        .def("Update", &T::Update,
+        .def("update", &T::update,
             "type"_a, "z"_a)
         .def("_addMeasureModel", &T::addMeasureModel,
             "name"_a, "m"_a)

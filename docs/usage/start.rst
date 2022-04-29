@@ -253,18 +253,18 @@ it will return the corresponding state estimate which can also be accessed using
         InEKF::SE2 U(.1, .1, .1);
         // Predict also takes an optional dt, which may or may not
         // be used, depending on the process model (not needed in this case)
-        state = iekf.Predict(U);
+        state = iekf.predict(U);
 
         // Update gps with location measurement = 1,1
         // We include the needed one here as well
         Eigen::Vector3d z_gps{1, 1, 1};
         // Updates with name we put in before
-        state = iekf.Update("gps", z_gps);
+        state = iekf.update("gps", z_gps);
 
         // Update compass with measurement = 1, 0
         // Model appends the extra 0 is this case
         Eigen::Vector2d z_compass{1, 0};
-        state = iekf.Update("compass", z_compass);
+        state = iekf.update("compass", z_compass);
 
         // Get most recent state
         state = iekf.getState();
@@ -275,18 +275,18 @@ it will return the corresponding state estimate which can also be accessed using
         U = inekf.SE2(.1, .1, .1)
         # Predict also takes an optional dt, which may or may not
         # be used, depending on the process model (not needed in this case)
-        state = iekf.Predict(U)
+        state = iekf.predict(U)
 
         # Update gps with location measurement = 1,1
         # We include the needed one here as well
         z_gps = np.array([1, 1, 1])
         # Updates with name we put in before
-        state = iekf.Update("gps", z_gps)
+        state = iekf.update("gps", z_gps)
 
         # Update compass with measurement = 1, 0
         # Model appends the extra 0 is this case
         z_compass = np.array([1, 0])
-        state = iekf.Update("compass", z_compass)
+        state = iekf.update("compass", z_compass)
 
         # Get most recent state
         state = iekf.state

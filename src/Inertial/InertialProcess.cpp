@@ -27,7 +27,7 @@ SE3<2,6> InertialProcess::f(Eigen::Vector6d u, double dt, SE3<2,6> state){
 }
 
 typedef typename SE3<2,6>::MatrixCov MatrixCov;
-MatrixCov InertialProcess::MakePhi(const Eigen::Vector6d& u, double dt, const SE3<2,6>& state, ERROR error){
+MatrixCov InertialProcess::makePhi(const Eigen::Vector6d& u, double dt, const SE3<2,6>& state, ERROR error){
     MatrixCov A = MatrixCov::Zero();
 
     if(error == ERROR::RIGHT){

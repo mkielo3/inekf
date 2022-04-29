@@ -74,7 +74,7 @@ class ProcessModel {
          * @param error Right or left error. Function should be implemented to handle both.
          * @return Phi
          */
-        virtual MatrixCov MakePhi(const U& u, double dt, const Group& state, ERROR error) { throw std::invalid_argument("f needs to be overriden."); return MatrixCov::Identity(1,1); }
+        virtual MatrixCov makePhi(const U& u, double dt, const Group& state, ERROR error) { throw std::invalid_argument("f needs to be overriden."); return MatrixCov::Identity(1,1); }
 
         /**
          * @brief Get process model covariance

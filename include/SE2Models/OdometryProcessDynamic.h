@@ -73,7 +73,7 @@ class OdometryProcessDynamic : public ProcessModel<SE2<Eigen::Dynamic>, SE2<>> {
          * @param error Right or left error. Function should be implemented to handle both.
          * @return Phi
          */
-        MatrixCov MakePhi(const SE2<>& u, double dt, const SE2<Eigen::Dynamic>& state, ERROR error) override;
+        MatrixCov makePhi(const SE2<>& u, double dt, const SE2<Eigen::Dynamic>& state, ERROR error) override;
         
         /**
          * @brief Set Q from vector.

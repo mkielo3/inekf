@@ -71,10 +71,10 @@ class InEKF(metaclass=_meta_InEKF):
         """
         pass
 
-    def Predict(self, u, dt=1):
+    def predict(self, u, dt=1):
         pass
 
-    def Update(self, name, m):
+    def update(self, name, m):
         pass
 
     def addMeasureModel(self, name, m):
@@ -149,7 +149,7 @@ class ProcessModel(metaclass=_meta_Process):
     def f(self, u, dt, state):
         pass
 
-    def MakePhi(self, u, dt, state):
+    def makePhi(self, u, dt, state):
         pass
 
     @property

@@ -145,12 +145,12 @@ for i, (e, t, data) in tqdm(enumerate(events), total=len(events)):
         last_t = t
 
         u = makeOdometry(data, dt)
-        s = iekf.Predict(u, dt)
+        s = iekf.predict(u, dt)
         states.append(s)
 
     # GPS Measurement
     if e == 'gps':
-        s = iekf.Update("GPS", data)
+        s = iekf.update("GPS", data)
         states[-1] = s
         gps_data.append(data)
 
@@ -163,12 +163,12 @@ for i, (e, t, data) in tqdm(enumerate(events), total=len(events)):
             if idx == -1:
                 iekf.state = addLandmark(data, iekf.state)
                 laser.sawLandmark(iekf.state.mat.shape[0]-2-1-1, iekf.state)
-                iekf.Update("Laser", data)
+                iekf.update("Laser", data)
             elif idx == -2:
                 continue
             else:
                 laser.sawLandmark(idx, iekf.state)
-                iekf.Update("Laser", data)
+                iekf.update("Laser", data)
 
     if time() - last_plot > 1 or i == len(events)-1:
         # plot car

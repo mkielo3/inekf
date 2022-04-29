@@ -72,7 +72,7 @@ class OdometryProcess : public ProcessModel<SE2<>, SE2<>> {
          * @param error Right or left error. Function should be implemented to handle both.
          * @return Phi
          */
-        MatrixCov MakePhi(const SE2<>& u, double dt, const SE2<>& state, ERROR error) override;
+        MatrixCov makePhi(const SE2<>& u, double dt, const SE2<>& state, ERROR error) override;
         
         /**
          * @brief Set Q from vector.

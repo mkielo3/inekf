@@ -57,7 +57,7 @@ class InEKF {
          * @param dt Delta t. Used sometimes depending on process model. Defaults to 1.
          * @return State estimate
          */
-        Group Predict(const U& u, double dt=1);
+        Group predict(const U& u, double dt=1);
         
         /**
          * @brief Update Step.
@@ -66,7 +66,7 @@ class InEKF {
          * @param z Measurement. May vary in size depending on how measurement model processes it.
          * @return State estimate.
          */
-        Group Update(std::string name, const Eigen::VectorXd& z);
+        Group update(std::string name, const Eigen::VectorXd& z);
 
         /**
          * @brief Add measurement model to the filter.

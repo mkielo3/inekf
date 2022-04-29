@@ -53,7 +53,7 @@ class InertialProcess : public ProcessModel<SE3<2,6>, Eigen::Matrix<double,6,1>>
          * @param error Right or left error. Function should be implemented to handle both.
          * @return Phi
          */
-        MatrixCov MakePhi(const Eigen::Vector6d& u, double dt, const SE3<2,6>& state, ERROR error) override;
+        MatrixCov makePhi(const Eigen::Vector6d& u, double dt, const SE3<2,6>& state, ERROR error) override;
         
         /**
          * @brief Set the gyro noise. Defaults to 0 if not set.
