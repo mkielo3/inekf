@@ -58,8 +58,29 @@ class _meta_InEKF(type):
 
         return iekf
 
+# This is a dummy class, used to template and return C++ class and for documentation
 class InEKF(metaclass=_meta_InEKF):
-    pass
+    """    
+    Description for class
+    """
+
+    @property
+    def state(self):
+        """    
+        Description for class
+        """
+        pass
+
+    def Predict(self, u, dt=1):
+        pass
+
+    def Update(self, name, m):
+        pass
+
+    def addMeasureModel(self, name, m):
+        pass
+
+    
 
 ############################ Measurement Model ##############################
 class _meta_Measure(type):
@@ -69,8 +90,45 @@ class _meta_Measure(type):
 
         return getattr(_inekf, name)
 
+# This is a dummy class, used to template and return C++ class and for documentation
 class MeasureModel(metaclass=_meta_Measure):
-    pass
+    """
+    
+    """
+    def __init__(self, b, M, error):
+        pass
+
+    def setHandb(self, b):
+        pass
+
+    def processZ(self, z, state):
+        pass
+
+    def makeHError(self, state, iekfERROR):
+        pass
+
+    def calcV(self, z, state):
+        pass
+
+    def calcSInverse(self, state):
+        pass
+
+    @property
+    def H(self):
+        pass
+
+    @property
+    def H_error(self):
+        pass
+
+    @property
+    def M(self):
+        pass
+
+    @property
+    def error(self):
+        pass
+
 
 ############################ Process Model ##############################
 class _meta_Process(type):
@@ -85,5 +143,15 @@ class _meta_Process(type):
 
             return getattr(_inekf, name)
 
+# This is a dummy class, used to template and return C++ class and for documentation
 class ProcessModel(metaclass=_meta_Process):
-    pass
+    
+    def f(self, u, dt, state):
+        pass
+
+    def MakePhi(self, u, dt, state):
+        pass
+
+    @property
+    def Q(self):
+        pass
