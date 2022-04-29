@@ -148,7 +148,7 @@ class SO2(metaclass=_meta_SO2):
     """
     @staticmethod
     def wedge(xi):
-        """Maps from R^n -> algebgra
+        """Maps from R^n -> algebra
 
         Args:
             xi (np.ndarray): Tangent vector

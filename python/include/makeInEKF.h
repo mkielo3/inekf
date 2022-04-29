@@ -29,7 +29,7 @@ void makeInEKF(py::module &m, std::string name){
             "u"_a, "dt"_a=1)
         .def("Update", &T::Update,
             "type"_a, "z"_a)
-        .def("addMeasureModel", &T::addMeasureModel,
+        .def("_addMeasureModel", &T::addMeasureModel,
             "name"_a, "m"_a)
 
         .def_property("state", &T::getState, &T::setState);

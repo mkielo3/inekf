@@ -33,36 +33,33 @@ def _parse_control(key):
         return _parse_group(key)
 
 ########################### InEKF Filter Class ##############################
-class InEKF:
-    def __init__(self, pModel, x0, error):
+class _meta_InEKF(type):
+    def __call__(self, pModel, x0, error):
         # Parse name
         group_name = pModel.__class__.__mro__[-3].__name__
         name = "InEKF_" + group_name.split('_',1)[1]
 
-        # save for later
-        self.pModel = pModel
-        self.base = getattr(_inekf, name)(pModel, x0, error)
+        # Get the class
+        iekf_class = getattr(_inekf, name)
+        
+        # Make small wrapper to save measure models 
+        # so python doesn't garbage collect
+        def helper(self, name, m):
+            self.mModels[name] = m
+            self._addMeasureModel(name, m)
 
-        # save measurement models so they don't go out of scope
-        self.mModels = {}
+        setattr(iekf_class, "addMeasureModel", helper)
 
-    def Predict(self, *args, **kwargs):
-        return self.base.Predict(*args, **kwargs)
+        iekf = iekf_class(pModel, x0, error)
+        
+        # Save the process model as well
+        iekf.pModel = pModel
+        iekf.mModels = {}
 
-    def Update(self, *args, **kwargs):
-        return self.base.Update(*args, **kwargs)
+        return iekf
 
-    def addMeasureModel(self, name, model):
-        self.mModels[name] = model
-        return self.base.addMeasureModel(name, model)
-
-    @property
-    def state(self):
-        return self.base.state
-
-    @state.setter
-    def state(self, state):
-        self.base.state = state
+class InEKF(metaclass=_meta_InEKF):
+    pass
 
 ############################ Measurement Model ##############################
 class _meta_Measure(type):
