@@ -1,6 +1,11 @@
 Core Classes
 =============
 
+Error
+~~~~~~
+.. autoclass:: inekf.ERROR
+   :members:
+
 Invariant Extended Kalman Filter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. autoclass:: inekf.InEKF

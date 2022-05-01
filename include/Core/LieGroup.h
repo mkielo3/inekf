@@ -7,8 +7,20 @@
 
 namespace InEKF {
 
+/**
+ * @brief Type of invariant error. Has options for left or right.
+ * 
+ */
 enum ERROR { LEFT, RIGHT };
 
+/**
+ * @brief Computes total dimension of the state.
+ * 
+ * @param rotMtxSize Matrix size of the rotational component of the group.
+ * @param C Number of columns to be included.
+ * @param A Number of Euclidean states included.
+ * @return Total dimension of state.
+ */
 constexpr int calcStateDim(int rotMtxSize, int C, int A){
     if(A == Eigen::Dynamic || C == Eigen::Dynamic){
         return Eigen::Dynamic;
@@ -17,6 +29,14 @@ constexpr int calcStateDim(int rotMtxSize, int C, int A){
         return rotMtxSize*(rotMtxSize-1)/2 + rotMtxSize *C + A;
     }
 }
+
+/**
+ * @brief Compute group matrix size.
+ * 
+ * @param rotMtxSize Matrix size of the rotational component of the group.
+ * @param C Number of columns to be included.
+ * @return Total dimension of state.
+ */
 constexpr int calcStateMtxSize(int rotMtxSize, int C){
     if (C == Eigen::Dynamic){
         return Eigen::Dynamic;

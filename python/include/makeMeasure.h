@@ -99,6 +99,7 @@ void makeMeasure(py::module &m, std::string name){
         .def_readwrite("H", &PyMeasureModel<T>::H_)
         .def_readwrite("M", &PyMeasureModel<T>::M_)
         .def_readwrite("error", &PyMeasureModel<T>::error_);
+        .def_readwrite("b", &PyMeasureModel<T>::b_);
 }
 
 #endif // PYTHON_MEASUREMODEL

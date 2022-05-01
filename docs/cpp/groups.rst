@@ -32,3 +32,9 @@ Lie Group Base
 .. doxygenclass:: InEKF::LieGroup
    :members:
    :undoc-members:
+
+Helpers
+~~~~~~~~
+.. doxygenfunction:: InEKF::calcStateDim
+
+.. doxygenfunction:: InEKF::calcStateMtxSize

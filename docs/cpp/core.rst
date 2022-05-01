@@ -1,6 +1,10 @@
 Core Classes
 =============
 
+Error
+~~~~~
+.. doxygenenum:: InEKF::ERROR
+
 Invariant Extended Kalman Filter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. doxygenclass:: InEKF::InEKF
