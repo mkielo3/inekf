@@ -64,6 +64,7 @@ class PyMeasureModel : public InEKF::MeasureModel<Group> {
         using InEKF::MeasureModel<Group>::M_;
         using InEKF::MeasureModel<Group>::H_;
         using InEKF::MeasureModel<Group>::error_;
+        using InEKF::MeasureModel<Group>::b_;
 
 };
 
