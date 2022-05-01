@@ -74,7 +74,7 @@ class InEKF(metaclass=_meta_InEKF):
 
     Args:
         pModel (:class:`~inekf.ProcessModel`): Process model
-        state (group): Initial state, must be of same group that process model uses and must be uncertain
+        state (:class:`inekf.LieGroup`): Initial state, must be of same group that process model uses and must be uncertain
         error (:obj:`~inekf.base.ERROR`): Right or left invariant error
     """
     def __init__(self, pModel, state, error):
@@ -85,7 +85,7 @@ class InEKF(metaclass=_meta_InEKF):
         """Current state estimate. May be read or wrriten, but can't be edited in place.
                 
         Returns:
-            state
+            :class:`inekf.LieGroup`: state
         """
         pass
 
@@ -101,7 +101,7 @@ class InEKF(metaclass=_meta_InEKF):
             dt (:obj:`float`): Delta t. Used sometimes depending on process model. Defaults to 1.
         
         Returns:
-            State estimate
+            :class:`inekf.LieGroup`: State estimate
          """
         pass
 
@@ -113,7 +113,7 @@ class InEKF(metaclass=_meta_InEKF):
             z (:obj:`np.ndarray`): Measurement. May vary in size depending on how measurement model processes it.
         
         Returns:
-            State estimate.
+            :class:`inekf.LieGroup`: State estimate.
          """
         pass
 
@@ -137,7 +137,15 @@ class _meta_Measure(type):
 
 # This is a dummy class, used to template and return C++ class and for documentation
 class MeasureModel(metaclass=_meta_Measure):
-    """
+    """Base class measure model. Written to be inherited from, but in most cases this class will be sufficient.
+    More information on inheriting can be seen in :ref:`extend`.
+
+    We have overloaded the ``[]`` operator to function as a python template. Example of this 
+    can be seen in :ref:`start`.
+
+    Templates:
+
+    - ``Group`` State's group that is being tracked, of type :class:`inekf.LieGroup`.
     
     """
     def __init__(self, b, M, error):
@@ -164,7 +172,7 @@ class MeasureModel(metaclass=_meta_Measure):
         
         Args: 
             z (:obj:`np.ndarray`): Measurement
-            state (group): Current state estimate.
+            state (:class:`inekf.LieGroup`): Current state estimate.
         
         Returns:
             :obj:`np.ndarray`: Processed measurement.
@@ -176,7 +184,7 @@ class MeasureModel(metaclass=_meta_Measure):
         Done by multiplying H by adjoint of current state estimate. Called second in update step.
         
         Args: 
-            state (group): Current state estimate.
+            state (:class:`inekf.LieGroup`): Current state estimate.
             iekfERROR (:obj:`~inekf.base.ERROR`): Type of filter error.
         
         Returns:
@@ -189,10 +197,10 @@ class MeasureModel(metaclass=_meta_Measure):
         
         Args: 
             z (:obj:`np.ndarray`): Measurement.
-            state (group): Current state estimate.
+            state (:class:`inekf.LieGroup`): Current state estimate.
         
         Returns:
-            Truncated innovation.
+            :obj:`np.ndarray`: Truncated innovation.
         """
         pass
 
@@ -200,7 +208,7 @@ class MeasureModel(metaclass=_meta_Measure):
         """Calculate inverse of measurement noise S, using H_error. Called fourth in the update step.
         
         Args: 
-            state (group): Current state estimate.
+            state (:class:`inekf.LieGroup`): Current state estimate.
         
         Returns:
             :obj:`np.ndarray`: Inverse of measurement noise. 
@@ -271,17 +279,29 @@ class _meta_Process(type):
 
 # This is a dummy class, used to template and return C++ class and for documentation
 class ProcessModel(metaclass=_meta_Process):
-    
+    """Base class process model. Must be inheriting from, base class isn't implemented.
+    More information on inheriting can be seen in :ref:`extend`.
+
+    We have overloaded the ``[]`` operator to function as a python template. Example of this 
+    can be seen in :ref:`start`.
+
+    Templates:
+
+    - ``Group`` State's group that is being tracked, of type :class:`inekf.LieGroup`.
+    - ``U`` Form of control. Can be either a group of :class:`inekf.LieGroup`, or a vector. 
+      Vectors can be used for example by "Vec3" or 3 for a vector of size 3. 
+      -1, "D", or "VecD" for dynamic control size.
+    """
     def f(self, u, dt, state):
         """Propagates state forward one timestep. Must be overriden, has no implementation.
         
         Args: 
             u (control): Control
             dt (:obj:`float`): Delta time
-            state (group): Current state
+            state (:class:`inekf.LieGroup`): Current state
         
         Returns:
-            Updated state estimate
+            :class:`inekf.LieGroup`: Updated state estimate
         """
         pass
 
@@ -291,7 +311,7 @@ class ProcessModel(metaclass=_meta_Process):
         Args: 
             u (control): Control
             dt (:obj:`float`): Delta time
-            state (group): Current state estimate (shouldn't be needed unless doing an "Imperfect InEKF")
+            state (:class:`inekf.LieGroup`): Current state estimate (shouldn't be needed unless doing an "Imperfect InEKF")
             error (:obj:`~inekf.base.ERROR`): Right or left error. Function should be implemented to handle both.
         
         Returns:

@@ -14,5 +14,6 @@ from ._inekf import OdometryProcess, OdometryProcessDynamic, LandmarkSensor, GPS
 try:
     __sphinx_build__ # This will fail if docs not being built
     from inekf.base import ERROR
+    from inekf.lie_groups import LieGroup
 except:
     pass

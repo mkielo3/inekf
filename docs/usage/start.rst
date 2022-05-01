@@ -1,3 +1,5 @@
+.. _start:
+
 Getting Started
 ================
 
@@ -113,6 +115,7 @@ retrieve a specific column.
 
         # Group methods
         x.inverse
+        ~x
         x*y
         x.log
         x.Ad

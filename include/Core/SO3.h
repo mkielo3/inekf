@@ -98,7 +98,7 @@ class SO3 : public LieGroup<SO3<A>,calcStateDim(3,0,A),3,A>{
         /**
          * @brief Construct a new SO3 object from a tangent vector using the exponential operator.
          * 
-         * @param xi Tangent vector of size (1 + Augmented state size).
+         * @param xi Tangent vector of size (3 + Augmented state size).
          * @param Cov Covariance of state. If not input, state is set as "certain" and covariance is not tracked.
          */
         SO3(const TangentVector& xi, const MatrixCov& Cov=MatrixCov::Zero(c,c)) : SO3(xi(0), xi(1), xi(2), Cov, xi.tail(xi.size()-3)) {}

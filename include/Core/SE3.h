@@ -96,7 +96,7 @@ class SE3 : public LieGroup<SE3<C,A>,calcStateDim(3,C,A),calcStateMtxSize(3,C),A
         /**
          * @brief Construct a new SE2 object from a tangent vector using the exponential operator.
          * 
-         * @param xi Tangent vector of size (1 + Augmented state size).
+         * @param xi Tangent vector of size (3 + 3*Columns + Augmented state size).
          * @param Cov Covariance of state. If not input, state is set as "certain" and covariance is not tracked.
          */
         SE3(const TangentVector& xi,
