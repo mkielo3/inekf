@@ -12,6 +12,11 @@
 
 namespace InEKF {
 
+/**
+ * @brief The Invariant Extended Kalman Filter
+ * 
+ * @tparam pM Process Model. Pulls group and control info from it, can be left out if class template argument deduction (C++17) is used.
+ */
 template <class pM>
 class InEKF {
 
@@ -30,24 +35,68 @@ class InEKF {
         
         ERROR error_;
         pM* pModel_;
+        Group state_;
         std::map<std::string, MeasureModel<Group>*> mModels;
 
     public:
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-        
-        Group state_;
-
+        /**
+         * @brief Construct a new InEKF object
+         * 
+         * @param pModel Pointer to the process model.
+         * @param state Initial state, must be of same group that process model uses, and must be uncertain.
+         * @param error Right or left invariant error.
+         */
         InEKF(pM* pModel, Group state, ERROR error=ERROR::RIGHT) : pModel_(pModel), state_(state), error_(error) {
-            assert(state.Uncertain() == true);
+            assert(state.uncertain() == true);
         };
 
-        Group Predict(const U& u, double dt=1);
+        /**
+         * @brief Prediction Step.
+         * 
+         * @param u Control, must be same as what process model uses.
+         * @param dt Delta t. Used sometimes depending on process model. Defaults to 1.
+         * @return State estimate
+         */
+        Group predict(const U& u, double dt=1);
         
-        Group Update(std::string type, const Eigen::VectorXd& z);
-        Group Update(std::string type, const Eigen::VectorXd& z, MatrixH H);
+        /**
+         * @brief Update Step.
+         * 
+         * @param name Name of measurement model.
+         * @param z Measurement. May vary in size depending on how measurement model processes it.
+         * @return State estimate.
+         */
+        Group update(std::string name, const Eigen::VectorXd& z);
 
+        /**
+         * @brief Add measurement model to the filter.
+         * 
+         * @param name Name of measurement model.
+         * @param m A measure model pointer, templated by the used group.
+         */
         void addMeasureModel(std::string name, MeasureModel<Group>* m);
+
+        /**
+         * @brief Add multiple measurement models to the filter.
+         * 
+         * @param m Map from model names to model. Can be used passed in as {"name": model, "another": diff_model}
+         */
         void addMeasureModels(std::map<std::string, MeasureModel<Group>*> m);
+
+        /**
+         * @brief Get the current state estimate
+         * 
+         * @return const Group& 
+         */
+        const Group& getState() const { return state_; }
+
+        /**
+         * @brief Set the current state estimate
+         * 
+         * @param state Current state estimate
+         */
+        void setState(const Group& state) { state_ = state; }
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 }

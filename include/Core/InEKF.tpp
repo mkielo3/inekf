@@ -4,10 +4,10 @@
 namespace InEKF {
 
 template <class pM>
-typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){    
+typename InEKF<pM>::Group InEKF<pM>::predict(const U& u, double dt){    
     // Predict Sigma
-    MatrixCov Sigma = state_.Cov();
-    MatrixCov Phi = pModel_->MakePhi(u, dt, state_, error_);
+    MatrixCov Sigma = state_.cov();
+    MatrixCov Phi = pModel_->makePhi(u, dt, state_, error_);
 
     MatrixCov Q = pModel_->getQ();
     if(error_ == ERROR::RIGHT){
@@ -28,14 +28,8 @@ typename InEKF<pM>::Group InEKF<pM>::Predict(const U& u, double dt){
 
 
 template <class pM>
-typename InEKF<pM>::Group InEKF<pM>::Update(std::string type, const Eigen::VectorXd& z, MatrixH H){
-    mModels[type]->setH(H);
-    return Update(type, z);
-}
-
-template <class pM>
-typename InEKF<pM>::Group InEKF<pM>::Update(std::string type, const Eigen::VectorXd& z){
-    MeasureModel<Group> * m_model = mModels[type]; 
+typename InEKF<pM>::Group InEKF<pM>::update(std::string name, const Eigen::VectorXd& z){
+    MeasureModel<Group> * m_model = mModels[name]; 
 
     // Do any preprocessing on z (fill it up, frame changes, etc)
     VectorB z_ = m_model->processZ(z, state_);;
@@ -48,20 +42,20 @@ typename InEKF<pM>::Group InEKF<pM>::Update(std::string type, const Eigen::Vecto
     MatrixS Sinv = m_model->calcSInverse(state_);
 
     // Caculate K + dX
-    MatrixK K = state_.Cov() * (H.transpose() * Sinv);    
+    MatrixK K = state_.cov() * (H.transpose() * Sinv);    
     TangentVector K_V = K * V;
 
     // Apply to states
     if(error_ == ERROR::RIGHT){
-        state_ = Group::Exp(K_V) * state_;
+        state_ = Group::exp(K_V) * state_;
     }
     else{
-        state_ = state_ * Group::Exp(K_V);
+        state_ = state_ * Group::exp(K_V);
     }
 
-    int size = state_.Cov().rows();
+    int size = state_.cov().rows();
     MatrixCov I = MatrixCov::Identity(size, size);
-    state_.setCov( state_.Cov() - K*(H*state_.Cov()) );
+    state_.setCov( state_.cov() - K*(H*state_.cov()) );
 
     return state_;
 }

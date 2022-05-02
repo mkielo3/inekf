@@ -47,27 +47,27 @@ SO2<A> SO2<A>::inverse() const{
 template <int A>
 SO2<A> SO2<A>::operator*(const SO2<A>& rhs) const{
     // Make sure they're both the same size
-    if(A == Eigen::Dynamic && (*this).Aug().rows() != rhs.Aug().rows()){
+    if(A == Eigen::Dynamic && (*this).aug().rows() != rhs.aug().rows()){
         throw std::range_error("Dynamic SE2 elements have different Aug");
     }
 
     // Skirt around composing covariances
     MatrixCov Cov = MatrixCov::Zero(c,c);
-    if(this->Uncertain() && rhs.Uncertain()){
+    if(this->uncertain() && rhs.uncertain()){
         throw "Can't compose uncertain LieGroups";
     }
-    if(this->Uncertain()) Cov = this->Cov();
-    if(rhs.Uncertain()) Cov = rhs.Cov();
+    if(this->uncertain()) Cov = this->cov();
+    if(rhs.uncertain()) Cov = rhs.cov();
 
     // Compose state + augment
     MatrixState State = (*this)() * rhs();
-    VectorAug Aug = this->Aug() + rhs.Aug();
+    VectorAug Aug = this->aug() + rhs.aug();
 
     return SO2<A>(State, Cov, Aug);
 }
 
 template <int A>
-typename SO2<A>::MatrixState SO2<A>::Wedge(const TangentVector& xi){
+typename SO2<A>::MatrixState SO2<A>::wedge(const TangentVector& xi){
     MatrixState State;
     double theta = xi(0);
     State << 0, -theta,
@@ -76,7 +76,7 @@ typename SO2<A>::MatrixState SO2<A>::Wedge(const TangentVector& xi){
 }
 
 template <int A>
-SO2<A> SO2<A>::Exp(const TangentVector& xi){
+SO2<A> SO2<A>::exp(const TangentVector& xi){
     double theta = xi(0);
     return SO2(theta,
                 MatrixCov::Zero(c,c),
@@ -84,16 +84,16 @@ SO2<A> SO2<A>::Exp(const TangentVector& xi){
 }
 
 template <int A>
-typename SO2<A>::TangentVector SO2<A>::Log(const SO2& g){
-    TangentVector xi(g.Aug().rows()+1);
+typename SO2<A>::TangentVector SO2<A>::log(const SO2& g){
+    TangentVector xi(g.aug().rows()+1);
     xi(0) = atan2(g()(1,0), g()(0,0));
-    xi.tail(xi.rows()-1) = g.Aug();
+    xi.tail(xi.rows()-1) = g.aug();
     return xi;
 }
 
 template <int A>
 typename SO2<A>::MatrixCov SO2<A>::Ad(const SO2& g){
-    int curr_dim = g.Aug().rows() + 1;
+    int curr_dim = g.aug().rows() + 1;
     return MatrixCov::Identity(curr_dim,curr_dim);
 }
 

@@ -64,6 +64,7 @@ class PyMeasureModel : public InEKF::MeasureModel<Group> {
         using InEKF::MeasureModel<Group>::M_;
         using InEKF::MeasureModel<Group>::H_;
         using InEKF::MeasureModel<Group>::error_;
+        using InEKF::MeasureModel<Group>::b_;
 
 };
 
@@ -81,6 +82,8 @@ void makeMeasure(py::module &m, std::string name){
     myClass
         .def(py::init<>())
         .def(py::init<VectorB, MatrixS, InEKF::ERROR>())
+        .def("setHandb", &K::setHandb, 
+            "b"_a)
 
         // Overrideable methods
         .def("makeHError", &K::makeHError,
@@ -93,10 +96,11 @@ void makeMeasure(py::module &m, std::string name){
             "state"_a)
 
         // Properties
-        .def_readonly("H_error", &PyMeasureModel<T>::H_error_)
+        .def_readwrite("H_error", &PyMeasureModel<T>::H_error_)
         .def_readwrite("H", &PyMeasureModel<T>::H_)
         .def_readwrite("M", &PyMeasureModel<T>::M_)
-        .def_readwrite("error", &PyMeasureModel<T>::error_);
+        .def_readwrite("error", &PyMeasureModel<T>::error_)
+        .def_readwrite("b", &PyMeasureModel<T>::b_);
 }
 
 #endif // PYTHON_MEASUREMODEL

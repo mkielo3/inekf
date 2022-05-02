@@ -20,21 +20,19 @@ void makeInEKF(py::module &m, std::string name){
     typedef Eigen::Matrix<double,G::rotSize,G::N> MatrixH;
 
     name = "InEKF_" + name;
-    py::class_<T> myClass(m, name.c_str());
+    py::class_<T> myClass(m, name.c_str(), py::dynamic_attr());
     myClass
         .def(py::init<P*, G, InEKF::ERROR>(),
             "pModel"_a, "state"_a, "error"_a=InEKF::RIGHT)
         
-        .def("Predict", &T::Predict,
+        .def("predict", &T::predict,
             "u"_a, "dt"_a=1)
-        .def("Update", py::overload_cast<std::string, const Eigen::VectorXd&>(&T::Update),
+        .def("update", &T::update,
             "type"_a, "z"_a)
-        .def("Update", py::overload_cast<std::string, const Eigen::VectorXd&,MatrixH>(&T::Update),
-            "type"_a, "z"_a, "H"_a)
-        .def("addMeasureModel", &T::addMeasureModel,
+        .def("_addMeasureModel", &T::addMeasureModel,
             "name"_a, "m"_a)
 
-        .def_readwrite("state", &T::state_);
+        .def_property("state", &T::getState, &T::setState);
 
 }
 

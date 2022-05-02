@@ -4,6 +4,181 @@ from . import _inekf
 class Eigen(enum.Enum):
     Dynamic = -1
 
+# This class doesn't do anything, but is used for documentation purposes
+class LieGroup:
+    @property
+    def R(self):
+        """Gets rotational component of the state.
+
+        Returns:
+            :class:`inekf.SO2`
+        """
+        pass
+
+    @property
+    def uncertain(self):
+        """Returns whether object is uncertain, ie if it has a covariance.
+
+        Returns:
+            :obj:`bool`
+        """
+        pass
+
+    @property
+    def mat(self):
+        """Get actual group element.
+        
+        Returns:
+            :obj:`np.ndarray`
+        """
+        pass
+
+    @property
+    def cov(self):
+        """Get covariance of group element.
+        
+        Returns:
+            :obj:`np.ndarray`
+        """
+        pass
+
+    @property
+    def aug(self):
+        """Get additional Euclidean state of object.
+        
+        Returns:
+            :obj:`np.ndarray`
+        """
+        pass
+
+
+    @R.setter
+    def R(self, input):
+        pass
+
+    @uncertain.setter
+    def uncertain(self, input):
+        pass
+
+    @mat.setter
+    def mat(self, input):
+        pass
+
+    @cov.setter
+    def cov(self, input):
+        pass
+
+    @aug.setter
+    def aug(self, input):
+        pass
+
+
+    @property
+    def inverse(self):
+        """Invert group element. Augmented portion and covariance is dropped.
+        
+        Returns:
+            :class:`inekf.LieGroup`
+        """
+        pass
+
+    @property
+    def Ad(self):
+        """Get adjoint of group element.
+        
+        Returns:
+            :obj:`np.ndarray`
+        """
+        pass
+
+    @property
+    def log(self):
+        """Move this element from group -> algebra -> R^n
+        
+        Returns:
+            :obj:`np.ndarray`
+        """
+        pass
+
+
+    @staticmethod
+    def wedge(xi):
+        """Move element in R^n to the Lie algebra.
+        
+        Args:
+            xi (:obj:`np.ndarray`): Tangent vector
+
+        Returns:
+            :obj:`np.ndarray`
+        """ 
+        pass
+
+    @staticmethod
+    def exp(xi):
+        """Move an element from R^n -> algebra -> group
+        
+        Args:
+            xi (:obj:`np.ndarray`): Tangent vector
+        
+        Returns:
+            :obj:`inekf.LieGroup`
+        """
+        pass
+
+    @staticmethod
+    def log_(g):
+        """Move an element from group -> algebra -> R^n
+        
+        Args:
+            g (:class:`inekf.LieGroup`): Group element
+        
+        Returns:
+            :obj:`np.ndarray`
+        """
+        pass
+
+    @staticmethod
+    def Ad_(g):
+        """Compute the linear map Adjoint
+        
+        Args:
+            g (:class:`inekf.LieGroup`): Element of group
+        
+        Returns:
+            :obj:`np.ndarray`
+        """
+        pass
+
+
+    def addAug(self, a, sigma):
+        """Adds an element to the augmented Euclidean state. Only usable if A = Eigen::Dynamic.
+        
+        Args:
+            x (:obj:`float`): Variable to add.
+            sigma (:obj:`float`): Covariance of element. Only used if state is uncertain.
+        """
+        pass
+
+    def __matmul__(self, rhs):
+        """Combine transformations. Augmented states are summed.
+        
+        Args:
+            rhs (:class:`inekf.LieGroup`): Right hand element of multiplication.
+
+        Returns:
+            :class:`inekf.LieGroup`
+        """
+        pass
+
+    def __invert__(self):
+        """Invert group element. Drops augmented state and covariance.
+        
+        Returns:
+            :class:`inekf.LieGroup`
+        """
+        pass
+
+
 ################# HELPER CLASS TO FIND CLASSES FROM STRING ###################
 def _get_class(group, param1, param2=None):
     # handle dynamic types
@@ -22,7 +197,6 @@ def _get_class(group, param1, param2=None):
 ############################ SE3 ##############################
 class _meta_SE3(type):
     # if we used both default arguments
-    __name__ = "SE3_1_0"
     def __call__(self, *args, **kwargs):
         return _inekf.SE3_1_0(*args, **kwargs)
 
@@ -37,28 +211,57 @@ class _meta_SE3(type):
 
         raise TypeError("Invalid Options")
 
-class SE3(metaclass=_meta_SE3):
+class SE3(LieGroup, metaclass=_meta_SE3):
+    """3D rigid body transformation, also known as the 4x4 special Euclidean group, SE(3).
+
+    See the C++ counterpart (:cpp:class:`InEKF::SE3`) for documentation on constructing an object.
+    Further, we have overloaded the ``[]`` operator to function as a python template. Example of this 
+    can be seen in :ref:`start`. Templates include:
+
+    Templates:
+
+    - ``C`` Number of Euclideans columns to include. Can be -1 or "D" for dynamic. Defaults to 1.
+    - ``A`` Number of augmented Euclidean states. Can be -1 or "D" for dynamic. Defaults to 0.
+    """
     @staticmethod
-    def Wedge(*args, **kwargs):
-        return _inekf.SE3_1_0.Wedge(*args, **kwargs)
+    def wedge(xi):
+        return _inekf.SE3_1_0.wedge(xi)
 
     @staticmethod
-    def Exp(*args, **kwargs):
-        return _inekf.SE3_1_0.Exp(*args, **kwargs)
+    def exp(xi):
+        return _inekf.SE3_1_0.exp(xi)
 
     @staticmethod
-    def Log(*args, **kwargs):
-        return _inekf.SE3_1_0.Log(*args, **kwargs)
+    def log_(g):
+        return _inekf.SE3_1_0.log_(g)
 
     @staticmethod
-    def Ad(*args, **kwargs):
-        return _inekf.SE3_1_0.Ad(*args, **kwargs)
+    def Ad_(g):
+        return _inekf.SE3_1_0.Ad_(g)
 
+    def addCol(self, x, sigma):
+        """Adds a column to the matrix state. Only usable if C = Eigen::Dynamic.
+        
+        Args:
+            x (:obj:`np.ndarray`): Column to add in.
+            sigma (:obj:`np.ndarray`): Covariance of element. Only used if state is uncertain.
+        """
+        pass
+
+    def __getitem__(self, idx):
+        """Gets the ith positional column of the group.
+        
+        Args:
+            idx (:obj:`float`): Index of column to get, from 0 to C-1.
+
+        Returns:
+            :obj:`np.ndarray` 
+        """
+        pass
 
 ############################ SE2 ##############################
 class _meta_SE2(type):
     # if we used both default arguments
-    __name__ = "SE2_1_0"
     def __call__(self, *args, **kwargs):
         return _inekf.SE2_1_0(*args, **kwargs)
 
@@ -73,28 +276,57 @@ class _meta_SE2(type):
 
         raise TypeError("Invalid Options")
 
-class SE2(metaclass=_meta_SE2):
+class SE2(LieGroup, metaclass=_meta_SE2):
+    """2D rigid body transformation, also known as the 3x3 special Euclidean group, SE(2).
+    
+    See the C++ counterpart (:cpp:class:`InEKF::SE2`) for documentation on constructing an object.
+    Further, we have overloaded the ``[]`` operator to function as a python template. Example of this 
+    can be seen in :ref:`start`. Templates include:
+
+    Templates:
+
+    - ``C`` Number of Euclideans columns to include. Can be -1 or "D" for dynamic. Defaults to 1.
+    - ``A`` Number of augmented Euclidean states. Can be -1 or "D" for dynamic. Defaults to 0.
+    """
     @staticmethod
-    def Wedge(*args, **kwargs):
-        return _inekf.SE2_1_0.Wedge(*args, **kwargs)
+    def wedge(xi):
+        return _inekf.SE2_1_0.wedge(xi)
 
     @staticmethod
-    def Exp(*args, **kwargs):
-        return _inekf.SE2_1_0.Exp(*args, **kwargs)
+    def exp(xi):
+        return _inekf.SE2_1_0.exp(xi)
 
     @staticmethod
-    def Log(*args, **kwargs):
-        return _inekf.SE2_1_0.Log(*args, **kwargs)
+    def log_(g):
+        return _inekf.SE2_1_0.log_(g)
 
     @staticmethod
-    def Ad(*args, **kwargs):
-        return _inekf.SE2_1_0.Ad(*args, **kwargs)
+    def Ad_(g):
+        return _inekf.SE2_1_0.Ad_(g)
 
+    def addCol(self, x, sigma):
+        """Adds a column to the matrix state. Only usable if C = Eigen::Dynamic.
+        
+        Args:
+            x (:obj:`np.ndarray`): Column to add in.
+            sigma (:obj:`np.ndarray`): Covariance of element. Only used if state is uncertain.
+        """
+        pass
+
+    def __getitem__(self, idx):
+        """Gets the ith positional column of the group.
+        
+        Args:
+            idx (:obj:`float`): Index of column to get, from 0 to C-1.
+
+        Returns:
+            :obj:`np.ndarray` 
+        """
+        pass
 
 ############################ SO3 ##############################
 class _meta_SO3(type):
     # if we used default argument
-    __name__ = "SO3_0"
     def __call__(self, *args, **kwargs):
         return _inekf.SO3_0(*args, **kwargs)
 
@@ -105,28 +337,37 @@ class _meta_SO3(type):
 
         raise TypeError("Invalid Options")
 
-class SO3(metaclass=_meta_SO3):
+class SO3(LieGroup, metaclass=_meta_SO3):
+    """3D rotational states, also known as the 3x3 special orthogonal group, SO(3).
+    
+    See the C++ counterpart (:cpp:class:`InEKF::SO3`) for documentation on constructing an object.
+    Further, we have overloaded the ``[]`` operator to function as a python template. Example of this 
+    can be seen in :ref:`start`. Templates include:
+
+    Templates:
+
+    - ``A`` Number of augmented Euclidean states. Can be -1 or "D" for dynamic. Defaults to 0.
+    """
     @staticmethod
-    def Wedge(*args, **kwargs):
-        return _inekf.SO3_0.Wedge(*args, **kwargs)
+    def wedge(xi):
+        return _inekf.SO3_0.wedge(xi)
 
     @staticmethod
-    def Exp(*args, **kwargs):
-        return _inekf.SO3_0.Exp(*args, **kwargs)
+    def exp(xi):
+        return _inekf.SO3_0.exp(xi)
 
     @staticmethod
-    def Log(*args, **kwargs):
-        return _inekf.SO3_0.Log(*args, **kwargs)
+    def log_(g):
+        return _inekf.SO3_0.log_(g)
 
     @staticmethod
-    def Ad(*args, **kwargs):
-        return _inekf.SO3_0.Ad(*args, **kwargs)
+    def Ad_(g):
+        return _inekf.SO3_0.Ad_(g)
 
 
 ############################ SO2 ##############################
 class _meta_SO2(type):
     # if we used default argument
-    __name__ = "SO2_0"
     def __call__(self, *args, **kwargs):
         return _inekf.SO2_0(*args, **kwargs)
 
@@ -137,19 +378,29 @@ class _meta_SO2(type):
 
         raise TypeError("Invalid Options")
 
-class SO2(metaclass=_meta_SO2):
+class SO2(LieGroup, metaclass=_meta_SO2):
+    """2D rotational states, also known as the 2x2 special orthogonal group, SO(2).
+    
+    See the C++ counterpart (:cpp:class:`InEKF::SO2`) for documentation on constructing an object.
+    Further, we have overloaded the ``[]`` operator to function as a python template. Example of this 
+    can be seen in :ref:`start`. Templates include:
+
+    Templates:
+
+    - ``A`` Number of augmented Euclidean states. Can be -1 or "D" for dynamic. Defaults to 0.
+    """
     @staticmethod
-    def Wedge(*args, **kwargs):
-        return _inekf.SO2_0.Wedge(*args, **kwargs)
+    def wedge(xi):
+        return _inekf.SO2_0.wedge(xi)
 
     @staticmethod
-    def Exp(*args, **kwargs):
-        return _inekf.SO2_0.Exp(*args, **kwargs)
+    def exp(xi):
+        return _inekf.SO2_0.exp(xi)
 
     @staticmethod
-    def Log(*args, **kwargs):
-        return _inekf.SO2_0.Log(*args, **kwargs)
+    def log_(g):
+        return _inekf.SO2_0.log_(g)
 
     @staticmethod
-    def Ad(*args, **kwargs):
-        return _inekf.SO2_0.Ad(*args, **kwargs)
+    def Ad_(g):
+        return _inekf.SO2_0.Ad_(g)

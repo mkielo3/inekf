@@ -11,7 +11,7 @@ from inekf import OdometryProcessDynamic, LandmarkSensor, GPSSensor
 from inekf import SE2, InEKF, ERROR
 
 def data_association(state, zs, laser_mm):
-    n_lm = state.State.shape[0] - 2 - 1
+    n_lm = state.mat.shape[0] - 2 - 1
     n_mm = len(zs)
 
     # if we don't have anything, say they're all new!
@@ -61,13 +61,15 @@ def solve_cost_matrix_heuristic(M):
 
 def addLandmark(z, state):
     x, y = state[0]
-    phi = np.arctan2(state.State[1,0],state.State[0,0])
+    phi = np.arctan2(state.mat[1,0],state.mat[0,0])
     r, b = z
 
     xl = x + r*np.cos(b+phi)
     yl = y + r*np.sin(b+phi)
 
     state.addCol([xl, yl], np.eye(2)*1000)
+
+    return state
 
 def x(l):
     return np.array([i[0][0] for i in l])
@@ -143,12 +145,12 @@ for i, (e, t, data) in tqdm(enumerate(events), total=len(events)):
         last_t = t
 
         u = makeOdometry(data, dt)
-        s = iekf.Predict(u, dt)
+        s = iekf.predict(u, dt)
         states.append(s)
 
     # GPS Measurement
     if e == 'gps':
-        s = iekf.Update("GPS", data)
+        s = iekf.update("GPS", data)
         states[-1] = s
         gps_data.append(data)
 
@@ -159,18 +161,18 @@ for i, (e, t, data) in tqdm(enumerate(events), total=len(events)):
         # iterate through them (note data here is still r/b)
         for idx, data in zip(assoc, data):
             if idx == -1:
-                addLandmark(data, iekf.state)
-                laser.sawLandmark(iekf.state.State.shape[0]-2-1-1, iekf.state)
-                iekf.Update("Laser", data)
+                iekf.state = addLandmark(data, iekf.state)
+                laser.sawLandmark(iekf.state.mat.shape[0]-2-1-1, iekf.state)
+                iekf.update("Laser", data)
             elif idx == -2:
                 continue
             else:
                 laser.sawLandmark(idx, iekf.state)
-                iekf.Update("Laser", data)
+                iekf.update("Laser", data)
 
     if time() - last_plot > 1 or i == len(events)-1:
         # plot car
-        phi = np.arctan2(states[-1].State[1,0],states[-1].State[0,0])
+        phi = np.arctan2(states[-1].mat[1,0],states[-1].mat[0,0])
         m = mmarkers.MarkerStyle(">")
         m._transform = m.get_transform().rotate_deg(phi*180/np.pi)
         veh.set_offsets(states[-1][0])
@@ -188,7 +190,7 @@ for i, (e, t, data) in tqdm(enumerate(events), total=len(events)):
             gps_data = []
 
         # plot landmark data
-        n_lm = iekf.state.State.shape[0] - 2 - 1
+        n_lm = iekf.state.mat.shape[0] - 2 - 1
         if n_lm != 0:
             lm = np.array([iekf.state[i] for i in range(1,n_lm+1)])
             lm_pts.set_offsets(lm)

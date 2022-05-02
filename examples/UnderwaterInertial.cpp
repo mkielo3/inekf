@@ -95,7 +95,7 @@ int main(){
             assert((data.size()-1) == 6);
             dt = data[0];
             imu_data = data.tail(6);
-            state = iekf.Predict(imu_data, dt);
+            state = iekf.predict(imu_data, dt);
         }
 
         // UPDATE STEP
@@ -103,12 +103,12 @@ int main(){
             assert((data.size()-1) == 3);
             dvl_data << data[1], data[2], data[3],
                         imu_data[0], imu_data[1], imu_data[2];
-            state = iekf.Update("DVL", dvl_data);            
+            state = iekf.update("DVL", dvl_data);            
         }
         else if (type == "DEPTH"){
             assert((data.size()-1) == 1);
             depth_data = data.tail(1);
-            state = iekf.Update("Depth", depth_data);
+            state = iekf.update("Depth", depth_data);
 
             // DVL is last in list of data saved, so we save our state here
             R_result.block<3,3>(3*i,0) = state.R()();

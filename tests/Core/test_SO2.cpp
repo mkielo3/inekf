@@ -17,9 +17,9 @@ TEST(SO2, BaseConstructor1){
     InEKF::SO2<2> x(mtx, sigma, A);
 
     EXPECT_MATRICES_EQ(mtx, x());
-    EXPECT_MATRICES_EQ(sigma, x.Cov());
-    EXPECT_MATRICES_EQ(A, x.Aug());
-    EXPECT_TRUE(x.Uncertain());
+    EXPECT_MATRICES_EQ(sigma, x.cov());
+    EXPECT_MATRICES_EQ(A, x.aug());
+    EXPECT_TRUE(x.uncertain());
 }
 
 TEST(SO2, BaseConstructor2){
@@ -50,17 +50,17 @@ TEST(SO2, TangentConstructor){
     x << 0, 1, 2;
 
     InEKF::SO2<Eigen::Dynamic> state(x);
-    EXPECT_MATRICES_EQ(state.Aug(), x.tail(2));
+    EXPECT_MATRICES_EQ(state.aug(), x.tail(2));
     EXPECT_MATRICES_EQ(state(), Eigen::Matrix2d::Identity());
 }
 
 TEST(SO2, AddAug){
     InEKF::SO2<Eigen::Dynamic> x;
-    EXPECT_EQ(x.Aug().rows(), 0);
+    EXPECT_EQ(x.aug().rows(), 0);
 
     x.addAug(2);
 
-    EXPECT_EQ(x.Aug()(0), 2);
+    EXPECT_EQ(x.aug()(0), 2);
 
     // TODO: Test adding to Cov
 
@@ -74,18 +74,18 @@ TEST(SO2, Inverse){
     EXPECT_MATRICES_EQ(x.inverse()(), x().inverse());
 }
 
-TEST(SO2, Exp){
+TEST(SO2, exp){
     Eigen::VectorXd x(3);
     x << 1,2,3;
 
-    InEKF::SO2<Eigen::Dynamic> ours = InEKF::SO2<Eigen::Dynamic>::Exp(x);
-    Eigen::Matrix2d theirs = InEKF::SO2<Eigen::Dynamic>::Wedge(x).exp();
+    InEKF::SO2<Eigen::Dynamic> ours = InEKF::SO2<Eigen::Dynamic>::exp(x);
+    Eigen::Matrix2d theirs = InEKF::SO2<Eigen::Dynamic>::wedge(x).exp();
 
     EXPECT_MATRICES_EQ(ours(), theirs);
-    EXPECT_MATRICES_EQ(ours.Aug(), x.tail(2));
+    EXPECT_MATRICES_EQ(ours.aug(), x.tail(2));
 }
 
-TEST(SO2, Log){
+TEST(SO2, log){
     Eigen::VectorXd x(3);
     x << 0, 1, 2;
     InEKF::SO2<Eigen::Dynamic> state(x);
@@ -94,11 +94,11 @@ TEST(SO2, Log){
     EXPECT_MATRICES_EQ(xi, x);
 }
 
-TEST(SO2, Wedge){
+TEST(SO2, wedge){
     Eigen::VectorXd x(3);
     x << 1, 2, 3;
 
-    Eigen::Matrix2d ours = InEKF::SO2<Eigen::Dynamic>::Wedge(x); 
+    Eigen::Matrix2d ours = InEKF::SO2<Eigen::Dynamic>::wedge(x); 
     Eigen::Matrix2d theirs;
     theirs << 0, -1,
                 1, 0;

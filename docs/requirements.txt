@@ -1,0 +1,6 @@
+breathe
+sphinx
+sphinx_rtd_theme
+sphinx-copybutton
+sphinx-tabs
+autodocsumm

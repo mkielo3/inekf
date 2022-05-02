@@ -9,16 +9,16 @@ def test_f():
 
     op = OdometryProcess()
 
-    assert_allclose(op.f(u, 1, state).State, u.State)
+    assert_allclose(op.f(u, 1, state).mat, u.mat)
 
-def test_MakePhi():
+def test_makePhi():
     state = SE2()
     u = SE2(.1, 1, 2)
 
     op = OdometryProcess()
 
-    phi = op.MakePhi(u, 1, state, ERROR.RIGHT)
+    phi = op.makePhi(u, 1, state, ERROR.RIGHT)
     assert_allclose(phi, np.eye(3))
 
-    phi = op.MakePhi(u, 1, state, ERROR.LEFT)
-    assert_allclose(phi, u.inverse().Ad())
+    phi = op.makePhi(u, 1, state, ERROR.LEFT)
+    assert_allclose(phi, u.inverse.Ad)

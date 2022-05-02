@@ -1,5 +1,6 @@
 .vscode
 build*
+_build*
 dist*
 secrets*
 release

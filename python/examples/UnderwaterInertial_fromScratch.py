@@ -19,31 +19,31 @@ class InertialProcess(ProcessModel[SE3[2,6], "Vec6"]):
         self.Q = np.zeros((15,15))
         
     def f(self, u, dt, state):
-        u_shifted = u - state.Aug
+        u_shifted = u - state.aug
         omega = u_shifted[:3]
         a = u_shifted[3:]
-        R = state.R().State
+        R = state.R.mat
         v = state[0]
         p = state[1]
 
         S = np.eye(5)
-        S[:3,:3] = R @ SO3.Exp(omega*dt).State
+        S[:3,:3] = R @ SO3.exp(omega*dt).mat
         S[:3,3]  = v + (R@a + self.g)*dt
         S[:3,4]  = p + v*dt + (R@a + self.g)*dt**2/2
 
-        state.State = S
+        state.mat = S
 
         return state
 
-    def MakePhi(self, u, dt, state, error):
+    def makePhi(self, u, dt, state, error):
         A = np.zeros((15,15))
 
         if error == ERROR.RIGHT:
-            R = state.R().State
-            v_cross = SO3.Wedge( state[0] )
-            p_cross = SO3.Wedge( state[1] )
+            R = state.R.mat
+            v_cross = SO3.wedge( state[0] )
+            p_cross = SO3.wedge( state[1] )
 
-            A[3:6,0:3] = SO3.Wedge(self.g)
+            A[3:6,0:3] = SO3.wedge(self.g)
             A[6:9,3:6] = np.eye(3)
             A[0:3,9:12] = -R
             A[3:6,9:12] = -v_cross@R
@@ -53,9 +53,9 @@ class InertialProcess(ProcessModel[SE3[2,6], "Vec6"]):
             return np.eye(15) + A*dt + A@A*dt**2/2 + A@A@A*dt**3/6
 
         elif error == ERROR.LEFT:
-            u_shifted = u - state.Aug
-            w_cross = SO3.Wedge( u_shifted[0:3] )
-            a_cross = SO3.Wedge( u_shifted[3:6] )
+            u_shifted = u - state.aug
+            w_cross = SO3.wedge( u_shifted[0:3] )
+            a_cross = SO3.wedge( u_shifted[3:6] )
 
             A[0:3,0:3] = -w_cross
             A[3:6,3:6] = -w_cross
@@ -93,7 +93,7 @@ class DVLSensor(MeasureModel[SE3[2,6]]):
         super().__init__()
 
         self.dvlR = dvlR
-        self.dvlT = SO3.Wedge(dvlT)
+        self.dvlT = SO3.wedge(dvlT)
 
         self.error = ERROR.RIGHT
         self.M = np.zeros((3,3))
@@ -105,13 +105,13 @@ class DVLSensor(MeasureModel[SE3[2,6]]):
         self.M = np.eye(3)*std_dvl**2
 
         IMU = np.eye(3)*std_imu**2
-        self.M = self.dvlR.State@self.M@self.dvlR.State.T + dvlT@IMU@dvlT.T
+        self.M = self.dvlR.mat@self.M@self.dvlR.mat.T + dvlT@IMU@dvlT.T
 
     def processZ(self, z, state):
         z_full = np.array([z[0], z[1], z[2], -1, 0])
 
         omega = z[3:6]
-        z_full[:3] = self.dvlR.State@z_full[:3] + self.dvlT@omega
+        z_full[:3] = self.dvlR.mat@z_full[:3] + self.dvlT@omega
 
         return z_full
 
@@ -135,8 +135,8 @@ class DepthSensor(MeasureModel[SE3[2,6]]):
         return z_full
 
     def calcSInverse(self, state):
-        R = state.R().State
-        Sig = inv(self.H_error@state.Cov@self.H_error.T)
+        R = state.R.mat
+        Sig = inv(self.H_error@state.cov@self.H_error.T)
         return (Sig - Sig@inv(R.T@self.M@R + Sig)@Sig)
 
 
@@ -199,15 +199,15 @@ for i in range(num*4):
     if name == "IMU":
         # print("Recieved IMU")
         imu_data = data
-        iekf.Predict(data, dt)
+        iekf.predict(data, dt)
     if name == "DVL":
         # print("Recieved DVL")
         data = np.append(data, imu_data[0:3])
-        state = iekf.Update("DVL", data)
+        state = iekf.update("DVL", data)
     if name == "DEPTH":
         # print("Recieved Depth")
-        state = iekf.Update("Depth", data)
-        mine.append(state.State)
+        state = iekf.update("Depth", data)
+        mine.append(state.mat)
     
     if name == "R":
         # print("Recieved Actual")

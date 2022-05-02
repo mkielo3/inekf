@@ -3,7 +3,7 @@
 namespace InEKF {
 
 DVLSensor::DVLSensor(SO3<> dvlR, Eigen::Vector3d dvlT)
-    : dvlR_(dvlR), dvlT_(SO3<>::Wedge(dvlT)){
+    : dvlR_(dvlR), dvlT_(SO3<>::wedge(dvlT)){
     error_ = ERROR::RIGHT;
 
     M_ = Eigen::Matrix3d::Zero();

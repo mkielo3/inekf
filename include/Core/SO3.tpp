@@ -21,7 +21,7 @@ SO3<A>::SO3(double w1, double w2, double w3, const MatrixCov& Cov, const VectorA
     Eigen::Vector3d w;
     w << w1, w2, w3;
     double theta = w.norm();
-    MatrixState wx = SO3<>::Wedge(w);
+    MatrixState wx = SO3<>::wedge(w);
 
     if(abs(theta) < .0001){
         State_ = MatrixState::Identity() + wx/2 + wx*wx/6 + wx*wx*wx/24;
@@ -64,27 +64,27 @@ SO3<A> SO3<A>::inverse() const{
 template <int A>
 SO3<A> SO3<A>::operator*(const SO3<A>& rhs) const{
     // Make sure they're both the same size
-    if(A == Eigen::Dynamic && (*this).Aug().rows() != rhs.Aug().rows()){
+    if(A == Eigen::Dynamic && (*this).aug().rows() != rhs.aug().rows()){
         throw std::range_error("Dynamic SE2 elements have different Aug");
     }
 
     // Skirt around composing covariances
     MatrixCov Cov = MatrixCov::Zero(c,c);
-    if(this->Uncertain() && rhs.Uncertain()){
+    if(this->uncertain() && rhs.uncertain()){
         throw "Can't compose uncertain LieGroups";
     }
-    if(this->Uncertain()) Cov = this->Cov();
-    if(rhs.Uncertain()) Cov = rhs.Cov();
+    if(this->uncertain()) Cov = this->cov();
+    if(rhs.uncertain()) Cov = rhs.cov();
 
     // Compose state + augment
     MatrixState State = (*this)() * rhs();
-    VectorAug Aug = this->Aug() + rhs.Aug();
+    VectorAug Aug = this->aug() + rhs.aug();
 
     return SO3<A>(State, Cov, Aug);
 }
 
 template <int A>
-typename SO3<A>::MatrixState SO3<A>::Wedge(const TangentVector& xi){
+typename SO3<A>::MatrixState SO3<A>::wedge(const TangentVector& xi){
     MatrixState State;
     State <<     0, -xi(2),  xi(1),
              xi(2),      0, -xi(0),
@@ -93,13 +93,13 @@ typename SO3<A>::MatrixState SO3<A>::Wedge(const TangentVector& xi){
 }
 
 template <int A>
-SO3<A> SO3<A>::Exp(const TangentVector& xi){
+SO3<A> SO3<A>::exp(const TangentVector& xi){
     return SO3(xi, MatrixCov::Zero(c,c));
 }
 
 template <int A>
-typename SO3<A>::TangentVector SO3<A>::Log(const SO3& g){
-    TangentVector xi(g.Aug().rows()+3);
+typename SO3<A>::TangentVector SO3<A>::log(const SO3& g){
+    TangentVector xi(g.aug().rows()+3);
 
     double theta = acos( (g().trace()-1)/2 );
     xi(0) = g()(2,1) - g()(1,2);
@@ -109,13 +109,13 @@ typename SO3<A>::TangentVector SO3<A>::Log(const SO3& g){
         xi.head(3) *= theta / (2*sin(theta));
     }
 
-    xi.tail(xi.rows()-3) = g.Aug();
+    xi.tail(xi.rows()-3) = g.aug();
     return xi;
 }
 
 template <int A>
 typename SO3<A>::MatrixCov SO3<A>::Ad(const SO3& g){
-    int curr_dim = g.Aug().rows() + 3;
+    int curr_dim = g.aug().rows() + 3;
     MatrixCov adjoint = MatrixCov::Identity(curr_dim,curr_dim);
     adjoint.block(0,0,3,3) = g();
     return adjoint;

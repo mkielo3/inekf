@@ -8,11 +8,13 @@ GPSSensor::GPSSensor(double std) {
 }
 
 GPSSensor::VectorB GPSSensor::processZ(const Eigen::VectorXd& z, const SE2<Eigen::Dynamic>& state){
+    // Adds however many columns H needs depending on how many landmarks there is.
     int curr_cols = state().cols() - 2;
     int curr_dim  = 1 + 2*curr_cols; 
     H_ = MatrixH::Zero(2, curr_dim);
     H_.block<2,2>(0,1) = Eigen::Matrix2d::Identity();
 
+    // Fill out z with basically all 0s
     if(z.rows() == 2){
         VectorB z_ = Eigen::VectorXd::Zero(state().cols());
         z_(0) = z(0);

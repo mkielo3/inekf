@@ -25,26 +25,27 @@ py::class_<T> make_group(py::module &m, std::string name, int num1, int num2=-10
     
     py::class_<T> myClass = py::class_<T>(m, name.c_str())
         // Getters
-        .def("R", &T::R)
-        .def_property_readonly("isUncertain", &T::Uncertain)
-        .def_property("State", &T::operator(), &T::setState)
-        .def_property("Cov", &T::Cov, &T::setCov)
-        .def_property("Aug", &T::Aug, &T::setAug)
+        .def_property_readonly("R", &T::R)
+        .def_property_readonly("uncertain", &T::uncertain)
+        // Getter & Setters
+        .def_property("mat", &T::operator(), &T::setMat)
+        .def_property("cov", &T::cov, &T::setCov)
+        .def_property("aug", &T::aug, &T::setAug)
 
         // self operators
-        .def("inverse", &T::inverse)
-        .def("Ad", py::overload_cast<>(&T::Ad, py::const_))
-        .def("log", &T::log)
+        .def_property_readonly("inverse", &T::inverse)
+        .def_property_readonly("Ad", py::overload_cast<>(&T::Ad, py::const_))
+        .def_property_readonly("log", py::overload_cast<>(&T::log, py::const_))
 
         // Group action
         .def(py::self * py::self)
 
         // Static Operators
-        .def_static("Wedge", &T::Wedge, "xi"_a)
-        .def_static("Exp", &T::Exp, "xi"_a)
-        .def_static("Log", &T::Exp, "g"_a)
+        .def_static("wedge", &T::wedge, "xi"_a)
+        .def_static("exp", &T::exp, "xi"_a)
+        .def_static("log_", py::overload_cast<const T&>(&T::log), "g"_a)
         // Can't overload combination of static/instance methods
-        .def_static("Adjoint", py::overload_cast<const T&>(&T::Ad), "g"_a)
+        .def_static("Ad_", py::overload_cast<const T&>(&T::Ad), "g"_a)
 
         // Misc
         .def("addAug", &T::addAug, "x"_a, "sigma"_a=1)
@@ -72,12 +73,12 @@ void makeSE2(py::module &m){
     // Make sure tangent constructor is first. When using a dynamic type
     // a TV could it in a nxm matrix, but a matrix can't fit in a nx1 vector.
     mySE2.def(py::init<SE2_TV, SE2_MC>(),
-            "xi"_a, "Cov"_a=SE2_MC::Zero(c,c))
+            "xi"_a, "cov"_a=SE2_MC::Zero(c,c))
         .def(py::init<SE2_MS, SE2_MC, SE2_VA>(), 
-                "State"_a=SE2_MS::Identity(ma,ma), "Cov"_a=SE2_MC::Zero(c,c), "Aug"_a=SE2_VA::Zero(a))
+                "mat"_a=SE2_MS::Identity(ma,ma), "cov"_a=SE2_MC::Zero(c,c), "aug"_a=SE2_VA::Zero(a))
         .def(py::init<InEKF::SE2<C,A> const &>())
         .def(py::init<double, double, double, SE2_MC>(),
-            "theta"_a, "x"_a, "y"_a, "Cov"_a=SE2_MC::Zero(c,c))
+            "theta"_a, "x"_a, "y"_a, "cov"_a=SE2_MC::Zero(c,c))
 
         .def("__getitem__", &InEKF::SE2<C,A>::operator[])
         .def("addCol", &InEKF::SE2<C,A>::addCol,
@@ -101,14 +102,14 @@ void makeSE3(py::module &m){
     typedef typename InEKF::SE3<C,A>::VectorAug SE3_VA;
 
     mySE3.def(py::init<SE3_TV, SE3_MC>(),
-            "xi"_a, "Cov"_a=SE3_MC::Zero(c,c))
+            "xi"_a, "cov"_a=SE3_MC::Zero(c,c))
         .def(py::init<SE3_MS, SE3_MC, SE3_VA>(), 
-                "State"_a=SE3_MS::Identity(ma,ma), "Cov"_a=SE3_MC::Zero(c,c), "Aug"_a=SE3_VA::Zero(a))
+                "mat"_a=SE3_MS::Identity(ma,ma), "cov"_a=SE3_MC::Zero(c,c), "aug"_a=SE3_VA::Zero(a))
         .def(py::init<InEKF::SE3<C,A> const &>())
         .def(py::init<double, double, double, double, double, double, SE3_MC>(),
-            "w1"_a, "w2"_a, "w3"_a, "x"_a, "y"_a, "z"_a, "Cov"_a=SE3_MC::Zero(c,c))
+            "w1"_a, "w2"_a, "w3"_a, "x"_a, "y"_a, "z"_a, "cov"_a=SE3_MC::Zero(c,c))
         // .def(py::init<InEKF::SO3<>, Eigen::Matrix<double,small_xi,1>, SE3_MC>)
-                // "R"_a, "xi"_a, "Cov"_a=SE3_MC::Zero(c,c));
+                // "R"_a, "xi"_a, "cov"_a=SE3_MC::Zero(c,c));
 
         .def("__getitem__", &InEKF::SE3<C,A>::operator[])
         .def("addCol", &InEKF::SE3<C,A>::addCol,
@@ -129,12 +130,12 @@ void makeSO2(py::module &m){
     typedef typename InEKF::SO2<A>::MatrixState SO2_MS;
     typedef typename InEKF::SO2<A>::VectorAug SO2_VA;
     mySO2.def(py::init<SO2_MS, SO2_MC, SO2_VA>(), 
-            "State"_a=SO2_MS::Identity(), "Cov"_a=SO2_MC::Zero(c,c), "Aug"_a=SO2_VA::Zero(a))
+            "mat"_a=SO2_MS::Identity(), "cov"_a=SO2_MC::Zero(c,c), "aug"_a=SO2_VA::Zero(a))
         .def(py::init<InEKF::SO2<A> const &>())
         .def(py::init<SO2_TV, SO2_MC>(),
-            "xi"_a, "Cov"_a=SO2_MC::Zero(c,c))
+            "xi"_a, "cov"_a=SO2_MC::Zero(c,c))
         .def(py::init<double, SO2_MC, SO2_VA>(),
-            "theta"_a, "Cov"_a=SO2_MC::Zero(c,c), "Aug"_a=SO2_VA::Zero(a));
+            "theta"_a, "cov"_a=SO2_MC::Zero(c,c), "aug"_a=SO2_VA::Zero(a));
 
 }
 
@@ -150,12 +151,12 @@ void makeSO3(py::module &m){
     typedef typename InEKF::SO3<A>::MatrixState SO3_MS;
     typedef typename InEKF::SO3<A>::VectorAug SO3_VA;
     mySO3.def(py::init<SO3_MS, SO3_MC, SO3_VA>(), 
-            "State"_a=SO3_MS::Identity(), "Cov"_a=SO3_MC::Zero(c,c), "Aug"_a=SO3_VA::Zero(a))
+            "mat"_a=SO3_MS::Identity(), "cov"_a=SO3_MC::Zero(c,c), "aug"_a=SO3_VA::Zero(a))
         .def(py::init<InEKF::SO3<A> const &>())
         .def(py::init<SO3_TV, SO3_MC>(),
-            "xi"_a, "Cov"_a=SO3_MC::Zero(c,c))
+            "xi"_a, "cov"_a=SO3_MC::Zero(c,c))
         .def(py::init<double, double, double, SO3_MC, SO3_VA>(),
-            "w1"_a, "w2"_a, "w3"_a, "Cov"_a=SO3_MC::Zero(c,c), "Aug"_a=SO3_VA::Zero(a));
+            "w1"_a, "w2"_a, "w3"_a, "cov"_a=SO3_MC::Zero(c,c), "aug"_a=SO3_VA::Zero(a));
 
 }
 

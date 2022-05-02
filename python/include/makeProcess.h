@@ -32,11 +32,11 @@ class PyProcessModel : public InEKF::ProcessModel<Group,U> {
             );
         }
 
-        MatrixCov MakePhi(const U& u, double dt, const Group& state, InEKF::ERROR error) override {
+        MatrixCov makePhi(const U& u, double dt, const Group& state, InEKF::ERROR error) override {
             PYBIND11_OVERRIDE_PURE(
                 MatrixCov,     
                 BaseClass,
-                MakePhi,
+                makePhi,
                 u, dt, state, error
             );
         }
@@ -53,7 +53,7 @@ void makeProcess(py::module &m, std::string name){
         // Overrideable methods
         .def("f", &K::f,
             "u"_a, "dt"_a, "state"_a)
-        .def("MakePhi", &K::MakePhi,
+        .def("makePhi", &K::makePhi,
             "u"_a, "dt"_a, "state"_a, "error"_a)
 
         // Properties

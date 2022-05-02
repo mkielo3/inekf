@@ -10,7 +10,7 @@ def test_f():
     ip = InertialProcess()
     result = ip.f(u, 1, state)
 
-    assert_allclose(result.R().State, SO3.Exp(u[:3]).State)
+    assert_allclose(result.R.mat, SO3.exp(u[:3]).mat)
     assert_allclose(result[0], np.ones(3))
     assert_allclose(result[1], np.ones(3)/2)
     

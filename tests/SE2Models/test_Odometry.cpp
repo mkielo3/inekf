@@ -16,7 +16,7 @@ TEST(OdometryProcess, f){
     EXPECT_MATRICES_EQ(op.f(U, 1, state)(), U());
 }
 
-TEST(OdometryProcess, MakePhi){
+TEST(OdometryProcess, makePhi){
     InEKF::SE2<> state;
     InEKF::SE2<> U(.1, 1, 2);
 
@@ -24,10 +24,10 @@ TEST(OdometryProcess, MakePhi){
     Eigen::Matrix3d Phi;
 
     // check right
-    Phi = op.MakePhi(U, 1, state, InEKF::RIGHT);
+    Phi = op.makePhi(U, 1, state, InEKF::RIGHT);
     EXPECT_MATRICES_EQ(Phi, Eigen::Matrix3d::Identity());
 
     // check left
-    Phi = op.MakePhi(U, 1, state, InEKF::LEFT);
+    Phi = op.makePhi(U, 1, state, InEKF::LEFT);
     EXPECT_MATRICES_EQ(Phi, U.inverse().Ad());
 }
