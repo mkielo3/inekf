@@ -23,11 +23,11 @@ Installation is straightforward in either language.
             sudo make install
 
         Tests, examples, and the python binding can all be disabled with the following options
-        when running cmake. Note all are enabled by default.
+        when running cmake. Note all are disabled by default.
 
         .. code:: bash
 
-            cmake .. -DTESTS=OFF -DPYTHON=OFF -DEXAMPLES=OFF 
+            cmake .. -DTESTS=ON -DPYTHON=ON -DEXAMPLES=ON 
 
         .. note::
 

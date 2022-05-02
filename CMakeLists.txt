@@ -19,9 +19,9 @@ endif()
 
 
 #################### IMPORT DEPENDENCIES ####################
-option(EXAMPLES "Build Examples"        ON)
-option(PYTHON   "Build Python Wrapper"  ON)
-option(TESTS    "Build Tests"           ON)
+option(EXAMPLES "Build Examples"        OFF)
+option(PYTHON   "Build Python Wrapper"  OFF)
+option(TESTS    "Build Tests"           OFF)
 
 # Eigen 
 find_package(Eigen3 CONFIG QUIET)
@@ -66,16 +66,16 @@ endif()
 
 
 #################### INSTALL AS LIBRARY ####################
-# set(INSTALL_LIBS Core SE2Models Inertial)
-# install(TARGETS ${INSTALL_LIBS} EXPORT ${PROJECT_NAME}Config
-#         ARCHIVE DESTINATION lib
-#         LIBRARY DESTINATION lib
-#         RUNTIME DESTINATION bin)
+set(INSTALL_LIBS Core SE2Models Inertial)
+install(TARGETS ${INSTALL_LIBS} EXPORT ${PROJECT_NAME}Config
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin)
 
-# install(DIRECTORY "${CMAKE_SOURCE_DIR}/include" # source directory
-#         DESTINATION "${CMAKE_INSTALL_PREFIX}" # target directory
-#         FILES_MATCHING PATTERN "*.h" # select header files
-#         )
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/include" # source directory
+        DESTINATION "${CMAKE_INSTALL_PREFIX}" # target directory
+        # FILES_MATCHING PATTERN "*.h" # select header files
+        )
 
-# install(EXPORT ${PROJECT_NAME}Config NAMESPACE ${PROJECT_NAME}:: DESTINATION share/${PROJECT_NAME}/cmake)
-# export(TARGETS ${INSTALL_LIBS} FILE ${PROJECT_NAME}Config.cmake)
+install(EXPORT ${PROJECT_NAME}Config NAMESPACE ${PROJECT_NAME}:: DESTINATION share/${PROJECT_NAME}/cmake)
+export(TARGETS ${INSTALL_LIBS} FILE ${PROJECT_NAME}Config.cmake)
