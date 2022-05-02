@@ -3,7 +3,7 @@ Changelog
 
 InEKF 0.1.0
 ----------------
-*5/1/22*
+*5/2/22*
 
 First release!
 
@@ -18,9 +18,10 @@ New Features
 ~~~~~~~~~~~~
 - Everything! :)
 
-Changes
-~~~~~~~
-- N/A
+Breaking Changes
+~~~~~~~~~~~~~~~~~
+- If you were running a dev version previously, a lot of syntax has changed.
+- This should be fairly easy to adjust however, with just a few changed names that should be fairly obvious.
 
 Bug Fixes
 ~~~~~~~~~

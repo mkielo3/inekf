@@ -2,3 +2,9 @@
 .sphinx-tabs-panel.code-tab .notranslate {
 	margin-bottom: 0 !important;
 }
+
+/* Word wraps tables */
+.wy-table-responsive table td,
+.wy-table-responsive table th {
+  white-space: normal;
+}

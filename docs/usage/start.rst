@@ -227,7 +227,7 @@ and whether to run a right or left InEKF.
         InEKF::SE2 x0(0, 0, 0, cov);
 
         // Make Right InEKF
-        InEKF::InEKF iekf(pModel, x0, InEKF::RIGHT);
+        InEKF::InEKF iekf(&pModel, x0, InEKF::RIGHT);
         iekf.addMeasureModel("gps", &gps);
         iekf.addMeasureModel("compass", &compass);
 

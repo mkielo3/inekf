@@ -1,10 +1,17 @@
-.. InEKF documentation master file, created by
-   sphinx-quickstart on Thu Apr 21 12:26:05 2022.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to InEKF's documentation!
 =================================
+InEKF is a C++ library with python bindings that implements the Invariant Extend Kalman Filter (InEKF) in a modular to enable easy application to any system.
+
+Features
+~~~~~~~~
+- Support for Right & Left filters.
+- Base classes provide easy extension via inheritance.
+- Coded using static Eigen types for efficient structure.
+- Fully featured python interface for use in classroom, prototyping, etc.
+- C++14 and above supported.
+- Fullly templated Lie Groups SO2, SO3, SE2, SE3 to enable additional tracking of Euclidean states and multiple extra columns in SE2/SE3.
+- Dynamic Lie Groups types to add columns to SE2/SE3 on the fly (for InEKF SLAM and others).
+- Various examples to get started.
 
 .. toctree::
    :maxdepth: 2
