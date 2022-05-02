@@ -119,7 +119,7 @@ Building a custom ``SE(2)`` process model with a 3-vector as controls in C++ and
                 # Your implementation here
                 pass
 
-            def makePhi(u, dt, state, error):
+            def makePhi(self, u, dt, state, error):
                 # Your implementation here
                 pass
 
