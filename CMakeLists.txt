@@ -47,7 +47,9 @@ if(TESTS)
     GIT_REPOSITORY https://github.com/google/googletest.git
     GIT_TAG        origin/main
   )
+  option(INSTALL_GTEST OFF)
   FetchContent_MakeAvailable(googletest)
+
     
   enable_testing()
   add_subdirectory(tests)
@@ -74,18 +76,17 @@ install(TARGETS ${INSTALL_LIBS} EXPORT ${PROJECT_NAME}Config
 
 install(DIRECTORY "${CMAKE_SOURCE_DIR}/include" # source directory
         DESTINATION "${CMAKE_INSTALL_PREFIX}" # target directory
-        # FILES_MATCHING PATTERN "*.h" # select header files
         )
 
 install(EXPORT ${PROJECT_NAME}Config NAMESPACE ${PROJECT_NAME}:: DESTINATION share/${PROJECT_NAME}/cmake)
 export(TARGETS ${INSTALL_LIBS} FILE ${PROJECT_NAME}Config.cmake)
 
 # And uninstall option
-add_custom_target("uninstall" COMMENT "Uninstall installed files")
+add_custom_target("remove" COMMENT "Remove installed files")
 add_custom_command(
-    TARGET "uninstall"
+    TARGET "remove"
     POST_BUILD
     COMMENT "Uninstall files with install_manifest.txt"
     COMMAND xargs rm -vf < install_manifest.txt || echo Nothing in
-            install_manifest.txt to be uninstalled!
+            install_manifest.txt to be removeed!
 )
