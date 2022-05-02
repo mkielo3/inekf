@@ -79,3 +79,13 @@ install(DIRECTORY "${CMAKE_SOURCE_DIR}/include" # source directory
 
 install(EXPORT ${PROJECT_NAME}Config NAMESPACE ${PROJECT_NAME}:: DESTINATION share/${PROJECT_NAME}/cmake)
 export(TARGETS ${INSTALL_LIBS} FILE ${PROJECT_NAME}Config.cmake)
+
+# And uninstall option
+add_custom_target("uninstall" COMMENT "Uninstall installed files")
+add_custom_command(
+    TARGET "uninstall"
+    POST_BUILD
+    COMMENT "Uninstall files with install_manifest.txt"
+    COMMAND xargs rm -vf < install_manifest.txt || echo Nothing in
+            install_manifest.txt to be uninstalled!
+)

@@ -22,7 +22,7 @@ Installation is straightforward in either language.
             make
             sudo make install
 
-        Tests, examples, and the python binding can all be disabled with the following options
+        Tests, examples, and the python binding can all be enabled with the following options
         when running cmake. Note all are disabled by default.
 
         .. code:: bash
@@ -41,6 +41,19 @@ Installation is straightforward in either language.
             find_package(Eigen3 CONFIG REQUIRED)
             find_package(InEKF CONFIG REQUIRED)
             target_link_libraries(mytarget PUBLIC InEKF::Core InEKF::Inertial InEKF::SE2Models)
+
+        Alternatively, cmake can be configured to pull InEKF directly from git
+
+        .. code:: cmake
+
+            FetchContent_Declare(
+              InEKF
+              GIT_REPOSITORY git@bitbucket.org:frostlab/inekf.git
+              GIT_TAG        v0.1.0
+              )
+            FetchContent_MakeAvailable(InEKF)
+
+        When installed from source, the package can be uninstalled using ``sudo make uninstall``.
 
     .. tab:: Python
 
