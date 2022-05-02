@@ -17,6 +17,7 @@ InEKF is a C++ library with python bindings that implements the Invariant Extend
 ## Documentation
 To get started, please [read the docs](https://inekf.readthedocs.io/). We have attempted to thoroughly document everything, and it should be
 fairly straightforward to get up and running. They have information on all of the following (and more!)
+
 - [Installation](https://inekf.readthedocs.io/en/latest/usage/install.html)
 - [Getting Started](https://inekf.readthedocs.io/en/latest/usage/start.html)
 - [Making Custom Models](https://inekf.readthedocs.io/en/latest/usage/extend.html)
