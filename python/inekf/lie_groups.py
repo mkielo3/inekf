@@ -126,7 +126,7 @@ class LieGroup:
         pass
 
     @staticmethod
-    def log(g):
+    def log_(g):
         """Move an element from group -> algebra -> R^n
         
         Args:
@@ -138,7 +138,7 @@ class LieGroup:
         pass
 
     @staticmethod
-    def Ad(g):
+    def Ad_(g):
         """Compute the linear map Adjoint
         
         Args:
@@ -232,11 +232,11 @@ class SE3(LieGroup, metaclass=_meta_SE3):
         return _inekf.SE3_1_0.exp(xi)
 
     @staticmethod
-    def log(g):
+    def log_(g):
         return _inekf.SE3_1_0.log_(g)
 
     @staticmethod
-    def Ad(g):
+    def Ad_(g):
         return _inekf.SE3_1_0.Ad_(g)
 
     def addCol(self, x, sigma):
@@ -297,11 +297,11 @@ class SE2(LieGroup, metaclass=_meta_SE2):
         return _inekf.SE2_1_0.exp(xi)
 
     @staticmethod
-    def log(g):
+    def log_(g):
         return _inekf.SE2_1_0.log_(g)
 
     @staticmethod
-    def Ad(g):
+    def Ad_(g):
         return _inekf.SE2_1_0.Ad_(g)
 
     def addCol(self, x, sigma):
@@ -357,11 +357,11 @@ class SO3(LieGroup, metaclass=_meta_SO3):
         return _inekf.SO3_0.exp(xi)
 
     @staticmethod
-    def log(g):
+    def log_(g):
         return _inekf.SO3_0.log_(g)
 
     @staticmethod
-    def Ad(g):
+    def Ad_(g):
         return _inekf.SO3_0.Ad_(g)
 
 
@@ -398,9 +398,9 @@ class SO2(LieGroup, metaclass=_meta_SO2):
         return _inekf.SO2_0.exp(xi)
 
     @staticmethod
-    def log(g):
+    def log_(g):
         return _inekf.SO2_0.log_(g)
 
     @staticmethod
-    def Ad(g):
+    def Ad_(g):
         return _inekf.SO2_0.Ad_(g)

@@ -123,8 +123,8 @@ retrieve a specific column.
         # Static methods
         inekf.SE2.wedge(xi)
         inekf.SE2.exp(xi)
-        inekf.SE2.log(x)
-        inekf.SE2.Ad(x)
+        inekf.SE2.log_(x)
+        inekf.SE2.Ad_(x)
 
         # Getters
         x.mat
