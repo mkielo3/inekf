@@ -1,5 +1,6 @@
 SE2 Models
 ================
+See `the Victoria Park example <https://bitbucket.org/frostlab/inekf/src/master/examples/VictoriaPark.py>`_ to see these classes in usage.
 
 Odometry Process Model
 ~~~~~~~~~~~~~~~~~~~~~~~

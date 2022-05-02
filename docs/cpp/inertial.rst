@@ -1,5 +1,6 @@
 Inertial Models
 ================
+See `the Underwater Inertial example <https://bitbucket.org/frostlab/inekf/src/master/examples/UnderwaterInertial.py>`_ to see these classes in usage.
 
 Inertial Process Model
 ~~~~~~~~~~~~~~~~~~~~~~~

@@ -11,9 +11,11 @@ from ._inekf import OdometryProcess, OdometryProcessDynamic, LandmarkSensor, GPS
 
 
 # import fake objects for documentation when docs are being built
-try:
-    __sphinx_build__ # This will fail if docs not being built
+# We need this since we don't want to have to compile the C++ side to 
+# build the documentation
+import os
+if bool(os.getenv('SPHINX_BUILD')):
     from inekf.base import ERROR
     from inekf.lie_groups import LieGroup
-except:
-    pass
+    from inekf._docs import InertialProcess, DVLSensor, DepthSensor
+    from inekf._docs import OdometryProcess, OdometryProcessDynamic, GPSSensor, LandmarkSensor

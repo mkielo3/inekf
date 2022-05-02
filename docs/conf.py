@@ -17,8 +17,7 @@ sys.path.insert(0, os.path.abspath('../python'))
 # Let our script know sphinx is running
 # This way we can import empty classes for docs only
 # when building docs
-import builtins
-builtins.__sphinx_build__ = True
+os.environ['SPHINX_BUILD'] = '1'
 
 # -- Running doxygen first -----------------------------------------------------
 # https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/

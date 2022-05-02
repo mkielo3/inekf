@@ -37,7 +37,7 @@ class InertialProcess : public ProcessModel<SE3<2,6>, Eigen::Matrix<double,6,1>>
         /**
          * @brief Overriden from base class. Integrates IMU measurements.
          * 
-         * @param u Control
+         * @param u Control. First 3 are angular velocity, last 3 are linear acceleration.
          * @param dt Delta time
          * @param state Current state
          * @return Integrated state

@@ -8,7 +8,7 @@
 namespace InEKF {
 
 /**
- * @brief Odometry process model with fixed number of columns.
+ * @brief Odometry process model with single column.
  * 
  */
 class OdometryProcess : public ProcessModel<SE2<>, SE2<>> {

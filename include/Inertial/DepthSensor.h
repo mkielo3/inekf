@@ -7,7 +7,8 @@
 namespace InEKF {
 
 /**
- * @brief Pressure/Depth sensor measurement model for use with inertial process model.
+ * @brief Pressure/Depth sensor measurement model for use with inertial process model. Uses 
+    pseudo-measurements to fit into a left invariant measurement model.
  * 
  */
 class DepthSensor : public MeasureModel<SE3<2,6>> {

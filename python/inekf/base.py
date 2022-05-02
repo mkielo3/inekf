@@ -293,7 +293,7 @@ class ProcessModel(metaclass=_meta_Process):
       -1, "D", or "VecD" for dynamic control size.
     """
     def f(self, u, dt, state):
-        """Propagates state forward one timestep. Must be overriden, has no implementation.
+        """Propagates state forward one timestep. Must be overriden, has no default implementation.
         
         Args: 
             u (control): Control
@@ -306,7 +306,7 @@ class ProcessModel(metaclass=_meta_Process):
         pass
 
     def makePhi(self, u, dt, state):
-        """Make a discrete time linearized process model matrix, with $\Phi = \exp(A\Delta t)$. Must be overriden, has no implementation.
+        """Make a discrete time linearized process model matrix, with $\Phi = \exp(A\Delta t)$. Must be overriden, has no default implementation.
         
         Args: 
             u (control): Control
