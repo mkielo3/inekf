@@ -53,7 +53,9 @@ Installation is straightforward in either language.
               )
             FetchContent_MakeAvailable(InEKF)
 
-        When installed from source, the package can be uninstalled using ``sudo make uninstall``.
+        The above options can be added into this line as well, for example ``option(PYTHON ON)`` right above
+        the ``FetchContent_MakeAvailable(InEKF)`` line. When installed from source, the package can 
+        be removed using ``sudo make remove``.
 
     .. tab:: Python
 
