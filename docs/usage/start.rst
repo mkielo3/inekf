@@ -114,9 +114,10 @@ retrieve a specific column.
         xi = np.array([1,2,3])
 
         # Group methods
-        x.inverse
-        ~x
+        x.inverse 
+        ~x # Same as above
         x*y
+        x@y # Same as above 
         x.log
         x.Ad
 
