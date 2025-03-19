@@ -1,4 +1,8 @@
-This repository is forked from https://bitbucket.org/frostlab/inekf/src/master/\n\n# Invariant Extended Kalman Filter
+# This repository is forked from https://bitbucket.org/frostlab/inekf/src/master/
+
+---
+
+# Invariant Extended Kalman Filter
 [![Build Status](https://robots.et.byu.edu:4000/api/badges/frostlab/inekf/status.svg)](https://robots.et.byu.edu:4000/frostlab/inekf)
 [![Documentation Status](https://readthedocs.org/projects/inekf/badge/?version=latest)](https://inekf.readthedocs.io/en/latest/?badge=latest)
 
