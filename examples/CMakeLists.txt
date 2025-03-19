@@ -14,6 +14,7 @@ find_package(Gnuplot REQUIRED)
 set(SRCS 
         UnderwaterInertial.cpp
         VictoriaPark.cpp
+		SimpleSE2.cpp
 )
 
 set(LIBS Eigen3::Eigen Core SE2Models Inertial matplot)
